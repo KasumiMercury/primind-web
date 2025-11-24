@@ -1,4 +1,4 @@
-import { withThemeByDataAttribute } from "@storybook/addon-themes";
+import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Preview, ReactRenderer } from "@storybook/react-vite";
 
 import "../app/app.css";
@@ -13,13 +13,12 @@ const preview: Preview = {
         },
     },
     decorators: [
-        withThemeByDataAttribute<ReactRenderer>({
+        withThemeByClassName<ReactRenderer>({
             themes: {
-                light: "rosepine-dawn",
-                dark: "rosepine-moon",
+                light: "",
+                dark: "dark",
             },
             defaultTheme: "light",
-            attributeName: "data-theme",
         }),
     ],
 };
