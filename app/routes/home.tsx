@@ -1,3 +1,4 @@
+import { Button } from "~/components/ui/button";
 import { Welcome } from "../welcome/welcome";
 import type { Route } from "./+types/home";
 
@@ -9,5 +10,14 @@ export function meta(_: Route.MetaArgs) {
 }
 
 export default function Home() {
-    return <Welcome />;
+    return (
+        <>
+            <Welcome />
+            <div className="mt-8 flex justify-center">
+                <form method="POST" action="/login/google">
+                    <Button type="submit">Login with Google</Button>
+                </form>
+            </div>
+        </>
+    );
 }
