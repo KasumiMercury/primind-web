@@ -1,4 +1,5 @@
 import { Form, useActionData, useNavigation } from "react-router";
+import { uiProviders } from "~/auth/oidc/providers";
 import { Button } from "~/components/ui/button";
 
 interface LoginFormProps {
@@ -12,24 +13,27 @@ export function LoginForm({ action = "/login" }: LoginFormProps) {
 
     return (
         <div className="space-y-6">
-            <div className="text-center">
-                <h2 className="font-bold text-2xl tracking-tight">Sign In</h2>
-                <p className="mt-2 text-muted-foreground text-sm">
-                    Sign in with your Google account to continue
-                </p>
+            <div className="space-y-3">
+                {uiProviders.map((provider) => (
+                    <Form key={provider.id} method="post" action={action}>
+                        <input
+                            type="hidden"
+                            name="provider"
+                            value={provider.id}
+                        />
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            size="lg"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting
+                                ? "Signing in..."
+                                : `Sign in with ${provider.displayName}`}
+                        </Button>
+                    </Form>
+                ))}
             </div>
-
-            <Form method="post" action={action}>
-                <input type="hidden" name="provider" value="google" />
-                <Button
-                    type="submit"
-                    className="w-full"
-                    size="lg"
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? "Signing in..." : "Sign in with Google"}
-                </Button>
-            </Form>
 
             {actionData?.error && (
                 <div className="rounded-lg border border-destructive bg-destructive/10 px-4 py-3 text-destructive text-sm">

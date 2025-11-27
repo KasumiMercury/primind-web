@@ -21,7 +21,7 @@ export function LoginDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Welcome Back</DialogTitle>
+                    <DialogTitle>Sign in</DialogTitle>
                 </DialogHeader>
                 <LoginForm action={action} />
             </DialogContent>
