@@ -1,5 +1,5 @@
 import { data } from "react-router";
-import LoginSelector from "~/auth/login-selector";
+import LoginPageContent from "~/auth/login-page-content";
 import { googleLoginAction } from "~/auth/oidc/google_flow.server";
 import type { Route } from "../auth/+types/login";
 
@@ -31,5 +31,5 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Login() {
-    return <LoginSelector />;
+    return <LoginPageContent />;
 }
