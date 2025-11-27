@@ -1,9 +1,9 @@
+import { LogIn } from "lucide-react";
 import { useSearchParams } from "react-router";
 import { LoginDialog } from "~/auth/login-dialog";
 import { Button } from "~/components/ui/button";
 import logoDark from "./logo-dark.svg";
 import logoLight from "./logo-light.svg";
-import { LogIn } from "lucide-react";
 
 export function Welcome() {
     const [searchParams, setSearchParams] = useSearchParams();

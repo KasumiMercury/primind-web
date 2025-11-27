@@ -1,6 +1,7 @@
 import { data } from "react-router";
 import LoginPageContent from "~/auth/login-page-content";
-import { googleLoginAction } from "~/auth/oidc/google_flow.server";
+import { initiateOIDCFlow } from "~/auth/oidc/flow.server";
+import { googleProvider } from "~/auth/oidc/providers/google.server";
 import type { Route } from "../auth/+types/login";
 
 export function meta(_: Route.MetaArgs) {
@@ -13,7 +14,7 @@ export async function action({ request }: Route.ActionArgs) {
 
     try {
         if (provider === "google") {
-            return await googleLoginAction();
+            return await initiateOIDCFlow(googleProvider);
         }
 
         throw new Error("Invalid provider");

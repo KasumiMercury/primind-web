@@ -2,7 +2,8 @@ import { create } from "@bufbuild/protobuf";
 import { redirect } from "react-router";
 import { authClient } from "~/auth/auth-client.server";
 import type { CallbackError } from "~/auth/oidc/callback-status";
-import { sessionStorage, stateCookie } from "~/auth/session.server";
+import { oidcStateCookie } from "~/auth/oidc/state-cookie.server";
+import { sessionStorage } from "~/auth/session.server";
 import {
     OIDCLoginRequestSchema,
     type OIDCProvider,
@@ -36,9 +37,11 @@ export async function handleOAuthCallback({
         };
     }
 
-    const storedState = await stateCookie.parse(request.headers.get("Cookie"));
+    const storedState = await oidcStateCookie.parse(
+        request.headers.get("Cookie"),
+    );
     if (!storedState || storedState !== state) {
-        const _clearStateCookie = await stateCookie.serialize("", {
+        const _clearStateCookie = await oidcStateCookie.serialize("", {
             maxAge: 0,
         });
 
@@ -73,7 +76,7 @@ export async function handleOAuthCallback({
         );
         headers.append(
             "Set-Cookie",
-            await stateCookie.serialize("", { maxAge: 0 }),
+            await oidcStateCookie.serialize("", { maxAge: 0 }),
         );
 
         return redirect("/", { headers });

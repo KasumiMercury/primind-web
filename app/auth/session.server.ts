@@ -1,4 +1,4 @@
-import { createCookie, createCookieSessionStorage } from "react-router";
+import { createCookieSessionStorage } from "react-router";
 
 function getSessionSecret(): string {
     const secret = process.env.COOKIE_SECRET;
@@ -19,14 +19,6 @@ function getSessionSecret(): string {
 
     return secret || "dev-secret-change-in-production";
 }
-
-export const stateCookie = createCookie("oidc_state", {
-    path: "/",
-    maxAge: 600,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-});
 
 interface SessionData {
     sessionToken: string;
