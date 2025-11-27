@@ -1,46 +1,87 @@
-import { Form, useActionData, useNavigation } from "react-router";
+import { useActionData, useNavigation, useSubmit } from "react-router";
+import type { UIProviderConfig } from "~/auth/oidc/providers";
 import { uiProviders } from "~/auth/oidc/providers";
 import { Button } from "~/components/ui/button";
 
-interface LoginFormProps {
+const DEFAULT_LOGIN_ACTION = "/login";
+
+interface LoginFormContentProps {
+    providers?: UIProviderConfig[];
     action?: string;
+    error?: string;
+    isSubmitting?: boolean;
+    onSubmit?: (providerId: string) => void;
 }
 
-export function LoginForm({ action = "/login" }: LoginFormProps) {
-    const actionData = useActionData<{ error?: string }>();
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting";
+export function LoginFormContent({
+    providers = uiProviders,
+    action = DEFAULT_LOGIN_ACTION,
+    error,
+    isSubmitting = false,
+    onSubmit,
+}: LoginFormContentProps) {
+    const handleProviderSubmit = (providerId: string) => {
+        onSubmit?.(providerId);
+    };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6" data-action={action}>
             <div className="space-y-3">
-                {uiProviders.map((provider) => (
-                    <Form key={provider.id} method="post" action={action}>
-                        <input
-                            type="hidden"
-                            name="provider"
-                            value={provider.id}
-                        />
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            size="lg"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting
-                                ? "Signing in..."
-                                : `Sign in with ${provider.displayName}`}
-                        </Button>
-                    </Form>
+                {providers.map((provider) => (
+                    <Button
+                        key={provider.id}
+                        type="button"
+                        onClick={() => handleProviderSubmit(provider.id)}
+                        className="w-full"
+                        size="lg"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting
+                            ? "Signing in..."
+                            : `Sign in with ${provider.displayName}`}
+                    </Button>
                 ))}
             </div>
 
-            {actionData?.error && (
+            {error && (
                 <div className="rounded-lg border border-destructive bg-destructive/10 px-4 py-3 text-destructive text-sm">
                     <p className="font-medium">Error</p>
-                    <p>{actionData.error}</p>
+                    <p>{error}</p>
                 </div>
             )}
         </div>
+    );
+}
+
+interface LoginFormProps {
+    action?: string;
+    providers?: UIProviderConfig[];
+}
+
+export function LoginForm({
+    action = DEFAULT_LOGIN_ACTION,
+    providers = uiProviders,
+}: LoginFormProps) {
+    const submit = useSubmit();
+    const actionData = useActionData<{ error?: string }>();
+    const navigation = useNavigation();
+    const handleProviderSubmit = (providerId: string) => {
+        const formData = new FormData();
+        formData.append("provider", providerId);
+
+        submit(formData, {
+            method: "post",
+            action,
+        });
+    };
+
+    return (
+        <LoginFormContent
+            providers={providers}
+            action={action}
+            error={actionData?.error}
+            isSubmitting={navigation.state === "submitting"}
+            onSubmit={handleProviderSubmit}
+        />
     );
 }

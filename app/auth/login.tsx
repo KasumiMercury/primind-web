@@ -1,5 +1,5 @@
 import { data } from "react-router";
-import LoginPageContent from "~/auth/login-page-content";
+import { LoginPageContent } from "~/auth/login-page-content";
 import { initiateOIDCFlow } from "~/auth/oidc/flow.server";
 import type { OIDCProviderDefinition } from "~/auth/oidc/provider.server";
 import { googleProvider } from "~/auth/oidc/providers/google.server";
