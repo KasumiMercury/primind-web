@@ -1,0 +1,8 @@
+pre-push:
+  jobs:
+    - name: "biome check"
+      run: pnpm biome check
+
+    - name: "trivy scan"
+      run: trivy fs . --exit-code 1
+
