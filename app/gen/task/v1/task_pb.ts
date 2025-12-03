@@ -2,6 +2,7 @@
 // @generated from file task/v1/task.proto (package task.v1, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from "@bufbuild/protobuf";
 import type {
     GenEnum,
     GenFile,
@@ -14,10 +15,9 @@ import {
     messageDesc,
     serviceDesc,
 } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 
 /**
  * Describes the file task/v1/task.proto.
