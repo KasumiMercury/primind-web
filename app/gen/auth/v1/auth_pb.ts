@@ -2,7 +2,6 @@
 // @generated from file auth/v1/auth.proto (package auth.v1, syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
 import type {
     GenEnum,
     GenFile,
@@ -15,6 +14,7 @@ import {
     messageDesc,
     serviceDesc,
 } from "@bufbuild/protobuf/codegenv2";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file auth/v1/auth.proto.
@@ -22,7 +22,7 @@ import {
 export const file_auth_v1_auth: GenFile =
     /*@__PURE__*/
     fileDesc(
-        "ChJhdXRoL3YxL2F1dGgucHJvdG8SB2F1dGgudjEiTwoRT0lEQ1BhcmFtc1JlcXVlc3QSJwoIcHJvdmlkZXIYASABKA4yFS5hdXRoLnYxLk9JRENQcm92aWRlchIRCgljbGllbnRfaWQYAiABKAkiPgoST0lEQ1BhcmFtc1Jlc3BvbnNlEhkKEWF1dGhvcml6YXRpb25fdXJsGAEgASgJEg0KBXN0YXRlGAIgASgJIlgKEE9JRENMb2dpblJlcXVlc3QSJwoIcHJvdmlkZXIYASABKA4yFS5hdXRoLnYxLk9JRENQcm92aWRlchIMCgRjb2RlGAIgASgJEg0KBXN0YXRlGAMgASgJIioKEU9JRENMb2dpblJlc3BvbnNlEhUKDXNlc3Npb25fdG9rZW4YASABKAkiDwoNTG9nb3V0UmVxdWVzdCIhCg5Mb2dvdXRSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIKkcKDE9JRENQcm92aWRlchIdChlPSURDX1BST1ZJREVSX1VOU1BFQ0lGSUVEEAASGAoUT0lEQ19QUk9WSURFUl9HT09HTEUQATLTAQoLQXV0aFNlcnZpY2USRQoKT0lEQ1BhcmFtcxIaLmF1dGgudjEuT0lEQ1BhcmFtc1JlcXVlc3QaGy5hdXRoLnYxLk9JRENQYXJhbXNSZXNwb25zZRJCCglPSURDTG9naW4SGS5hdXRoLnYxLk9JRENMb2dpblJlcXVlc3QaGi5hdXRoLnYxLk9JRENMb2dpblJlc3BvbnNlEjkKBkxvZ291dBIWLmF1dGgudjEuTG9nb3V0UmVxdWVzdBoXLmF1dGgudjEuTG9nb3V0UmVzcG9uc2VCFFoSZ2VuL2F1dGgvdjE7YXV0aHYxYgZwcm90bzM",
+        "ChJhdXRoL3YxL2F1dGgucHJvdG8SB2F1dGgudjEiTwoRT0lEQ1BhcmFtc1JlcXVlc3QSJwoIcHJvdmlkZXIYASABKA4yFS5hdXRoLnYxLk9JRENQcm92aWRlchIRCgljbGllbnRfaWQYAiABKAkiPgoST0lEQ1BhcmFtc1Jlc3BvbnNlEhkKEWF1dGhvcml6YXRpb25fdXJsGAEgASgJEg0KBXN0YXRlGAIgASgJIlgKEE9JRENMb2dpblJlcXVlc3QSJwoIcHJvdmlkZXIYASABKA4yFS5hdXRoLnYxLk9JRENQcm92aWRlchIMCgRjb2RlGAIgASgJEg0KBXN0YXRlGAMgASgJIioKEU9JRENMb2dpblJlc3BvbnNlEhUKDXNlc3Npb25fdG9rZW4YASABKAkiJgoNTG9nb3V0UmVxdWVzdBIVCg1zZXNzaW9uX3Rva2VuGAEgASgJIiEKDkxvZ291dFJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgiLwoWVmFsaWRhdGVTZXNzaW9uUmVxdWVzdBIVCg1zZXNzaW9uX3Rva2VuGAEgASgJIioKF1ZhbGlkYXRlU2Vzc2lvblJlc3BvbnNlEg8KB3VzZXJfaWQYASABKAkqRwoMT0lEQ1Byb3ZpZGVyEh0KGU9JRENfUFJPVklERVJfVU5TUEVDSUZJRUQQABIYChRPSURDX1BST1ZJREVSX0dPT0dMRRABMqkCCgtBdXRoU2VydmljZRJFCgpPSURDUGFyYW1zEhouYXV0aC52MS5PSURDUGFyYW1zUmVxdWVzdBobLmF1dGgudjEuT0lEQ1BhcmFtc1Jlc3BvbnNlEkIKCU9JRENMb2dpbhIZLmF1dGgudjEuT0lEQ0xvZ2luUmVxdWVzdBoaLmF1dGgudjEuT0lEQ0xvZ2luUmVzcG9uc2USOQoGTG9nb3V0EhYuYXV0aC52MS5Mb2dvdXRSZXF1ZXN0GhcuYXV0aC52MS5Mb2dvdXRSZXNwb25zZRJUCg9WYWxpZGF0ZVNlc3Npb24SHy5hdXRoLnYxLlZhbGlkYXRlU2Vzc2lvblJlcXVlc3QaIC5hdXRoLnYxLlZhbGlkYXRlU2Vzc2lvblJlc3BvbnNlQhRaEmdlbi9hdXRoL3YxO2F1dGh2MWIGcHJvdG8z",
     );
 
 /**
@@ -120,7 +120,12 @@ export const OIDCLoginResponseSchema: GenMessage<OIDCLoginResponse> =
 /**
  * @generated from message auth.v1.LogoutRequest
  */
-export type LogoutRequest = Message<"auth.v1.LogoutRequest"> & {};
+export type LogoutRequest = Message<"auth.v1.LogoutRequest"> & {
+    /**
+     * @generated from field: string session_token = 1;
+     */
+    sessionToken: string;
+};
 
 /**
  * Describes the message auth.v1.LogoutRequest.
@@ -147,6 +152,44 @@ export type LogoutResponse = Message<"auth.v1.LogoutResponse"> & {
 export const LogoutResponseSchema: GenMessage<LogoutResponse> =
     /*@__PURE__*/
     messageDesc(file_auth_v1_auth, 5);
+
+/**
+ * @generated from message auth.v1.ValidateSessionRequest
+ */
+export type ValidateSessionRequest =
+    Message<"auth.v1.ValidateSessionRequest"> & {
+        /**
+         * @generated from field: string session_token = 1;
+         */
+        sessionToken: string;
+    };
+
+/**
+ * Describes the message auth.v1.ValidateSessionRequest.
+ * Use `create(ValidateSessionRequestSchema)` to create a new message.
+ */
+export const ValidateSessionRequestSchema: GenMessage<ValidateSessionRequest> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 6);
+
+/**
+ * @generated from message auth.v1.ValidateSessionResponse
+ */
+export type ValidateSessionResponse =
+    Message<"auth.v1.ValidateSessionResponse"> & {
+        /**
+         * @generated from field: string user_id = 1;
+         */
+        userId: string;
+    };
+
+/**
+ * Describes the message auth.v1.ValidateSessionResponse.
+ * Use `create(ValidateSessionResponseSchema)` to create a new message.
+ */
+export const ValidateSessionResponseSchema: GenMessage<ValidateSessionResponse> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 7);
 
 /**
  * OIDCProvider represents an external OpenID Connect identity provider.
@@ -203,5 +246,13 @@ export const AuthService: GenService<{
         methodKind: "unary";
         input: typeof LogoutRequestSchema;
         output: typeof LogoutResponseSchema;
+    };
+    /**
+     * @generated from rpc auth.v1.AuthService.ValidateSession
+     */
+    validateSession: {
+        methodKind: "unary";
+        input: typeof ValidateSessionRequestSchema;
+        output: typeof ValidateSessionResponseSchema;
     };
 }> = /*@__PURE__*/ serviceDesc(file_auth_v1_auth, 0);
