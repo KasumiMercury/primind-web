@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
-import { OperationArea } from "~/task/operation-area";
 import type { ButtonsConfig } from "~/task/operation-area";
+import { OperationArea } from "~/task/operation-area";
 
 const defaultButtons: ButtonsConfig = {
     top: {
