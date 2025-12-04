@@ -1,13 +1,22 @@
+import type { ButtonConfig } from "~/task/operation-buttons";
 import { OperationButtons } from "~/task/operation-buttons";
 import { calculateDimensions, OperationShape } from "~/task/operation-shape";
+
+export interface ButtonsConfig {
+    top: ButtonConfig;
+    bottomLeft: ButtonConfig;
+    bottomCenter: ButtonConfig;
+    bottomRight: ButtonConfig;
+}
 
 interface OperationAreaProps {
     width?: number;
     radius?: number;
     className?: string;
+    buttons?: ButtonsConfig;
 }
 
-const buttonsConfig = {
+export const defaultButtonsConfig: ButtonsConfig = {
     top: {
         label: "Button 1",
         onClick: () => console.log("Button 1 clicked"),
@@ -30,6 +39,7 @@ export function OperationArea({
     width = 400,
     radius = 10,
     className = "w-full",
+    buttons = defaultButtonsConfig,
 }: OperationAreaProps) {
     const dimensions = calculateDimensions(width);
 
@@ -41,11 +51,11 @@ export function OperationArea({
         >
             <OperationButtons
                 dimensions={dimensions}
-                topButton={buttonsConfig.top}
+                topButton={buttons.top}
                 bottomButtons={{
-                    left: buttonsConfig.bottomLeft,
-                    center: buttonsConfig.bottomCenter,
-                    right: buttonsConfig.bottomRight,
+                    left: buttons.bottomLeft,
+                    center: buttons.bottomCenter,
+                    right: buttons.bottomRight,
                 }}
             />
         </OperationShape>
