@@ -29,19 +29,16 @@ export function OperationArea({
     const path = generateRoundedPolygonPath(poinsts, radius);
 
     return (
-        <div>
-            <svg
-                className={className}
-                width={width}
-                height={height}
-                viewBox="0 0 {width} {height}"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-labelledby="operationAreaTitle"
-                role="img"
-            >
-                <title id="operationAreaTitle">Operation Area</title>
-                <path d={path} />
-            </svg>
-        </div>
+        <svg
+            className={className}
+            viewBox={`0 0 ${width} ${height}`}
+            xmlns="http://www.w3.org/2000/svg"
+            aria-labelledby="operationAreaTitle"
+            role="img"
+            preserveAspectRatio="xMidYMid meet"
+        >
+            <title id="operationAreaTitle">Operation Area</title>
+            <path d={path} />
+        </svg>
     );
 }
