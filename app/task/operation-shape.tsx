@@ -14,21 +14,26 @@ const toFixed = (num: number, digits: number = 6) => {
     return parseFloat(num.toFixed(digits));
 };
 
-export const calculateDimensions = (width: number): Dimensions => {
+export const calculateDimensions = (
+    width: number,
+    sideButtonWidthRatio: number = 0.15,
+): Dimensions => {
     const goldenRatio = toFixed((1 + Math.sqrt(5)) / 2);
     const heightRatio = 1 / goldenRatio;
     const height = width * heightRatio;
     const arrowCornerHeightRatio = heightRatio / goldenRatio;
     const upperHeight = height * arrowCornerHeightRatio;
     const lowerHeight = height - upperHeight;
+    const sideButtonWidth = width * sideButtonWidthRatio;
+    const centerButtonWidth = width - 2 * sideButtonWidth;
 
     return {
         width,
         height,
         upperHeight,
         lowerHeight,
-        sideButtonWidth: width * 0.2,
-        centerButtonWidth: width * 0.6,
+        sideButtonWidth,
+        centerButtonWidth,
     };
 };
 
