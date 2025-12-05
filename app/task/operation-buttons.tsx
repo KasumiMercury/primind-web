@@ -12,12 +12,14 @@ interface OperationButtonsProps {
         center: ButtonConfig;
         right: ButtonConfig;
     };
+    className?: string;
 }
 
 export function OperationButtons({
     dimensions,
     topButton,
     bottomButtons,
+    className = "bg-primary",
 }: OperationButtonsProps) {
     const {
         width,
@@ -30,6 +32,7 @@ export function OperationButtons({
 
     return (
         <div
+            className={className}
             style={{
                 width: `${width}px`,
                 height: `${height}px`,
@@ -38,7 +41,7 @@ export function OperationButtons({
             }}
         >
             <button
-                className="bg-primary"
+                className="bg-transparent"
                 type="button"
                 style={{
                     width: "100%",
@@ -56,7 +59,7 @@ export function OperationButtons({
                 }}
             >
                 <button
-                    className="bg-secondary"
+                    className="bg-transparent"
                     type="button"
                     style={{
                         width: `${sideButtonWidth}px`,
@@ -65,7 +68,7 @@ export function OperationButtons({
                     onClick={bottomButtons.left.onClick}
                 ></button>
                 <button
-                    className="bg-primary"
+                    className="bg-transparent"
                     type="button"
                     style={{
                         width: `${centerButtonWidth}px`,
@@ -74,7 +77,7 @@ export function OperationButtons({
                     onClick={bottomButtons.center.onClick}
                 ></button>
                 <button
-                    className="bg-secondary"
+                    className="bg-transparent"
                     type="button"
                     style={{
                         width: `${sideButtonWidth}px`,

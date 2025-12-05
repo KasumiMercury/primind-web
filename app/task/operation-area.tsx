@@ -13,6 +13,7 @@ interface OperationAreaProps {
     width?: number;
     radius?: number;
     className?: string;
+    innerClassName?: string;
     operation?: OperationConfig;
 }
 
@@ -27,6 +28,7 @@ export function OperationArea({
     width = 400,
     radius = 10,
     className = "w-full",
+    innerClassName,
     operation = defaultOperationConfig,
 }: OperationAreaProps) {
     const dimensions = calculateDimensions(width);
@@ -52,6 +54,7 @@ export function OperationArea({
                         center: { onClick: operation.downAction },
                         right: { onClick: operation.rightAction },
                     }}
+                    className={innerClassName}
                 />
             </OperationSwipe>
         </OperationShape>
