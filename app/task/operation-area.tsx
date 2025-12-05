@@ -1,6 +1,7 @@
 import type { ButtonConfig } from "~/task/operation-buttons";
 import { OperationButtons } from "~/task/operation-buttons";
 import { calculateDimensions, OperationShape } from "~/task/operation-shape";
+import { OperationSwipe, type SwipeActions } from "~/task/operation-swipe";
 
 export interface ButtonsConfig {
     top: ButtonConfig;
@@ -42,6 +43,12 @@ export function OperationArea({
     buttons = defaultButtonsConfig,
 }: OperationAreaProps) {
     const dimensions = calculateDimensions(width);
+    const swipeActions: SwipeActions = {
+        up: buttons.top.onClick,
+        down: buttons.bottomCenter.onClick,
+        left: buttons.bottomLeft.onClick,
+        right: buttons.bottomRight.onClick,
+    };
 
     return (
         <OperationShape
@@ -49,15 +56,17 @@ export function OperationArea({
             radius={radius}
             className={className}
         >
-            <OperationButtons
-                dimensions={dimensions}
-                topButton={buttons.top}
-                bottomButtons={{
-                    left: buttons.bottomLeft,
-                    center: buttons.bottomCenter,
-                    right: buttons.bottomRight,
-                }}
-            />
+            <OperationSwipe dimensions={dimensions} swipeActions={swipeActions}>
+                <OperationButtons
+                    dimensions={dimensions}
+                    topButton={buttons.top}
+                    bottomButtons={{
+                        left: buttons.bottomLeft,
+                        center: buttons.bottomCenter,
+                        right: buttons.bottomRight,
+                    }}
+                />
+            </OperationSwipe>
         </OperationShape>
     );
 }
