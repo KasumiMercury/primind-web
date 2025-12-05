@@ -26,6 +26,11 @@ const meta = {
             control: { type: "range", min: 0, max: 30, step: 1 },
             description: "Corner radius for the shape",
         },
+        innerClassName: {
+            control: { type: "text" },
+            description:
+                "Custom className for the inner button container (e.g., 'bg-blue-500', 'bg-secondary')",
+        },
     },
 } satisfies Meta<typeof OperationArea>;
 
@@ -87,5 +92,12 @@ export const Interactive: Story = {
             downAction: fn(() => alert("Center / swipe down")),
             rightAction: fn(() => alert("Right / swipe right")),
         },
+    },
+};
+
+export const CustomBackgrounde: Story = {
+    args: {
+        innerClassName: "bg-blue-500",
+        operation: { ...defaultOperation, upAction: fn(), downAction: fn() },
     },
 };
