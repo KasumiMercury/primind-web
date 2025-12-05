@@ -1,7 +1,6 @@
 import type { Dimensions } from "~/task/operation-shape";
 
 export interface ButtonConfig {
-    label: React.ReactNode;
     onClick: () => void;
 }
 
@@ -46,9 +45,7 @@ export function OperationButtons({
                     height: `${upperHeight}px`,
                 }}
                 onClick={topButton.onClick}
-            >
-                {topButton.label}
-            </button>
+            ></button>
 
             <div
                 style={{
@@ -66,9 +63,7 @@ export function OperationButtons({
                         height: "100%",
                     }}
                     onClick={bottomButtons.left.onClick}
-                >
-                    {bottomButtons.left.label}
-                </button>
+                ></button>
                 <button
                     className="bg-primary"
                     type="button"
@@ -77,9 +72,7 @@ export function OperationButtons({
                         height: "100%",
                     }}
                     onClick={bottomButtons.center.onClick}
-                >
-                    {bottomButtons.center.label}
-                </button>
+                ></button>
                 <button
                     className="bg-secondary"
                     type="button"
@@ -88,9 +81,7 @@ export function OperationButtons({
                         height: "100%",
                     }}
                     onClick={bottomButtons.right.onClick}
-                >
-                    {bottomButtons.right.label}
-                </button>
+                ></button>
             </div>
         </div>
     );
