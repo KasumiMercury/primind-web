@@ -1,3 +1,5 @@
+import { domAnimation, LazyMotion } from "motion/react";
+import * as m from "motion/react-m";
 import {
     type ComponentType,
     useEffect,
@@ -62,6 +64,9 @@ export const ITEMS = {
 
 const selectableItems = Object.values(ITEMS);
 
+const registerTransitionAmount = 10;
+const registerTransitionDuration = 300;
+
 interface OperationAreaProps {
     width?: number;
     radius?: number;
@@ -80,6 +85,9 @@ export function OperationArea({
     swipeFlip = true,
 }: OperationAreaProps) {
     const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const [transitionY, setTransitionY] = useState(0);
+
     const itemsCount = selectableItems.length;
 
     const selectedItem = useMemo(() => {
@@ -106,6 +114,14 @@ export function OperationArea({
         setSelectedIndex(prevIndex);
     };
 
+    const handleRegisterAction = () => {
+        console.log("Register action for", selectedItemRef.current);
+        setTransitionY(-registerTransitionAmount);
+        setTimeout(() => {
+            setTransitionY(0);
+        }, registerTransitionDuration);
+    };
+
     const handleLeftAction = () => {
         operation?.leftAction ?? prevSelection();
     };
@@ -115,11 +131,11 @@ export function OperationArea({
     };
 
     const handleUpAction = () => {
-        operation?.upAction ?? console.log("Up");
+        operation?.upAction ?? handleRegisterAction();
     };
 
     const handleDownAction = () => {
-        operation?.downAction ?? console.log("Down");
+        operation?.downAction ?? handleRegisterAction();
     };
 
     const dimensions = calculateDimensions(width);
@@ -133,47 +149,56 @@ export function OperationArea({
     const SelectedIcon = selectedItem?.icon;
 
     return (
-        <div
-            className={className}
-            style={{ position: "relative", width: `${width}px` }}
-        >
-            <OperationShape
-                dimensions={dimensions}
-                radius={(radius * 2) / 3}
-                className="w-full"
-                arrowClassName="stroke-primary stroke-4"
+        <LazyMotion features={domAnimation}>
+            <m.div
+                className={className}
+                style={{ position: "relative", width: `${width}px` }}
+                initial={{ y: 0 }}
+                animate={{ y: transitionY }}
+                transition={{
+                    type: "tween",
+                    ease: "easeOut",
+                    duration: 0.2,
+                }}
             >
-                <OperationSwipe
+                <OperationShape
                     dimensions={dimensions}
-                    swipeActions={swipeActions}
+                    radius={(radius * 2) / 3}
+                    className="w-full"
+                    arrowClassName="stroke-primary stroke-4"
                 >
-                    <OperationButtons
+                    <OperationSwipe
                         dimensions={dimensions}
-                        topButton={{ onClick: handleUpAction }}
-                        bottomButtons={{
-                            left: { onClick: handleLeftAction },
-                            center: { onClick: handleDownAction },
-                            right: { onClick: handleRightAction },
-                        }}
-                        className={innerClassName}
-                    />
-                </OperationSwipe>
-            </OperationShape>
-            {SelectedIcon ? (
-                <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
-                    <SelectedIcon
-                        className={`h-1/2 ${selectedItem.className}`}
-                        label={selectedItem?.label ?? ""}
+                        swipeActions={swipeActions}
+                    >
+                        <OperationButtons
+                            dimensions={dimensions}
+                            topButton={{ onClick: handleUpAction }}
+                            bottomButtons={{
+                                left: { onClick: handleLeftAction },
+                                center: { onClick: handleDownAction },
+                                right: { onClick: handleRightAction },
+                            }}
+                            className={innerClassName}
+                        />
+                    </OperationSwipe>
+                </OperationShape>
+                {SelectedIcon ? (
+                    <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+                        <SelectedIcon
+                            className={`h-1/2 ${selectedItem.className}`}
+                            label={selectedItem?.label ?? ""}
+                        />
+                    </div>
+                ) : null}
+                <div className="-translate-x-1/2 pointer-events-none absolute bottom-2 left-1/2 z-20">
+                    <OperationIndicator
+                        itemCount={itemsCount}
+                        selectedIndex={selectedIndex}
+                        className="gap-1.5 rounded-full bg-secondary px-3 py-2 shadow-background shadow-sm"
                     />
                 </div>
-            ) : null}
-            <div className="-translate-x-1/2 pointer-events-none absolute bottom-2 left-1/2 z-20">
-                <OperationIndicator
-                    itemCount={itemsCount}
-                    selectedIndex={selectedIndex}
-                    className="gap-1.5 rounded-full bg-secondary px-3 py-2 shadow-background shadow-sm"
-                />
-            </div>
-        </div>
+            </m.div>
+        </LazyMotion>
     );
 }
