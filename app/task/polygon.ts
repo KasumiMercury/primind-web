@@ -38,3 +38,39 @@ export const generateRoundedPolygonPath = (
 
     return `${d} Z`;
 };
+
+export const generateRoundedArrowPath = (
+    anchors: { x: number; y: number }[],
+    cornerRadius: number,
+    lengthRatio: number,
+) => {
+    if (anchors.length !== 3) return "";
+
+    const [start, mid, end] = anchors;
+
+    const startToMidLength = Math.hypot(mid.x - start.x, mid.y - start.y);
+    const endToMidLength = Math.hypot(end.x - mid.x, end.y - mid.y);
+
+    const startPoint = getPointOnLine(
+        mid,
+        start,
+        startToMidLength * lengthRatio,
+    );
+    const endPoint = getPointOnLine(mid, end, endToMidLength * lengthRatio);
+
+    const adjustedR = Math.min(
+        cornerRadius,
+        Math.hypot(mid.x - startPoint.x, mid.y - startPoint.y),
+        Math.hypot(end.x - endPoint.x, end.y - endPoint.y),
+    );
+
+    const roundedStart = getPointOnLine(mid, start, adjustedR);
+    const roundedEnd = getPointOnLine(mid, end, adjustedR);
+
+    let d = `M ${startPoint.x} ${startPoint.y}`;
+    d += ` L ${roundedStart.x} ${roundedStart.y}`;
+    d += ` Q ${mid.x} ${mid.y} ${roundedEnd.x} ${roundedEnd.y}`;
+    d += ` L ${endPoint.x} ${endPoint.y}`;
+
+    return d;
+};

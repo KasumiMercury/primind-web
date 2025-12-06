@@ -1,5 +1,8 @@
 import { useId } from "react";
-import { generateRoundedPolygonPath } from "~/task/polygon";
+import {
+    generateRoundedArrowPath,
+    generateRoundedPolygonPath,
+} from "~/task/polygon";
 
 export interface Dimensions {
     width: number;
@@ -10,20 +13,13 @@ export interface Dimensions {
     centerButtonWidth: number;
 }
 
-const toFixed = (num: number, digits: number = 6) => {
-    return parseFloat(num.toFixed(digits));
-};
-
 export const calculateDimensions = (
     width: number,
     sideButtonWidthRatio: number = 0.15,
 ): Dimensions => {
-    const goldenRatio = toFixed((1 + Math.sqrt(5)) / 2);
-    const heightRatio = 1 / goldenRatio;
-    const height = width * heightRatio;
-    const arrowCornerHeightRatio = heightRatio / goldenRatio;
-    const upperHeight = height * arrowCornerHeightRatio;
-    const lowerHeight = height - upperHeight;
+    const lowerHeight = width / 2;
+    const upperHeight = lowerHeight / 3;
+    const height = upperHeight + lowerHeight;
     const sideButtonWidth = width * sideButtonWidthRatio;
     const centerButtonWidth = width - 2 * sideButtonWidth;
 
@@ -40,20 +36,24 @@ export const calculateDimensions = (
 interface OperationShapeProps {
     dimensions: Dimensions;
     radius?: number;
+    arrowOffset?: number;
     className?: string;
+    arrowClassName?: string;
     children: React.ReactNode;
 }
 
 export function OperationShape({
     dimensions,
     radius = 10,
+    arrowOffset = 20,
     className = "w-full",
+    arrowClassName = "stroke-primary stroke-2",
     children,
 }: OperationShapeProps) {
     const clipPathId = useId();
     const { width, height, upperHeight } = dimensions;
 
-    const points: { x: number; y: number }[] = [
+    const areaShapePoints: { x: number; y: number }[] = [
         { x: width * 0.5, y: 0 },
         { x: 0, y: upperHeight },
         { x: 0, y: height },
@@ -61,7 +61,18 @@ export function OperationShape({
         { x: width, y: upperHeight },
     ];
 
-    const path = generateRoundedPolygonPath(points, radius);
+    const arrowAnchorPoint: { x: number; y: number }[] = [
+        { x: 0, y: upperHeight + arrowOffset },
+        { x: width * 0.5, y: arrowOffset },
+        { x: width, y: upperHeight + arrowOffset },
+    ];
+
+    const clipPolygonPath = generateRoundedPolygonPath(areaShapePoints, radius);
+    const arrowPolygonPath = generateRoundedArrowPath(
+        arrowAnchorPoint,
+        radius,
+        0.15,
+    );
 
     return (
         <svg
@@ -73,7 +84,7 @@ export function OperationShape({
             <title>Operation Area</title>
             <defs>
                 <clipPath id={clipPathId}>
-                    <path d={path} />
+                    <path d={clipPolygonPath} />
                 </clipPath>
             </defs>
             <foreignObject
@@ -83,6 +94,7 @@ export function OperationShape({
             >
                 {children}
             </foreignObject>
+            <path d={arrowPolygonPath} className={arrowClassName} fill="none" />
         </svg>
     );
 }
