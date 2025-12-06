@@ -39,6 +39,7 @@ interface OperationShapeProps {
     arrowOffset?: number;
     className?: string;
     arrowClassName?: string;
+    arrowLineCap?: "butt" | "round" | "square";
     children: React.ReactNode;
 }
 
@@ -48,6 +49,7 @@ export function OperationShape({
     arrowOffset = 20,
     className = "w-full",
     arrowClassName = "stroke-primary stroke-2",
+    arrowLineCap = "round",
     children,
 }: OperationShapeProps) {
     const clipPathId = useId();
@@ -94,7 +96,12 @@ export function OperationShape({
             >
                 {children}
             </foreignObject>
-            <path d={arrowPolygonPath} className={arrowClassName} fill="none" />
+            <path
+                d={arrowPolygonPath}
+                className={arrowClassName}
+                fill="none"
+                strokeLinecap={arrowLineCap}
+            />
         </svg>
     );
 }
