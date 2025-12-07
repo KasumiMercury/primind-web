@@ -27,6 +27,9 @@ export interface OperationConfig {
     rightAction: () => void;
 }
 
+type ActionSource = "button" | "swipe";
+type ActionDirection = "left" | "right" | "up" | "down";
+
 interface ItemConfig {
     key: string;
     icon: IconComponent;
@@ -88,6 +91,14 @@ export function OperationArea({
 
     const [scope, animate] = useAnimate();
     const animationControlRef = useRef<AnimationPlaybackControls | null>(null);
+    const lastActionRef = useRef<{
+        direction: ActionDirection;
+        source: ActionSource;
+        at: number;
+    } | null>(null);
+
+    const getNow = () =>
+        typeof performance !== "undefined" ? performance.now() : Date.now();
 
     const itemsCount = selectableItems.length;
 
@@ -104,15 +115,15 @@ export function OperationArea({
     const nextSelection = () => {
         if (itemsCount === 0) return null;
 
-        const nextIndex = (selectedIndex + 1) % itemsCount;
-        setSelectedIndex(nextIndex);
+        setSelectedIndex((prevIndex) => (prevIndex + 1) % itemsCount);
     };
 
     const prevSelection = () => {
         if (itemsCount === 0) return null;
 
-        const prevIndex = (selectedIndex - 1 + itemsCount) % itemsCount;
-        setSelectedIndex(prevIndex);
+        setSelectedIndex(
+            (prevIndex) => (prevIndex - 1 + itemsCount) % itemsCount,
+        );
     };
 
     const handleRegisterAction = async () => {
@@ -141,28 +152,60 @@ export function OperationArea({
         animationControlRef.current = null;
     };
 
-    const handleLeftAction = () => {
-        operation?.leftAction ?? prevSelection();
+    const runAction = (
+        direction: ActionDirection,
+        source: ActionSource,
+        action: (() => void) | undefined,
+        fallback: () => void,
+    ) => {
+        const now = getNow();
+        const lastAction = lastActionRef.current;
+
+        if (
+            lastAction &&
+            lastAction.direction === direction &&
+            lastAction.source === source &&
+            now - lastAction.at < 150
+        ) {
+            return;
+        }
+
+        lastActionRef.current = { direction, source, at: now };
+
+        if (action) {
+            action();
+            return;
+        }
+
+        fallback();
     };
 
-    const handleRightAction = () => {
-        operation?.rightAction ?? nextSelection();
+    const handleLeftAction = (source: ActionSource) => {
+        runAction("left", source, operation?.leftAction, prevSelection);
     };
 
-    const handleUpAction = () => {
-        operation?.upAction ?? handleRegisterAction();
+    const handleRightAction = (source: ActionSource) => {
+        runAction("right", source, operation?.rightAction, nextSelection);
     };
 
-    const handleDownAction = () => {
-        operation?.downAction ?? handleRegisterAction();
+    const handleUpAction = (source: ActionSource) => {
+        runAction("up", source, operation?.upAction, handleRegisterAction);
+    };
+
+    const handleDownAction = (source: ActionSource) => {
+        runAction("down", source, operation?.downAction, handleRegisterAction);
     };
 
     const dimensions = calculateDimensions(width);
     const swipeActions: SwipeActions = {
-        left: swipeFlip ? handleRightAction : handleLeftAction,
-        right: swipeFlip ? handleLeftAction : handleRightAction,
-        up: handleUpAction,
-        down: handleDownAction,
+        left: swipeFlip
+            ? () => handleRightAction("swipe")
+            : () => handleLeftAction("swipe"),
+        right: swipeFlip
+            ? () => handleLeftAction("swipe")
+            : () => handleRightAction("swipe"),
+        up: () => handleUpAction("swipe"),
+        down: () => handleDownAction("swipe"),
     };
 
     const SelectedIcon = selectedItem?.icon;
@@ -185,11 +228,19 @@ export function OperationArea({
                 >
                     <OperationButtons
                         dimensions={dimensions}
-                        topButton={{ onClick: handleUpAction }}
+                        topButton={{
+                            onClick: () => handleUpAction("button"),
+                        }}
                         bottomButtons={{
-                            left: { onClick: handleLeftAction },
-                            center: { onClick: handleDownAction },
-                            right: { onClick: handleRightAction },
+                            left: {
+                                onClick: () => handleLeftAction("button"),
+                            },
+                            center: {
+                                onClick: () => handleDownAction("button"),
+                            },
+                            right: {
+                                onClick: () => handleRightAction("button"),
+                            },
                         }}
                         className={innerClassName}
                     />

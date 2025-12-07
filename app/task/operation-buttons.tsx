@@ -1,7 +1,8 @@
+import type { MouseEvent } from "react";
 import type { Dimensions } from "~/task/operation-shape";
 
 export interface ButtonConfig {
-    onClick: () => void;
+    onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
 interface OperationButtonsProps {

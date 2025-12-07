@@ -1,4 +1,8 @@
-import { type PointerEventHandler, useRef } from "react";
+import {
+    type MouseEventHandler,
+    type PointerEventHandler,
+    useRef,
+} from "react";
 import type { Dimensions } from "~/task/operation-shape";
 
 export interface SwipeActions {
@@ -22,12 +26,16 @@ export function OperationSwipe({
     swipeThreshold = 30,
 }: OperationSwipeProps) {
     const swipeStart = useRef<{ x: number; y: number } | null>(null);
+    const lastSwipeHandledAtRef = useRef<number | null>(null);
+    const getNow = () =>
+        typeof performance !== "undefined" ? performance.now() : Date.now();
 
     const resetSwipe = () => {
         swipeStart.current = null;
     };
 
     const handlePointerDown: PointerEventHandler<HTMLDivElement> = (event) => {
+        lastSwipeHandledAtRef.current = null;
         swipeStart.current = { x: event.clientX, y: event.clientY };
     };
 
@@ -52,6 +60,8 @@ export function OperationSwipe({
             } else {
                 swipeActions.down();
             }
+            lastSwipeHandledAtRef.current = getNow();
+            event.preventDefault();
             return;
         }
 
@@ -60,10 +70,29 @@ export function OperationSwipe({
         } else {
             swipeActions.right();
         }
+
+        lastSwipeHandledAtRef.current = getNow();
+        event.preventDefault();
     };
 
     const handlePointerCancel: PointerEventHandler<HTMLDivElement> = () => {
         resetSwipe();
+    };
+
+    const handleClickCapture: MouseEventHandler<HTMLDivElement> = (event) => {
+        const lastSwipeHandledAt = lastSwipeHandledAtRef.current;
+        if (!lastSwipeHandledAt) return;
+
+        const elapsed = getNow() - lastSwipeHandledAt;
+
+        if (elapsed <= 300) {
+            event.preventDefault();
+            event.stopPropagation();
+            lastSwipeHandledAtRef.current = null;
+            return;
+        }
+
+        lastSwipeHandledAtRef.current = null;
     };
 
     return (
@@ -77,6 +106,7 @@ export function OperationSwipe({
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerCancel}
             onPointerLeave={handlePointerCancel}
+            onClickCapture={handleClickCapture}
         >
             {children}
         </div>
