@@ -135,17 +135,13 @@ export function OperationArea({
     };
 
     const handleRegisterAction = async () => {
-        console.log("Register action for", selectedItemRef.current);
-
         const selectedKey = selectedItemRef.current;
         if (!selectedKey) {
-            console.warn("No task type selected");
             return;
         }
 
         const itemConfig = ITEMS[selectedKey as keyof typeof ITEMS];
         if (!itemConfig) {
-            console.warn("Invalid selected item:", selectedKey);
             return;
         }
 
