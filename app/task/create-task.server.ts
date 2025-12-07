@@ -1,11 +1,13 @@
 import { create } from "@bufbuild/protobuf";
 import { data } from "react-router";
+import { validate as uuidValidate, version as uuidVersion } from "uuid";
 import { CreateTaskRequestSchema, TaskType } from "~/gen/task/v1/task_pb";
 import { taskLogger } from "~/task/logger.server";
 import { taskClient } from "~/task/task-client.server";
 
 export async function createTaskAction(request: Request) {
     const formData = await request.formData();
+    const taskId = formData.get("task_id");
     const taskTypeRaw = formData.get("task_type");
 
     try {
@@ -13,6 +15,24 @@ export async function createTaskAction(request: Request) {
             { taskTypeRaw },
             "CreateTask action received task type",
         );
+
+        if (typeof taskId !== "string") {
+            taskLogger.warn(
+                { taskId: taskId },
+                "CreateTask action received invalid task ID",
+            );
+            throw new Error("Invalid task ID");
+        }
+
+        if (!uuidValidate(taskId) && uuidVersion(taskId) !== 7) {
+            taskLogger.warn(
+                { taskId: taskId },
+                "CreateTask action received invalid UUIDv7 task ID",
+            );
+            throw new Error("Invalid task ID");
+        }
+
+        taskLogger.debug({ taskId: taskId }, "Creating task with valid ID");
 
         if (typeof taskTypeRaw !== "string") {
             taskLogger.warn(
@@ -49,6 +69,7 @@ export async function createTaskAction(request: Request) {
         taskLogger.debug({ taskType }, "Creating task");
 
         const createRequest = create(CreateTaskRequestSchema, {
+            taskId: taskId,
             taskType: taskType as TaskType,
             title: "",
             description: "",

@@ -7,6 +7,7 @@ import {
     useState,
 } from "react";
 import { useFetcher } from "react-router";
+import { v7 as uuidv7 } from "uuid";
 import { TaskType } from "~/gen/task/v1/task_pb";
 import { CircleIcon } from "~/task/icons/circle-icon";
 import { PillIcon } from "~/task/icons/pill-icon";
@@ -145,6 +146,8 @@ export function OperationArea({
             return;
         }
 
+        const newTaskID = uuidv7();
+
         if (animationControlRef.current) {
             animationControlRef.current.stop();
         }
@@ -158,6 +161,7 @@ export function OperationArea({
         await upAnimation;
 
         const formData = new FormData();
+        formData.append("task_id", newTaskID);
         formData.append("task_type", String(itemConfig.taskType));
 
         fetcher.submit(formData, {

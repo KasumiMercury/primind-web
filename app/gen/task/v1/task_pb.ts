@@ -25,7 +25,7 @@ import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 export const file_task_v1_task: GenFile =
     /*@__PURE__*/
     fileDesc(
-        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEioQIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSMQoIZHVlX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSACIAQESLgoKY3JlYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCCwoJX2R1ZV90aW1lIq0BChFDcmVhdGVUYXNrUmVxdWVzdBI0Cgl0YXNrX3R5cGUYASABKA4yES50YXNrLnYxLlRhc2tUeXBlQg66SAuCAQgYARgCGAMYBBINCgV0aXRsZRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCRIxCghkdWVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBIAIgBAUILCglfZHVlX3RpbWUiMQoSQ3JlYXRlVGFza1Jlc3BvbnNlEhsKBHRhc2sYASABKAsyDS50YXNrLnYxLlRhc2siKwoOR2V0VGFza1JlcXVlc3QSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQEiLgoPR2V0VGFza1Jlc3BvbnNlEhsKBHRhc2sYASABKAsyDS50YXNrLnYxLlRhc2sqgAEKCFRhc2tUeXBlEhkKFVRBU0tfVFlQRV9VTlNQRUNJRklFRBAAEhQKEFRBU0tfVFlQRV9VUkdFTlQQARIUChBUQVNLX1RZUEVfTk9STUFMEAISEQoNVEFTS19UWVBFX0xPVxADEhoKFlRBU0tfVFlQRV9IQVNfRFVFX1RJTUUQBCpcCgpUYXNrU3RhdHVzEhsKF1RBU0tfU1RBVFVTX1VOU1BFQ0lGSUVEEAASFgoSVEFTS19TVEFUVVNfQUNUSVZFEAESGQoVVEFTS19TVEFUVVNfQ09NUExFVEVEEAIykgEKC1Rhc2tTZXJ2aWNlEkUKCkNyZWF0ZVRhc2sSGi50YXNrLnYxLkNyZWF0ZVRhc2tSZXF1ZXN0GhsudGFzay52MS5DcmVhdGVUYXNrUmVzcG9uc2USPAoHR2V0VGFzaxIXLnRhc2sudjEuR2V0VGFza1JlcXVlc3QaGC50YXNrLnYxLkdldFRhc2tSZXNwb25zZUIUWhJnZW4vdGFzay92MTt0YXNrdjFiBnByb3RvMw",
+        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEioQIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSMQoIZHVlX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSACIAQESLgoKY3JlYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCCwoJX2R1ZV90aW1lItkBChFDcmVhdGVUYXNrUmVxdWVzdBIeCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABAUgAiAEBEjQKCXRhc2tfdHlwZRgCIAEoDjIRLnRhc2sudjEuVGFza1R5cGVCDrpIC4IBCBgBGAIYAxgEEg0KBXRpdGxlGAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEjEKCGR1ZV90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgBiAEBQgoKCF90YXNrX2lkQgsKCV9kdWVfdGltZSIxChJDcmVhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayIrCg5HZXRUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABASIuCg9HZXRUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayqAAQoIVGFza1R5cGUSGQoVVEFTS19UWVBFX1VOU1BFQ0lGSUVEEAASFAoQVEFTS19UWVBFX1VSR0VOVBABEhQKEFRBU0tfVFlQRV9OT1JNQUwQAhIRCg1UQVNLX1RZUEVfTE9XEAMSGgoWVEFTS19UWVBFX0hBU19EVUVfVElNRRAEKlwKClRhc2tTdGF0dXMSGwoXVEFTS19TVEFUVVNfVU5TUEVDSUZJRUQQABIWChJUQVNLX1NUQVRVU19BQ1RJVkUQARIZChVUQVNLX1NUQVRVU19DT01QTEVURUQQAjKSAQoLVGFza1NlcnZpY2USRQoKQ3JlYXRlVGFzaxIaLnRhc2sudjEuQ3JlYXRlVGFza1JlcXVlc3QaGy50YXNrLnYxLkNyZWF0ZVRhc2tSZXNwb25zZRI8CgdHZXRUYXNrEhcudGFzay52MS5HZXRUYXNrUmVxdWVzdBoYLnRhc2sudjEuR2V0VGFza1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z",
         [file_buf_validate_validate, file_google_protobuf_timestamp],
     );
 
@@ -82,22 +82,27 @@ export const TaskSchema: GenMessage<Task> =
  */
 export type CreateTaskRequest = Message<"task.v1.CreateTaskRequest"> & {
     /**
-     * @generated from field: task.v1.TaskType task_type = 1;
+     * @generated from field: optional string task_id = 1;
+     */
+    taskId?: string;
+
+    /**
+     * @generated from field: task.v1.TaskType task_type = 2;
      */
     taskType: TaskType;
 
     /**
-     * @generated from field: string title = 2;
+     * @generated from field: string title = 3;
      */
     title: string;
 
     /**
-     * @generated from field: string description = 3;
+     * @generated from field: string description = 4;
      */
     description: string;
 
     /**
-     * @generated from field: optional google.protobuf.Timestamp due_time = 4;
+     * @generated from field: optional google.protobuf.Timestamp due_time = 5;
      */
     dueTime?: Timestamp;
 };
