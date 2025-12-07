@@ -1,6 +1,6 @@
 import { create } from "@bufbuild/protobuf";
 import { timestampFromDate } from "@bufbuild/protobuf/wkt";
-import { createRouterTransport } from "@connectrpc/connect";
+import { Code, ConnectError, createRouterTransport } from "@connectrpc/connect";
 import {
     CreateTaskResponseSchema,
     GetTaskResponseSchema,
@@ -73,7 +73,10 @@ export function createTaskMockTransport() {
                         { taskId: req.taskId },
                         "Mock: Task not found",
                     );
-                    throw new Error(`Task not found: ${req.taskId}`);
+                    throw new ConnectError(
+                        `Task not found: ${req.taskId}`,
+                        Code.NotFound,
+                    );
                 }
 
                 taskLogger.debug({ taskId: req.taskId }, "Mock: Task found");
