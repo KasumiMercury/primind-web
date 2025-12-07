@@ -6,6 +6,8 @@ import {
     useRef,
     useState,
 } from "react";
+import { useFetcher } from "react-router";
+import { TaskType } from "~/gen/task/v1/task_pb";
 import { CircleIcon } from "~/task/icons/circle-icon";
 import { PillIcon } from "~/task/icons/pill-icon";
 import { RectangleIcon } from "~/task/icons/rectangle-icon";
@@ -35,6 +37,7 @@ interface ItemConfig {
     icon: IconComponent;
     label: string;
     className: string;
+    taskType: TaskType;
 }
 
 export const ITEMS = {
@@ -43,24 +46,28 @@ export const ITEMS = {
         icon: StarBurstIcon,
         label: "Urgent",
         className: "stroke-red-500",
+        taskType: TaskType.URGENT,
     },
     normal: {
         key: "normal",
         icon: CircleIcon,
         label: "Normal",
         className: "stroke-blue-500",
+        taskType: TaskType.NORMAL,
     },
     low: {
         key: "low",
         icon: PillIcon,
         label: "Low",
         className: "stroke-green-500",
+        taskType: TaskType.LOW,
     },
     duetime: {
         key: "duetime",
         icon: RectangleIcon,
         label: "Due Time",
         className: "stroke-yellow-500",
+        taskType: TaskType.HAS_DUE_TIME,
     },
 } satisfies Record<string, ItemConfig>;
 
@@ -88,6 +95,7 @@ export function OperationArea({
     swipeFlip = true,
 }: OperationAreaProps) {
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const fetcher = useFetcher();
 
     const [scope, animate] = useAnimate();
     const animationControlRef = useRef<AnimationPlaybackControls | null>(null);
@@ -129,6 +137,18 @@ export function OperationArea({
     const handleRegisterAction = async () => {
         console.log("Register action for", selectedItemRef.current);
 
+        const selectedKey = selectedItemRef.current;
+        if (!selectedKey) {
+            console.warn("No task type selected");
+            return;
+        }
+
+        const itemConfig = ITEMS[selectedKey as keyof typeof ITEMS];
+        if (!itemConfig) {
+            console.warn("Invalid selected item:", selectedKey);
+            return;
+        }
+
         if (animationControlRef.current) {
             animationControlRef.current.stop();
         }
@@ -140,6 +160,14 @@ export function OperationArea({
         );
         animationControlRef.current = upAnimation;
         await upAnimation;
+
+        const formData = new FormData();
+        formData.append("task_type", String(itemConfig.taskType));
+
+        fetcher.submit(formData, {
+            method: "post",
+            action: "/api/task",
+        });
 
         const downAnimation = animate(
             scope.current,
