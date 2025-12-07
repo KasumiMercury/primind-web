@@ -2,6 +2,7 @@
 // @generated from file auth/v1/auth.proto (package auth.v1, syntax proto3)
 /* eslint-disable */
 
+import type { Message } from "@bufbuild/protobuf";
 import type {
     GenEnum,
     GenFile,
@@ -14,7 +15,6 @@ import {
     messageDesc,
     serviceDesc,
 } from "@bufbuild/protobuf/codegenv2";
-import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file auth/v1/auth.proto.
