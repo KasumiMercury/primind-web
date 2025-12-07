@@ -61,7 +61,7 @@ export const generateRoundedArrowPath = (
     const adjustedR = Math.min(
         cornerRadius,
         Math.hypot(mid.x - startPoint.x, mid.y - startPoint.y),
-        Math.hypot(end.x - endPoint.x, end.y - endPoint.y),
+        Math.hypot(mid.x - endPoint.x, mid.y - endPoint.y),
     );
 
     const roundedStart = getPointOnLine(mid, start, adjustedR);
