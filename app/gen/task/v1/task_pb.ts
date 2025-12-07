@@ -2,7 +2,6 @@
 // @generated from file task/v1/task.proto (package task.v1, syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
 import type {
     GenEnum,
     GenFile,
@@ -15,9 +14,10 @@ import {
     messageDesc,
     serviceDesc,
 } from "@bufbuild/protobuf/codegenv2";
+import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file task/v1/task.proto.
@@ -25,7 +25,7 @@ import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 export const file_task_v1_task: GenFile =
     /*@__PURE__*/
     fileDesc(
-        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEioQIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSMQoIZHVlX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSACIAQESLgoKY3JlYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCCwoJX2R1ZV90aW1lItkBChFDcmVhdGVUYXNrUmVxdWVzdBIeCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABAUgAiAEBEjQKCXRhc2tfdHlwZRgCIAEoDjIRLnRhc2sudjEuVGFza1R5cGVCDrpIC4IBCBgBGAIYAxgEEg0KBXRpdGxlGAMgASgJEhMKC2Rlc2NyaXB0aW9uGAQgASgJEjEKCGR1ZV90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgBiAEBQgoKCF90YXNrX2lkQgsKCV9kdWVfdGltZSIxChJDcmVhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayIrCg5HZXRUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABASIuCg9HZXRUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayqAAQoIVGFza1R5cGUSGQoVVEFTS19UWVBFX1VOU1BFQ0lGSUVEEAASFAoQVEFTS19UWVBFX1VSR0VOVBABEhQKEFRBU0tfVFlQRV9OT1JNQUwQAhIRCg1UQVNLX1RZUEVfTE9XEAMSGgoWVEFTS19UWVBFX0hBU19EVUVfVElNRRAEKlwKClRhc2tTdGF0dXMSGwoXVEFTS19TVEFUVVNfVU5TUEVDSUZJRUQQABIWChJUQVNLX1NUQVRVU19BQ1RJVkUQARIZChVUQVNLX1NUQVRVU19DT01QTEVURUQQAjKSAQoLVGFza1NlcnZpY2USRQoKQ3JlYXRlVGFzaxIaLnRhc2sudjEuQ3JlYXRlVGFza1JlcXVlc3QaGy50YXNrLnYxLkNyZWF0ZVRhc2tSZXNwb25zZRI8CgdHZXRUYXNrEhcudGFzay52MS5HZXRUYXNrUmVxdWVzdBoYLnRhc2sudjEuR2V0VGFza1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z",
+        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEiqQIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSNQoMc2NoZWR1bGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQg8KDV9zY2hlZHVsZWRfYXQi4QEKEUNyZWF0ZVRhc2tSZXF1ZXN0Eh4KB3Rhc2tfaWQYASABKAlCCLpIBXIDsAEBSACIAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSDQoFdGl0bGUYAyABKAkSEwoLZGVzY3JpcHRpb24YBCABKAkSNQoMc2NoZWR1bGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgBiAEBQgoKCF90YXNrX2lkQg8KDV9zY2hlZHVsZWRfYXQiMQoSQ3JlYXRlVGFza1Jlc3BvbnNlEhsKBHRhc2sYASABKAsyDS50YXNrLnYxLlRhc2siKwoOR2V0VGFza1JlcXVlc3QSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQEiLgoPR2V0VGFza1Jlc3BvbnNlEhsKBHRhc2sYASABKAsyDS50YXNrLnYxLlRhc2sqfQoIVGFza1R5cGUSGQoVVEFTS19UWVBFX1VOU1BFQ0lGSUVEEAASFAoQVEFTS19UWVBFX1VSR0VOVBABEhQKEFRBU0tfVFlQRV9OT1JNQUwQAhIRCg1UQVNLX1RZUEVfTE9XEAMSFwoTVEFTS19UWVBFX1NDSEVEVUxFRBAEKlwKClRhc2tTdGF0dXMSGwoXVEFTS19TVEFUVVNfVU5TUEVDSUZJRUQQABIWChJUQVNLX1NUQVRVU19BQ1RJVkUQARIZChVUQVNLX1NUQVRVU19DT01QTEVURUQQAjKSAQoLVGFza1NlcnZpY2USRQoKQ3JlYXRlVGFzaxIaLnRhc2sudjEuQ3JlYXRlVGFza1JlcXVlc3QaGy50YXNrLnYxLkNyZWF0ZVRhc2tSZXNwb25zZRI8CgdHZXRUYXNrEhcudGFzay52MS5HZXRUYXNrUmVxdWVzdBoYLnRhc2sudjEuR2V0VGFza1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z",
         [file_buf_validate_validate, file_google_protobuf_timestamp],
     );
 
@@ -59,9 +59,9 @@ export type Task = Message<"task.v1.Task"> & {
     description: string;
 
     /**
-     * @generated from field: optional google.protobuf.Timestamp due_time = 6;
+     * @generated from field: optional google.protobuf.Timestamp scheduled_at = 6;
      */
-    dueTime?: Timestamp;
+    scheduledAt?: Timestamp;
 
     /**
      * @generated from field: google.protobuf.Timestamp created_at = 7;
@@ -102,9 +102,9 @@ export type CreateTaskRequest = Message<"task.v1.CreateTaskRequest"> & {
     description: string;
 
     /**
-     * @generated from field: optional google.protobuf.Timestamp due_time = 5;
+     * @generated from field: optional google.protobuf.Timestamp scheduled_at = 5;
      */
-    dueTime?: Timestamp;
+    scheduledAt?: Timestamp;
 };
 
 /**
@@ -194,9 +194,9 @@ export enum TaskType {
     LOW = 3,
 
     /**
-     * @generated from enum value: TASK_TYPE_HAS_DUE_TIME = 4;
+     * @generated from enum value: TASK_TYPE_SCHEDULED = 4;
      */
-    HAS_DUE_TIME = 4,
+    SCHEDULED = 4,
 }
 
 /**
