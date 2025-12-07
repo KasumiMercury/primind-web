@@ -95,7 +95,7 @@ export const Interactive: Story = {
     },
 };
 
-export const CustomBackgrounde: Story = {
+export const CustomBackground: Story = {
     args: {
         innerClassName: "bg-blue-500",
         operation: { ...defaultOperation, upAction: fn(), downAction: fn() },
