@@ -42,7 +42,7 @@ export async function action({ request }: Route.ActionArgs) {
         }
 
         authLogger.debug({ provider: providerName }, "Initiating login flow");
-        return await initiateOIDCFlow(provider);
+        return await initiateOIDCFlow(request, provider);
     } catch (err) {
         authLogger.error(
             { err, provider: providerName },
