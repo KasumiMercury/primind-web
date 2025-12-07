@@ -27,8 +27,11 @@ export function Welcome() {
                     </header>
                     <div className="w-full max-w-[300px] space-y-6 px-4"></div>
                 </div>
-                <div className="absolute inset-x-0 bottom-0 flex items-center justify-center p-2">
-                    <OperationArea className="w-full max-w-xl fill-primary" />
+                <div className="absolute inset-x-0 bottom-0 flex items-center justify-center p-4">
+                    <OperationArea
+                        className="w-full max-w-xl"
+                        innerClassName="bg-secondary"
+                    />
                 </div>
             </main>
 

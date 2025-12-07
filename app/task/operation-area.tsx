@@ -1,44 +1,290 @@
-import { generateRoundedPolygonPath } from "~/task/polygon";
+import { type AnimationPlaybackControls, useAnimate } from "motion/react";
+import {
+    type ComponentType,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
+import { useFetcher } from "react-router";
+import { TaskType } from "~/gen/task/v1/task_pb";
+import { CircleIcon } from "~/task/icons/circle-icon";
+import { PillIcon } from "~/task/icons/pill-icon";
+import { RectangleIcon } from "~/task/icons/rectangle-icon";
+import { StarBurstIcon } from "~/task/icons/starburst-icon";
+import { OperationButtons } from "~/task/operation-buttons";
+import { OperationIndicator } from "~/task/operation-indicator";
+import { calculateDimensions, OperationShape } from "~/task/operation-shape";
+import { OperationSwipe, type SwipeActions } from "~/task/operation-swipe";
+
+type IconComponent = ComponentType<{
+    className?: string;
+    label: string;
+}>;
+
+export interface OperationConfig {
+    upAction: () => void;
+    downAction: () => void;
+    leftAction: () => void;
+    rightAction: () => void;
+}
+
+type ActionSource = "button" | "swipe";
+type ActionDirection = "left" | "right" | "up" | "down";
+
+interface ItemConfig {
+    key: string;
+    icon: IconComponent;
+    label: string;
+    className: string;
+    taskType: TaskType;
+}
+
+export const ITEMS = {
+    urgent: {
+        key: "urgent",
+        icon: StarBurstIcon,
+        label: "Urgent",
+        className: "stroke-red-500",
+        taskType: TaskType.URGENT,
+    },
+    normal: {
+        key: "normal",
+        icon: CircleIcon,
+        label: "Normal",
+        className: "stroke-blue-500",
+        taskType: TaskType.NORMAL,
+    },
+    low: {
+        key: "low",
+        icon: PillIcon,
+        label: "Low",
+        className: "stroke-green-500",
+        taskType: TaskType.LOW,
+    },
+    duetime: {
+        key: "duetime",
+        icon: RectangleIcon,
+        label: "Due Time",
+        className: "stroke-yellow-500",
+        taskType: TaskType.HAS_DUE_TIME,
+    },
+} satisfies Record<string, ItemConfig>;
+
+const selectableItems = Object.values(ITEMS);
+
+const registerTransitionAmount = 10;
+const registerUpDuration = 0.2;
+const registerDownDuration = 0.1;
 
 interface OperationAreaProps {
     width?: number;
     radius?: number;
     className?: string;
+    innerClassName?: string;
+    operation?: OperationConfig;
+    swipeFlip?: boolean;
 }
 
 export function OperationArea({
     width = 400,
     radius = 10,
-    className = "fill-primary",
+    className = "w-full",
+    innerClassName,
+    operation,
+    swipeFlip = true,
 }: OperationAreaProps) {
-    const goldenRatio = (1 + Math.sqrt(5)) / 2;
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const fetcher = useFetcher();
 
-    const heightRaito = 1 / goldenRatio;
-    const height = width * heightRaito;
+    const [scope, animate] = useAnimate();
+    const animationControlRef = useRef<AnimationPlaybackControls | null>(null);
+    const lastActionRef = useRef<{
+        direction: ActionDirection;
+        source: ActionSource;
+        at: number;
+    } | null>(null);
 
-    const arrowCornerHeightRaito = heightRaito / goldenRatio;
+    const getNow = () =>
+        typeof performance !== "undefined" ? performance.now() : Date.now();
 
-    const poinsts: { x: number; y: number }[] = [
-        { x: width * 0.5, y: 0 },
-        { x: 0, y: height * arrowCornerHeightRaito },
-        { x: 0, y: height },
-        { x: width, y: height },
-        { x: width, y: height * arrowCornerHeightRaito },
-    ];
+    const itemsCount = selectableItems.length;
 
-    const path = generateRoundedPolygonPath(poinsts, radius);
+    const selectedItem = useMemo(() => {
+        if (itemsCount === 0) return null;
+        return selectableItems[selectedIndex];
+    }, [selectedIndex, itemsCount]);
+    const selectedItemRef = useRef<string | null>(selectedItem?.key ?? null);
+
+    useEffect(() => {
+        selectedItemRef.current = selectedItem?.key ?? null;
+    }, [selectedItem]);
+
+    const nextSelection = () => {
+        if (itemsCount === 0) return null;
+
+        setSelectedIndex((prevIndex) => (prevIndex + 1) % itemsCount);
+    };
+
+    const prevSelection = () => {
+        if (itemsCount === 0) return null;
+
+        setSelectedIndex(
+            (prevIndex) => (prevIndex - 1 + itemsCount) % itemsCount,
+        );
+    };
+
+    const handleRegisterAction = async () => {
+        const selectedKey = selectedItemRef.current;
+        if (!selectedKey) {
+            return;
+        }
+
+        const itemConfig = ITEMS[selectedKey as keyof typeof ITEMS];
+        if (!itemConfig) {
+            return;
+        }
+
+        if (animationControlRef.current) {
+            animationControlRef.current.stop();
+        }
+
+        const upAnimation = animate(
+            scope.current,
+            { y: -registerTransitionAmount },
+            { duration: registerUpDuration, ease: "easeOut" },
+        );
+        animationControlRef.current = upAnimation;
+        await upAnimation;
+
+        const formData = new FormData();
+        formData.append("task_type", String(itemConfig.taskType));
+
+        fetcher.submit(formData, {
+            method: "post",
+            action: "/api/task",
+        });
+
+        const downAnimation = animate(
+            scope.current,
+            { y: 0 },
+            { duration: registerDownDuration, ease: "easeOut" },
+        );
+        animationControlRef.current = downAnimation;
+        await downAnimation;
+
+        animationControlRef.current = null;
+    };
+
+    const runAction = (
+        direction: ActionDirection,
+        source: ActionSource,
+        action: (() => void) | undefined,
+        fallback: () => void,
+    ) => {
+        const now = getNow();
+        const lastAction = lastActionRef.current;
+
+        if (
+            lastAction &&
+            lastAction.direction === direction &&
+            lastAction.source === source &&
+            now - lastAction.at < 150
+        ) {
+            return;
+        }
+
+        lastActionRef.current = { direction, source, at: now };
+
+        if (action) {
+            action();
+            return;
+        }
+
+        fallback();
+    };
+
+    const handleLeftAction = (source: ActionSource) => {
+        runAction("left", source, operation?.leftAction, prevSelection);
+    };
+
+    const handleRightAction = (source: ActionSource) => {
+        runAction("right", source, operation?.rightAction, nextSelection);
+    };
+
+    const handleUpAction = (source: ActionSource) => {
+        runAction("up", source, operation?.upAction, handleRegisterAction);
+    };
+
+    const handleDownAction = (source: ActionSource) => {
+        runAction("down", source, operation?.downAction, handleRegisterAction);
+    };
+
+    const dimensions = calculateDimensions(width);
+    const swipeActions: SwipeActions = {
+        left: swipeFlip
+            ? () => handleRightAction("swipe")
+            : () => handleLeftAction("swipe"),
+        right: swipeFlip
+            ? () => handleLeftAction("swipe")
+            : () => handleRightAction("swipe"),
+        up: () => handleUpAction("swipe"),
+        down: () => handleDownAction("swipe"),
+    };
+
+    const SelectedIcon = selectedItem?.icon;
 
     return (
-        <svg
+        <div
+            ref={scope}
             className={className}
-            viewBox={`0 0 ${width} ${height}`}
-            xmlns="http://www.w3.org/2000/svg"
-            aria-labelledby="operationAreaTitle"
-            role="img"
-            preserveAspectRatio="xMidYMid meet"
+            style={{ position: "relative", width: `${width}px` }}
         >
-            <title id="operationAreaTitle">Operation Area</title>
-            <path d={path} />
-        </svg>
+            <OperationShape
+                dimensions={dimensions}
+                radius={(radius * 2) / 3}
+                className="w-full"
+                arrowClassName="stroke-primary stroke-4"
+            >
+                <OperationSwipe
+                    dimensions={dimensions}
+                    swipeActions={swipeActions}
+                >
+                    <OperationButtons
+                        dimensions={dimensions}
+                        topButton={{
+                            onClick: () => handleUpAction("button"),
+                        }}
+                        bottomButtons={{
+                            left: {
+                                onClick: () => handleLeftAction("button"),
+                            },
+                            center: {
+                                onClick: () => handleDownAction("button"),
+                            },
+                            right: {
+                                onClick: () => handleRightAction("button"),
+                            },
+                        }}
+                        className={innerClassName}
+                    />
+                </OperationSwipe>
+            </OperationShape>
+            {SelectedIcon ? (
+                <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+                    <SelectedIcon
+                        className={`h-1/2 ${selectedItem.className}`}
+                        label={selectedItem?.label ?? ""}
+                    />
+                </div>
+            ) : null}
+            <div className="-translate-x-1/2 pointer-events-none absolute bottom-2 left-1/2 z-20">
+                <OperationIndicator
+                    itemCount={itemsCount}
+                    selectedIndex={selectedIndex}
+                    className="gap-1.5 rounded-full bg-secondary px-3 py-2 shadow-background shadow-sm"
+                />
+            </div>
+        </div>
     );
 }
