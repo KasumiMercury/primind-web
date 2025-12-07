@@ -23,6 +23,11 @@ type IconComponent = ComponentType<{
     label: string;
 }>;
 
+export interface TaskRegistrationEvent {
+    taskId: string;
+    taskType: TaskType;
+}
+
 export interface OperationConfig {
     upAction: () => void;
     downAction: () => void;
@@ -85,6 +90,7 @@ interface OperationAreaProps {
     innerClassName?: string;
     operation?: OperationConfig;
     swipeFlip?: boolean;
+    onTaskRegistered?: (event: TaskRegistrationEvent) => void;
 }
 
 export function OperationArea({
@@ -94,6 +100,7 @@ export function OperationArea({
     innerClassName,
     operation,
     swipeFlip = true,
+    onTaskRegistered,
 }: OperationAreaProps) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const fetcher = useFetcher();
@@ -167,6 +174,11 @@ export function OperationArea({
         fetcher.submit(formData, {
             method: "post",
             action: "/api/task",
+        });
+
+        onTaskRegistered?.({
+            taskId: newTaskID,
+            taskType: itemConfig.taskType,
         });
 
         const downAnimation = animate(
