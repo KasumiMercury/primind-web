@@ -68,7 +68,7 @@ export const ITEMS = {
         icon: RectangleIcon,
         label: "Due Time",
         className: "stroke-yellow-500",
-        taskType: TaskType.HAS_DUE_TIME,
+        taskType: TaskType.SCHEDULED,
     },
 } satisfies Record<string, ItemConfig>;
 

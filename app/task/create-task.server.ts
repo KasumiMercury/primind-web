@@ -56,7 +56,7 @@ export async function createTaskAction(request: Request) {
                 TaskType.URGENT,
                 TaskType.NORMAL,
                 TaskType.LOW,
-                TaskType.HAS_DUE_TIME,
+                TaskType.SCHEDULED,
             ].includes(taskType)
         ) {
             taskLogger.warn(
