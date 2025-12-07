@@ -15,7 +15,7 @@ export interface Dimensions {
 
 export const calculateDimensions = (
     width: number,
-    sideButtonWidthRatio: number = 0.15,
+    sideButtonWidthRatio: number = 0.2,
 ): Dimensions => {
     const lowerHeight = width / 2;
     const upperHeight = lowerHeight / 3;
