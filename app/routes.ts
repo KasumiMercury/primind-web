@@ -5,4 +5,6 @@ export default [
     route("/login", "auth/login.tsx"),
     route("/callback/google", "auth/oidc/callback.google.tsx"),
     route("/api/task", "routes/api/task.tsx"),
+    route("/api/task/update", "routes/api/task.update.tsx"),
+    route("/api/task/delete", "routes/api/task.delete.tsx"),
 ] satisfies RouteConfig;
