@@ -1,32 +1,10 @@
 import { type AnimationPlaybackControls, useAnimate } from "motion/react";
-import {
-    type ComponentType,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-import { useFetcher } from "react-router";
-import { v7 as uuidv7 } from "uuid";
-import { TaskType } from "~/gen/task/v1/task_pb";
-import { CircleIcon } from "~/task/icons/circle-icon";
-import { PillIcon } from "~/task/icons/pill-icon";
-import { RectangleIcon } from "~/task/icons/rectangle-icon";
-import { StarBurstIcon } from "~/task/icons/starburst-icon";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { OperationButtons } from "~/task/operation-buttons";
 import { OperationIndicator } from "~/task/operation-indicator";
 import { calculateDimensions, OperationShape } from "~/task/operation-shape";
 import { OperationSwipe, type SwipeActions } from "~/task/operation-swipe";
-
-type IconComponent = ComponentType<{
-    className?: string;
-    label: string;
-}>;
-
-export interface TaskRegistrationEvent {
-    taskId: string;
-    taskType: TaskType;
-}
+import { ITEMS, type TaskTypeKey } from "./task-type-items";
 
 export interface OperationConfig {
     upAction: () => void;
@@ -38,46 +16,8 @@ export interface OperationConfig {
 type ActionSource = "button" | "swipe";
 type ActionDirection = "left" | "right" | "up" | "down";
 
-interface ItemConfig {
-    key: string;
-    icon: IconComponent;
-    label: string;
-    className: string;
-    taskType: TaskType;
-}
-
-export const ITEMS = {
-    urgent: {
-        key: "urgent",
-        icon: StarBurstIcon,
-        label: "Urgent",
-        className: "stroke-red-500",
-        taskType: TaskType.URGENT,
-    },
-    normal: {
-        key: "normal",
-        icon: CircleIcon,
-        label: "Normal",
-        className: "stroke-blue-500",
-        taskType: TaskType.NORMAL,
-    },
-    low: {
-        key: "low",
-        icon: PillIcon,
-        label: "Low",
-        className: "stroke-green-500",
-        taskType: TaskType.LOW,
-    },
-    duetime: {
-        key: "duetime",
-        icon: RectangleIcon,
-        label: "Due Time",
-        className: "stroke-yellow-500",
-        taskType: TaskType.SCHEDULED,
-    },
-} satisfies Record<string, ItemConfig>;
-
 const selectableItems = Object.values(ITEMS);
+const selectableKeys = Object.keys(ITEMS) as TaskTypeKey[];
 
 const registerTransitionAmount = 10;
 const registerUpDuration = 0.2;
@@ -90,7 +30,7 @@ interface OperationAreaProps {
     innerClassName?: string;
     operation?: OperationConfig;
     swipeFlip?: boolean;
-    onTaskRegistered?: (event: TaskRegistrationEvent) => void;
+    onRegister?: (taskTypeKey: TaskTypeKey) => void;
 }
 
 export function OperationArea({
@@ -100,10 +40,9 @@ export function OperationArea({
     innerClassName,
     operation,
     swipeFlip = true,
-    onTaskRegistered,
+    onRegister,
 }: OperationAreaProps) {
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const fetcher = useFetcher();
 
     const [scope, animate] = useAnimate();
     const animationControlRef = useRef<AnimationPlaybackControls | null>(null);
@@ -122,11 +61,17 @@ export function OperationArea({
         if (itemsCount === 0) return null;
         return selectableItems[selectedIndex];
     }, [selectedIndex, itemsCount]);
-    const selectedItemRef = useRef<string | null>(selectedItem?.key ?? null);
+
+    const selectedKey = useMemo(() => {
+        if (itemsCount === 0) return null;
+        return selectableKeys[selectedIndex];
+    }, [selectedIndex, itemsCount]);
+
+    const selectedKeyRef = useRef<TaskTypeKey | null>(selectedKey);
 
     useEffect(() => {
-        selectedItemRef.current = selectedItem?.key ?? null;
-    }, [selectedItem]);
+        selectedKeyRef.current = selectedKey;
+    }, [selectedKey]);
 
     const nextSelection = () => {
         if (itemsCount === 0) return null;
@@ -143,17 +88,15 @@ export function OperationArea({
     };
 
     const handleRegisterAction = async () => {
-        const selectedKey = selectedItemRef.current;
-        if (!selectedKey) {
+        const currentKey = selectedKeyRef.current;
+        if (!currentKey) {
             return;
         }
 
-        const itemConfig = ITEMS[selectedKey as keyof typeof ITEMS];
+        const itemConfig = ITEMS[currentKey];
         if (!itemConfig) {
             return;
         }
-
-        const newTaskID = uuidv7();
 
         if (animationControlRef.current) {
             animationControlRef.current.stop();
@@ -167,19 +110,7 @@ export function OperationArea({
         animationControlRef.current = upAnimation;
         await upAnimation;
 
-        const formData = new FormData();
-        formData.append("task_id", newTaskID);
-        formData.append("task_type", String(itemConfig.taskType));
-
-        fetcher.submit(formData, {
-            method: "post",
-            action: "/api/task",
-        });
-
-        onTaskRegistered?.({
-            taskId: newTaskID,
-            taskType: itemConfig.taskType,
-        });
+        onRegister?.(currentKey);
 
         const downAnimation = animate(
             scope.current,

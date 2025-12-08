@@ -1,24 +1,38 @@
 import { LogIn } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useFetcher, useSearchParams } from "react-router";
+import { v7 as uuidv7 } from "uuid";
 import { LoginDialog } from "~/auth/login-dialog";
 import { Button } from "~/components/ui/button";
-import {
-    OperationArea,
-    type TaskRegistrationEvent,
-} from "~/task/operation-area";
+import { OperationArea } from "~/task/operation-area";
+import { createTaskFormData } from "~/task/task-form-data";
+import type { TaskTypeKey } from "~/task/task-type-items";
+
+export interface TaskRegistrationEvent {
+    taskId: string;
+    taskTypeKey: TaskTypeKey;
+}
 
 export function Welcome() {
     const [searchParams, setSearchParams] = useSearchParams();
     const showLogin = searchParams.get("login") === "true";
+    const fetcher = useFetcher();
 
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
         null,
     );
 
-    const handleTaskRegistered = (event: TaskRegistrationEvent) => {
-        setLatestTask(event);
-        console.log("Task registered:", event);
+    const handleRegister = (taskTypeKey: TaskTypeKey) => {
+        const taskId = uuidv7();
+        const formData = createTaskFormData(taskId, taskTypeKey);
+
+        fetcher.submit(formData, {
+            method: "post",
+            action: "/api/task",
+        });
+
+        setLatestTask({ taskId, taskTypeKey });
+        console.log("Task registered:", { taskId, taskTypeKey });
     };
 
     // TODO: remove this useEffect after actual implementation
@@ -51,7 +65,7 @@ export function Welcome() {
                     <OperationArea
                         className="w-full max-w-xl"
                         innerClassName="bg-secondary"
-                        onTaskRegistered={handleTaskRegistered}
+                        onRegister={handleRegister}
                     />
                 </div>
             </main>
