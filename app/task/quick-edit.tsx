@@ -1,0 +1,105 @@
+import { useEffect, useState } from "react";
+import { useFetcher } from "react-router";
+import { QuickEditContent } from "./quick-edit-content";
+import {
+    createDeleteTaskFormData,
+    createUpdateTaskFormData,
+} from "./quick-edit-form-data";
+import type { TaskTypeKey } from "./task-type-items";
+
+interface QuickEditProps {
+    className?: string;
+    taskId: string;
+    taskTypeKey: TaskTypeKey;
+    onDeleted?: () => void;
+    onClosed?: () => void;
+}
+
+const SAVE_SUCCESS_DURATION_MS = 2500;
+
+export function QuickEdit({
+    className,
+    taskId,
+    taskTypeKey,
+    onDeleted,
+    onClosed,
+}: QuickEditProps) {
+    const saveFetcher = useFetcher();
+    const deleteFetcher = useFetcher();
+
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+
+    const isSaving = saveFetcher.state === "submitting";
+    const isDeleting = deleteFetcher.state === "submitting";
+
+    // Handle save success feedback
+    useEffect(() => {
+        if (saveFetcher.state === "idle" && saveFetcher.data?.success) {
+            setSaveSuccess(true);
+            const timer = setTimeout(() => {
+                setSaveSuccess(false);
+            }, SAVE_SUCCESS_DURATION_MS);
+            return () => clearTimeout(timer);
+        }
+    }, [saveFetcher.state, saveFetcher.data]);
+
+    // Handle delete success
+    useEffect(() => {
+        if (deleteFetcher.state === "idle" && deleteFetcher.data?.success) {
+            setShowDeleteConfirm(false);
+            onDeleted?.();
+        }
+    }, [deleteFetcher.state, deleteFetcher.data, onDeleted]);
+
+    const handleSave = () => {
+        const formData = createUpdateTaskFormData(taskId, title, description);
+        saveFetcher.submit(formData, {
+            method: "post",
+            action: "/api/task/update",
+        });
+    };
+
+    const handleDelete = () => {
+        setShowDeleteConfirm(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        const formData = createDeleteTaskFormData(taskId);
+        deleteFetcher.submit(formData, {
+            method: "post",
+            action: "/api/task/delete",
+        });
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteConfirm(false);
+    };
+
+    const handleClose = () => {
+        onClosed?.();
+    };
+
+    return (
+        <QuickEditContent
+            className={className}
+            taskId={taskId}
+            taskTypeKey={taskTypeKey}
+            title={title}
+            description={description}
+            onTitleChange={setTitle}
+            onDescriptionChange={setDescription}
+            onSave={handleSave}
+            onDelete={handleDelete}
+            onClose={handleClose}
+            isSaving={isSaving}
+            saveSuccess={saveSuccess}
+            isDeleting={isDeleting}
+            showDeleteConfirm={showDeleteConfirm}
+            onDeleteConfirm={handleDeleteConfirm}
+            onDeleteCancel={handleDeleteCancel}
+        />
+    );
+}

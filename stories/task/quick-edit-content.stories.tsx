@@ -1,0 +1,157 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { QuickEditContent } from "~/task/quick-edit-content";
+import { TASK_TYPE_KEYS } from "~/task/task-type-items";
+
+const meta = {
+    title: "Task/QuickEditContent",
+    component: QuickEditContent,
+    parameters: {
+        layout: "centered",
+    },
+    argTypes: {
+        className: {
+            control: "text",
+            description: "Additional CSS classes to apply to the component.",
+        },
+        taskTypeKey: {
+            control: "select",
+            options: Object.values(TASK_TYPE_KEYS),
+            description: "The type of the task.",
+        },
+        title: {
+            control: "text",
+            description: "The title of the task.",
+        },
+        description: {
+            control: "text",
+            description: "The description of the task.",
+        },
+        isSaving: {
+            control: "boolean",
+            description: "Whether the save action is in progress.",
+        },
+        saveSuccess: {
+            control: "boolean",
+            description: "Whether the save action was successful.",
+        },
+        isDeleting: {
+            control: "boolean",
+            description: "Whether the delete action is in progress.",
+        },
+        showDeleteConfirm: {
+            control: "boolean",
+            description: "Whether to show the delete confirmation dialog.",
+        },
+    },
+    args: {
+        onTitleChange: fn(),
+        onDescriptionChange: fn(),
+        onSave: fn(),
+        onDelete: fn(),
+        onDeleteConfirm: fn(),
+        onDeleteCancel: fn(),
+    },
+} satisfies Meta<typeof QuickEditContent>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
+        taskTypeKey: TASK_TYPE_KEYS.NORMAL,
+        title: "",
+        description: "",
+        isSaving: false,
+        saveSuccess: false,
+        isDeleting: false,
+        showDeleteConfirm: false,
+    },
+};
+
+export const WithContent: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
+        taskTypeKey: TASK_TYPE_KEYS.URGENT,
+        title: "Complete project documentation",
+        description:
+            "Write comprehensive documentation for the new API endpoints including examples and error handling.",
+        isSaving: false,
+        saveSuccess: false,
+        isDeleting: false,
+        showDeleteConfirm: false,
+    },
+};
+
+export const Saving: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
+        taskTypeKey: TASK_TYPE_KEYS.NORMAL,
+        title: "Task being saved",
+        description: "This task is currently being saved to the server.",
+        isSaving: true,
+        saveSuccess: false,
+        isDeleting: false,
+        showDeleteConfirm: false,
+    },
+};
+
+export const SaveSuccess: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
+        taskTypeKey: TASK_TYPE_KEYS.NORMAL,
+        title: "Successfully saved task",
+        description: "This task was successfully saved.",
+        isSaving: false,
+        saveSuccess: true,
+        isDeleting: false,
+        showDeleteConfirm: false,
+    },
+};
+
+export const DeleteConfirmDialog: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
+        taskTypeKey: TASK_TYPE_KEYS.LOW,
+        title: "Task to delete",
+        description: "This task will be deleted after confirmation.",
+        isSaving: false,
+        saveSuccess: false,
+        isDeleting: false,
+        showDeleteConfirm: true,
+    },
+};
+
+export const Deleting: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
+        taskTypeKey: TASK_TYPE_KEYS.LOW,
+        title: "Task being deleted",
+        description: "This task is currently being deleted.",
+        isSaving: false,
+        saveSuccess: false,
+        isDeleting: true,
+        showDeleteConfirm: true,
+    },
+};
+
+export const Scheduled: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
+        taskTypeKey: TASK_TYPE_KEYS.SCHEDULED,
+        title: "Scheduled task",
+        description: "This is a scheduled task with a due time.",
+        isSaving: false,
+        saveSuccess: false,
+        isDeleting: false,
+        showDeleteConfirm: false,
+    },
+};
