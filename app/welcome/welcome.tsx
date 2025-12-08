@@ -1,47 +1,31 @@
 import { LogIn } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useFetcher, useSearchParams } from "react-router";
-import { v7 as uuidv7 } from "uuid";
+import { useState } from "react";
+import { useSearchParams } from "react-router";
 import { LoginDialog } from "~/auth/login-dialog";
 import { Button } from "~/components/ui/button";
-import { OperationArea } from "~/task/operation-area";
 import { QuickEdit } from "~/task/quick-edit";
-import { createTaskFormData } from "~/task/task-form-data";
-import type { TaskTypeKey } from "~/task/task-type-items";
-
-export interface TaskRegistrationEvent {
-    taskId: string;
-    taskTypeKey: TaskTypeKey;
-}
+import {
+    TaskRegistration,
+    type TaskRegistrationEvent,
+} from "~/task/task-registration";
 
 export function Welcome() {
     const [searchParams, setSearchParams] = useSearchParams();
     const showLogin = searchParams.get("login") === "true";
-    const fetcher = useFetcher();
 
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
         null,
     );
 
-    const handleRegister = (taskTypeKey: TaskTypeKey) => {
-        const taskId = uuidv7();
-        const formData = createTaskFormData(taskId, taskTypeKey);
-
-        fetcher.submit(formData, {
-            method: "post",
-            action: "/api/task",
-        });
-
-        setLatestTask({ taskId, taskTypeKey });
-        console.log("Task registered:", { taskId, taskTypeKey });
+    const handleDeleted = () => {
+        setLatestTask(null);
     };
 
-    // TODO: remove this useEffect after actual implementation
-    useEffect(() => {
-        if (latestTask) {
-            console.log("Latest task updated:", latestTask);
-        }
-    }, [latestTask]);
+    const handleClosed = () => {
+        console.log("QuickEdit closed");
+        // TODO: add latestTask to list of tasks
+        setLatestTask(null);
+    };
 
     return (
         <>
@@ -61,21 +45,23 @@ export function Welcome() {
                         </div>
                     </header>
                     {latestTask && (
-                        <div className="w-full max-w-3xl rounded-md border-2 border-secondary px-2 py-4">
+                        <div className="w-full max-w-md rounded-md border-2 border-secondary px-3 py-3">
                             <QuickEdit
                                 key={latestTask.taskId}
                                 className="w-full"
                                 taskId={latestTask.taskId}
                                 taskTypeKey={latestTask.taskTypeKey}
+                                onDeleted={handleDeleted}
+                                onClosed={handleClosed}
                             />
                         </div>
                     )}
                 </div>
                 <div className="absolute inset-x-0 bottom-0 flex items-center justify-center p-4">
-                    <OperationArea
+                    <TaskRegistration
                         className="w-full max-w-xl"
                         innerClassName="bg-secondary"
-                        onRegister={handleRegister}
+                        onTaskRegistered={setLatestTask}
                     />
                 </div>
             </main>
