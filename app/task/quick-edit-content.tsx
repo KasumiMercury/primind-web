@@ -1,4 +1,5 @@
 import { Check, ChevronUp, Loader2, Trash } from "lucide-react";
+import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import {
     Dialog,
@@ -51,7 +52,7 @@ export function QuickEditContent({
     const taskType = ITEMS[taskTypeKey];
     const TaskTypeIcon: IconComponent = taskType.icon;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         onSave();
     };
