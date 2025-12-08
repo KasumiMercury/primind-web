@@ -95,6 +95,7 @@ export function QuickEditContent({
                         onClick={onDelete}
                         disabled={isDeleting || isSaving}
                         className="text-destructive hover:bg-destructive/10"
+                        aria-label="Delete Task"
                     >
                         <Trash className="size-4" />
                     </Button>
@@ -122,6 +123,7 @@ export function QuickEditContent({
                     onClick={onClose}
                     className="mt-3 flex w-full items-center justify-center rounded-md bg-background py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                     disabled={isSaving || isDeleting}
+                    aria-label="Close Quick Edit"
                 >
                     <ChevronUp className="size-5" />
                 </button>
