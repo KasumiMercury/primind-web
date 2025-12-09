@@ -25,7 +25,7 @@ import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 export const file_task_v1_task: GenFile =
     /*@__PURE__*/
     fileDesc(
-        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEiqQIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSNQoMc2NoZWR1bGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQg8KDV9zY2hlZHVsZWRfYXQi4QEKEUNyZWF0ZVRhc2tSZXF1ZXN0Eh4KB3Rhc2tfaWQYASABKAlCCLpIBXIDsAEBSACIAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSDQoFdGl0bGUYAyABKAkSEwoLZGVzY3JpcHRpb24YBCABKAkSNQoMc2NoZWR1bGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgBiAEBQgoKCF90YXNrX2lkQg8KDV9zY2hlZHVsZWRfYXQiMQoSQ3JlYXRlVGFza1Jlc3BvbnNlEhsKBHRhc2sYASABKAsyDS50YXNrLnYxLlRhc2siKwoOR2V0VGFza1JlcXVlc3QSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQEiLgoPR2V0VGFza1Jlc3BvbnNlEhsKBHRhc2sYASABKAsyDS50YXNrLnYxLlRhc2sqfQoIVGFza1R5cGUSGQoVVEFTS19UWVBFX1VOU1BFQ0lGSUVEEAASFAoQVEFTS19UWVBFX1VSR0VOVBABEhQKEFRBU0tfVFlQRV9OT1JNQUwQAhIRCg1UQVNLX1RZUEVfTE9XEAMSFwoTVEFTS19UWVBFX1NDSEVEVUxFRBAEKlwKClRhc2tTdGF0dXMSGwoXVEFTS19TVEFUVVNfVU5TUEVDSUZJRUQQABIWChJUQVNLX1NUQVRVU19BQ1RJVkUQARIZChVUQVNLX1NUQVRVU19DT01QTEVURUQQAjKSAQoLVGFza1NlcnZpY2USRQoKQ3JlYXRlVGFzaxIaLnRhc2sudjEuQ3JlYXRlVGFza1JlcXVlc3QaGy50YXNrLnYxLkNyZWF0ZVRhc2tSZXNwb25zZRI8CgdHZXRUYXNrEhcudGFzay52MS5HZXRUYXNrUmVxdWVzdBoYLnRhc2sudjEuR2V0VGFza1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z",
+        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEi2AIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSNQoMc2NoZWR1bGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi0KCXRhcmdldF9hdBgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCDwoNX3NjaGVkdWxlZF9hdCLhAQoRQ3JlYXRlVGFza1JlcXVlc3QSHgoHdGFza19pZBgBIAEoCUIIukgFcgOwAQFIAIgBARI0Cgl0YXNrX3R5cGUYAiABKA4yES50YXNrLnYxLlRhc2tUeXBlQg66SAuCAQgYARgCGAMYBBINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRI1CgxzY2hlZHVsZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSAGIAQFCCgoIX3Rhc2tfaWRCDwoNX3NjaGVkdWxlZF9hdCIxChJDcmVhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayIrCg5HZXRUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABASIuCg9HZXRUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayJCChZMaXN0QWN0aXZlVGFza3NSZXF1ZXN0EigKCXNvcnRfdHlwZRgBIAEoDjIVLnRhc2sudjEuVGFza1NvcnRUeXBlIjcKF0xpc3RBY3RpdmVUYXNrc1Jlc3BvbnNlEhwKBXRhc2tzGAEgAygLMg0udGFzay52MS5UYXNrKn0KCFRhc2tUeXBlEhkKFVRBU0tfVFlQRV9VTlNQRUNJRklFRBAAEhQKEFRBU0tfVFlQRV9VUkdFTlQQARIUChBUQVNLX1RZUEVfTk9STUFMEAISEQoNVEFTS19UWVBFX0xPVxADEhcKE1RBU0tfVFlQRV9TQ0hFRFVMRUQQBCpcCgpUYXNrU3RhdHVzEhsKF1RBU0tfU1RBVFVTX1VOU1BFQ0lGSUVEEAASFgoSVEFTS19TVEFUVVNfQUNUSVZFEAESGQoVVEFTS19TVEFUVVNfQ09NUExFVEVEEAIqTAoMVGFza1NvcnRUeXBlEh4KGlRBU0tfU09SVF9UWVBFX1VOU1BFQ0lGSUVEEAASHAoYVEFTS19TT1JUX1RZUEVfVEFSR0VUX0FUEAEy6AEKC1Rhc2tTZXJ2aWNlEkUKCkNyZWF0ZVRhc2sSGi50YXNrLnYxLkNyZWF0ZVRhc2tSZXF1ZXN0GhsudGFzay52MS5DcmVhdGVUYXNrUmVzcG9uc2USPAoHR2V0VGFzaxIXLnRhc2sudjEuR2V0VGFza1JlcXVlc3QaGC50YXNrLnYxLkdldFRhc2tSZXNwb25zZRJUCg9MaXN0QWN0aXZlVGFza3MSHy50YXNrLnYxLkxpc3RBY3RpdmVUYXNrc1JlcXVlc3QaIC50YXNrLnYxLkxpc3RBY3RpdmVUYXNrc1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z",
         [file_buf_validate_validate, file_google_protobuf_timestamp],
     );
 
@@ -67,6 +67,11 @@ export type Task = Message<"task.v1.Task"> & {
      * @generated from field: google.protobuf.Timestamp created_at = 7;
      */
     createdAt?: Timestamp;
+
+    /**
+     * @generated from field: google.protobuf.Timestamp target_at = 8;
+     */
+    targetAt?: Timestamp;
 };
 
 /**
@@ -170,6 +175,44 @@ export const GetTaskResponseSchema: GenMessage<GetTaskResponse> =
     messageDesc(file_task_v1_task, 4);
 
 /**
+ * @generated from message task.v1.ListActiveTasksRequest
+ */
+export type ListActiveTasksRequest =
+    Message<"task.v1.ListActiveTasksRequest"> & {
+        /**
+         * @generated from field: task.v1.TaskSortType sort_type = 1;
+         */
+        sortType: TaskSortType;
+    };
+
+/**
+ * Describes the message task.v1.ListActiveTasksRequest.
+ * Use `create(ListActiveTasksRequestSchema)` to create a new message.
+ */
+export const ListActiveTasksRequestSchema: GenMessage<ListActiveTasksRequest> =
+    /*@__PURE__*/
+    messageDesc(file_task_v1_task, 5);
+
+/**
+ * @generated from message task.v1.ListActiveTasksResponse
+ */
+export type ListActiveTasksResponse =
+    Message<"task.v1.ListActiveTasksResponse"> & {
+        /**
+         * @generated from field: repeated task.v1.Task tasks = 1;
+         */
+        tasks: Task[];
+    };
+
+/**
+ * Describes the message task.v1.ListActiveTasksResponse.
+ * Use `create(ListActiveTasksResponseSchema)` to create a new message.
+ */
+export const ListActiveTasksResponseSchema: GenMessage<ListActiveTasksResponse> =
+    /*@__PURE__*/
+    messageDesc(file_task_v1_task, 6);
+
+/**
  * @generated from enum task.v1.TaskType
  */
 export enum TaskType {
@@ -234,6 +277,28 @@ export const TaskStatusSchema: GenEnum<TaskStatus> =
     enumDesc(file_task_v1_task, 1);
 
 /**
+ * @generated from enum task.v1.TaskSortType
+ */
+export enum TaskSortType {
+    /**
+     * @generated from enum value: TASK_SORT_TYPE_UNSPECIFIED = 0;
+     */
+    UNSPECIFIED = 0,
+
+    /**
+     * @generated from enum value: TASK_SORT_TYPE_TARGET_AT = 1;
+     */
+    TARGET_AT = 1,
+}
+
+/**
+ * Describes the enum task.v1.TaskSortType.
+ */
+export const TaskSortTypeSchema: GenEnum<TaskSortType> =
+    /*@__PURE__*/
+    enumDesc(file_task_v1_task, 2);
+
+/**
  * @generated from service task.v1.TaskService
  */
 export const TaskService: GenService<{
@@ -252,5 +317,13 @@ export const TaskService: GenService<{
         methodKind: "unary";
         input: typeof GetTaskRequestSchema;
         output: typeof GetTaskResponseSchema;
+    };
+    /**
+     * @generated from rpc task.v1.TaskService.ListActiveTasks
+     */
+    listActiveTasks: {
+        methodKind: "unary";
+        input: typeof ListActiveTasksRequestSchema;
+        output: typeof ListActiveTasksResponseSchema;
     };
 }> = /*@__PURE__*/ serviceDesc(file_task_v1_task, 0);
