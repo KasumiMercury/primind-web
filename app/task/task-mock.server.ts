@@ -4,9 +4,11 @@ import { Code, ConnectError, createRouterTransport } from "@connectrpc/connect";
 import {
     CreateTaskResponseSchema,
     GetTaskResponseSchema,
+    ListActiveTasksResponseSchema,
     type Task,
     TaskSchema,
     TaskService,
+    TaskSortType,
     TaskStatus,
 } from "~/gen/task/v1/task_pb";
 import { taskLogger } from "~/task/logger.server";
@@ -83,6 +85,36 @@ export function createTaskMockTransport() {
 
                 return create(GetTaskResponseSchema, {
                     task: task,
+                });
+            },
+
+            listActiveTasks: (req) => {
+                taskLogger.debug(
+                    { sortType: req.sortType },
+                    "Mock: ListActiveTasks called",
+                );
+
+                const activeTasks = Array.from(mockTasks.values()).filter(
+                    (task) => task.taskStatus === TaskStatus.ACTIVE,
+                );
+
+                if (req.sortType === TaskSortType.TARGET_AT) {
+                    activeTasks.sort((a, b) => {
+                        const aTime = a.targetAt?.seconds ?? BigInt(0);
+                        const bTime = b.targetAt?.seconds ?? BigInt(0);
+                        if (aTime < bTime) return -1;
+                        if (aTime > bTime) return 1;
+                        return 0;
+                    });
+                }
+
+                taskLogger.info(
+                    { count: activeTasks.length, sortType: req.sortType },
+                    "Mock: ListActiveTasks returning tasks",
+                );
+
+                return create(ListActiveTasksResponseSchema, {
+                    tasks: activeTasks,
                 });
             },
         });
