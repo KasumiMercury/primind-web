@@ -3,13 +3,19 @@ import { useState } from "react";
 import { useSearchParams } from "react-router";
 import { LoginDialog } from "~/auth/login-dialog";
 import { Button } from "~/components/ui/button";
+import type { SerializableTask } from "~/task/list-active-tasks.server";
 import { QuickEdit } from "~/task/quick-edit";
+import { TaskCardGrid } from "~/task/task-card-grid";
 import {
     TaskRegistration,
     type TaskRegistrationEvent,
 } from "~/task/task-registration";
 
-export function Welcome() {
+interface WelcomeProps {
+    tasks: SerializableTask[];
+}
+
+export function Welcome({ tasks }: WelcomeProps) {
     const [searchParams, setSearchParams] = useSearchParams();
     const showLogin = searchParams.get("login") === "true";
 
@@ -23,8 +29,11 @@ export function Welcome() {
 
     const handleClosed = () => {
         console.log("QuickEdit closed");
-        // TODO: add latestTask to list of tasks
         setLatestTask(null);
+    };
+
+    const handleTaskClick = (task: SerializableTask) => {
+        console.log("Task clicked:", task.taskId);
     };
 
     return (
@@ -56,8 +65,18 @@ export function Welcome() {
                             />
                         </div>
                     )}
+
+                    <section className="w-full max-w-4xl">
+                        <TaskCardGrid
+                            tasks={tasks}
+                            onTaskClick={handleTaskClick}
+                        />
+                    </section>
+
+                    {/* space for OperationArea */}
+                    <div className="h-70 w-full shrink-0" aria-hidden="true" />
                 </div>
-                <div className="absolute inset-x-0 bottom-0 flex items-center justify-center p-4">
+                <div className="fixed inset-x-0 bottom-0 flex items-center justify-center p-4">
                     <TaskRegistration
                         className="w-full max-w-xl"
                         innerClassName="bg-secondary"
