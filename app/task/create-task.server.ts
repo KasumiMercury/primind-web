@@ -32,7 +32,7 @@ export async function createTaskAction(request: Request) {
             throw new Error("Invalid task ID");
         }
 
-        if (!uuidValidate(taskId) && uuidVersion(taskId) !== 7) {
+        if (!uuidValidate(taskId) || uuidVersion(taskId) !== 7) {
             taskLogger.warn(
                 { taskId: taskId },
                 "CreateTask action received invalid UUIDv7 task ID",
