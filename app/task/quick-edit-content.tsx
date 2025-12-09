@@ -88,18 +88,8 @@ export function QuickEditContent({
                     </div>
                 </div>
 
-                <div className="mt-2 flex justify-between">
-                    <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        type="button"
-                        onClick={onDelete}
-                        disabled={isDeleting || isSaving}
-                        className="text-destructive hover:bg-destructive/10"
-                        aria-label="Delete Task"
-                    >
-                        <Trash className="size-4" />
-                    </Button>
+                {/* reverse flex direction to place delete button's focus order after save button */}
+                <div className="mt-2 flex flex-row-reverse justify-between">
                     {saveSuccess ? (
                         <div className="flex h-8 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
                             <Check className="size-4" />
@@ -117,6 +107,17 @@ export function QuickEditContent({
                             )}
                         </Button>
                     )}
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        type="button"
+                        onClick={onDelete}
+                        disabled={isDeleting || isSaving}
+                        className="text-destructive hover:bg-destructive/10"
+                        aria-label="Delete Task"
+                    >
+                        <Trash className="size-4" />
+                    </Button>
                 </div>
 
                 <button
