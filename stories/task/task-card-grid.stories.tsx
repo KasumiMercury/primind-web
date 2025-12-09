@@ -1,0 +1,235 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { TaskStatus, TaskType } from "~/gen/task/v1/task_pb";
+import type { SerializableTask } from "~/task/list-active-tasks.server";
+import { TaskCardGrid } from "~/task/task-card-grid";
+
+function createMockTask(
+    id: string,
+    taskType: TaskType,
+    title: string,
+    hoursAgo: number,
+): SerializableTask {
+    const now = Math.floor(Date.now() / 1000);
+    return {
+        taskId: id,
+        taskType,
+        taskStatus: TaskStatus.ACTIVE,
+        title,
+        description: "",
+        createdAt: {
+            seconds: (now - hoursAgo * 3600).toString(),
+        },
+    };
+}
+
+const sampleTasks: SerializableTask[] = [
+    createMockTask(
+        "019afbaa-0001-70d9-9cd1-cd544220afb3",
+        TaskType.URGENT,
+        "Fix critical bug in production",
+        2,
+    ),
+    createMockTask(
+        "019afbaa-0002-70d9-9cd1-cd544220afb3",
+        TaskType.NORMAL,
+        "Review pull request",
+        5,
+    ),
+    createMockTask(
+        "019afbaa-0003-70d9-9cd1-cd544220afb3",
+        TaskType.LOW,
+        "Update documentation",
+        24,
+    ),
+    createMockTask(
+        "019afbaa-0004-70d9-9cd1-cd544220afb3",
+        TaskType.SCHEDULED,
+        "Team meeting preparation",
+        48,
+    ),
+    createMockTask(
+        "019afbaa-0005-70d9-9cd1-cd544220afb3",
+        TaskType.NORMAL,
+        "Implement new feature for user dashboard",
+        72,
+    ),
+    createMockTask(
+        "019afbaa-0006-70d9-9cd1-cd544220afb3",
+        TaskType.URGENT,
+        "Deploy hotfix",
+        1,
+    ),
+];
+
+const manyTasks: SerializableTask[] = [
+    ...sampleTasks,
+    createMockTask(
+        "019afbaa-0007-70d9-9cd1-cd544220afb3",
+        TaskType.LOW,
+        "Refactor legacy code",
+        96,
+    ),
+    createMockTask(
+        "019afbaa-0008-70d9-9cd1-cd544220afb3",
+        TaskType.NORMAL,
+        "Write unit tests",
+        120,
+    ),
+    createMockTask(
+        "019afbaa-0009-70d9-9cd1-cd544220afb3",
+        TaskType.SCHEDULED,
+        "Quarterly review",
+        168,
+    ),
+    createMockTask(
+        "019afbaa-0010-70d9-9cd1-cd544220afb3",
+        TaskType.URGENT,
+        "",
+        3,
+    ),
+];
+
+const meta = {
+    title: "Task/TaskCardGrid",
+    component: TaskCardGrid,
+    parameters: {
+        layout: "padded",
+    },
+    tags: ["autodocs"],
+    argTypes: {
+        className: {
+            control: "text",
+            description: "Additional CSS classes to apply to the grid.",
+        },
+    },
+    args: {
+        onTaskClick: fn(),
+    },
+} satisfies Meta<typeof TaskCardGrid>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+    args: {
+        tasks: sampleTasks,
+    },
+};
+
+export const Empty: Story = {
+    args: {
+        tasks: [],
+    },
+};
+
+export const SingleTask: Story = {
+    args: {
+        tasks: [sampleTasks[0]],
+    },
+};
+
+export const TwoTasks: Story = {
+    args: {
+        tasks: sampleTasks.slice(0, 2),
+    },
+};
+
+export const ManyTasks: Story = {
+    args: {
+        tasks: manyTasks,
+    },
+};
+
+export const AllTaskTypes: Story = {
+    args: {
+        tasks: [
+            createMockTask(
+                "019afbaa-type-0001-9cd1-cd544220afb3",
+                TaskType.URGENT,
+                "Urgent Task",
+                1,
+            ),
+            createMockTask(
+                "019afbaa-type-0002-9cd1-cd544220afb3",
+                TaskType.NORMAL,
+                "Normal Task",
+                2,
+            ),
+            createMockTask(
+                "019afbaa-type-0003-9cd1-cd544220afb3",
+                TaskType.LOW,
+                "Low Priority Task",
+                3,
+            ),
+            createMockTask(
+                "019afbaa-type-0004-9cd1-cd544220afb3",
+                TaskType.SCHEDULED,
+                "Scheduled Task",
+                4,
+            ),
+        ],
+    },
+};
+
+export const WithEmptyTitles: Story = {
+    args: {
+        tasks: [
+            createMockTask(
+                "019afbaa-empty-0001-9cd1-cd544220afb3",
+                TaskType.URGENT,
+                "",
+                1,
+            ),
+            createMockTask(
+                "019afbaa-empty-0002-9cd1-cd544220afb3",
+                TaskType.NORMAL,
+                "Has a title",
+                2,
+            ),
+            createMockTask(
+                "019afbaa-empty-0003-9cd1-cd544220afb3",
+                TaskType.LOW,
+                "",
+                3,
+            ),
+            createMockTask(
+                "019afbaa-empty-0004-9cd1-cd544220afb3",
+                TaskType.SCHEDULED,
+                "Another titled task",
+                4,
+            ),
+        ],
+    },
+};
+
+export const WithLongTitles: Story = {
+    args: {
+        tasks: [
+            createMockTask(
+                "019afbaa-long-0001-9cd1-cd544220afb3",
+                TaskType.URGENT,
+                "This is an extremely long task title that should definitely be truncated when displayed in the card",
+                1,
+            ),
+            createMockTask(
+                "019afbaa-long-0002-9cd1-cd544220afb3",
+                TaskType.NORMAL,
+                "Another very long title for testing truncation behavior in the task card component",
+                2,
+            ),
+            createMockTask(
+                "019afbaa-long-0003-9cd1-cd544220afb3",
+                TaskType.LOW,
+                "Short",
+                3,
+            ),
+            createMockTask(
+                "019afbaa-long-0004-9cd1-cd544220afb3",
+                TaskType.SCHEDULED,
+                "Medium length title here",
+                4,
+            ),
+        ],
+    },
+};
