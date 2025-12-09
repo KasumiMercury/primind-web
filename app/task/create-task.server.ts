@@ -2,10 +2,18 @@ import { create } from "@bufbuild/protobuf";
 import { data } from "react-router";
 import { validate as uuidValidate, version as uuidVersion } from "uuid";
 import { CreateTaskRequestSchema, TaskType } from "~/gen/task/v1/task_pb";
+import { createAuthContext } from "~/lib/request-context.server";
 import { taskLogger } from "~/task/logger.server";
 import { taskClient } from "~/task/task-client.server";
 
 export async function createTaskAction(request: Request) {
+    const { contextValues, sessionToken } = await createAuthContext(request);
+
+    if (!sessionToken) {
+        taskLogger.warn("CreateTask action called without session token");
+        return data({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const formData = await request.formData();
     const taskId = formData.get("task_id");
     const taskTypeRaw = formData.get("task_type");
@@ -75,7 +83,9 @@ export async function createTaskAction(request: Request) {
             description: "",
         });
 
-        const response = await taskClient.createTask(createRequest);
+        const response = await taskClient.createTask(createRequest, {
+            contextValues,
+        });
 
         taskLogger.info(
             { taskId: response.task?.taskId, taskType },
