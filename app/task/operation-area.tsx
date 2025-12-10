@@ -98,6 +98,8 @@ export function OperationArea({
             return;
         }
 
+        onRegister?.(currentKey);
+
         if (animationControlRef.current) {
             animationControlRef.current.stop();
         }
@@ -109,8 +111,6 @@ export function OperationArea({
         );
         animationControlRef.current = upAnimation;
         await upAnimation;
-
-        onRegister?.(currentKey);
 
         const downAnimation = animate(
             scope.current,
