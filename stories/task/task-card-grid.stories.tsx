@@ -4,11 +4,14 @@ import { TaskStatus, TaskType } from "~/gen/task/v1/task_pb";
 import type { SerializableTask } from "~/task/list-active-tasks.server";
 import { TaskCardGrid } from "~/task/task-card-grid";
 
+import { TASK_COLORS } from "~/task/task-colors";
+
 function createMockTask(
     id: string,
     taskType: TaskType,
     title: string,
     hoursAgo: number,
+    colorIndex = 0,
 ): SerializableTask {
     const now = Math.floor(Date.now() / 1000);
     return {
@@ -20,6 +23,7 @@ function createMockTask(
         createdAt: {
             seconds: (now - hoursAgo * 3600).toString(),
         },
+        color: TASK_COLORS[colorIndex % TASK_COLORS.length],
     };
 }
 

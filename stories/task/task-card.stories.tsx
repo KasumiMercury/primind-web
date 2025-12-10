@@ -17,6 +17,7 @@ function createMockTask(
         createdAt: {
             seconds: (now - 3600).toString(),
         },
+        color: "#3B82F6",
         ...overrides,
     };
 }
