@@ -52,7 +52,10 @@ export function TaskDetailModal({
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     // Capture values at save time to avoid stale closure issues
-    const pendingSaveValues = useRef<{ title: string; description: string } | null>(null);
+    const pendingSaveValues = useRef<{
+        title: string;
+        description: string;
+    } | null>(null);
 
     useEffect(() => {
         return () => {
@@ -109,6 +112,11 @@ export function TaskDetailModal({
         if (!taskId) {
             return;
         }
+
+        if (isEditing) {
+            return;
+        }
+
         setTitle(task.title);
         setDescription(task.description);
         setLastSavedTitle(task.title);
@@ -121,7 +129,7 @@ export function TaskDetailModal({
             clearTimeout(saveResetTimer.current);
             saveResetTimer.current = null;
         }
-    }, [taskId, task.title, task.description]);
+    }, [taskId, task.title, task.description, isEditing]);
 
     const handleOpenChange = (open: boolean) => {
         if (!open) {
