@@ -20,7 +20,7 @@ const selectableItems = Object.values(ITEMS);
 const selectableKeys = Object.keys(ITEMS) as TaskTypeKey[];
 
 const registerTransitionAmount = 10;
-const registerUpDuration = 0.2;
+const registerUpDuration = 0.1;
 const registerDownDuration = 0.1;
 
 interface OperationAreaProps {
@@ -108,14 +108,15 @@ export function OperationArea({
             { duration: registerUpDuration, ease: "easeOut" },
         );
         animationControlRef.current = upAnimation;
-        await upAnimation;
 
         onRegister?.(currentKey);
+
+        await upAnimation;
 
         const downAnimation = animate(
             scope.current,
             { y: 0 },
-            { duration: registerDownDuration, ease: "easeOut" },
+            { duration: registerDownDuration, ease: "easeIn" },
         );
         animationControlRef.current = downAnimation;
         await downAnimation;
