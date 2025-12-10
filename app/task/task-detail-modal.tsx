@@ -25,8 +25,11 @@ export function TaskDetailModal({
     task,
     backgroundLocation,
 }: TaskDetailModalProps) {
-    const { taskId, title: initialTitle, description: initialDescription } =
-        task;
+    const {
+        taskId,
+        title: initialTitle,
+        description: initialDescription,
+    } = task;
     const navigate = useNavigate();
     const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
@@ -128,11 +131,7 @@ export function TaskDetailModal({
             clearTimeout(saveResetTimer.current);
         }
         setSaveSuccess(false);
-        const formData = createUpdateTaskFormData(
-            taskId,
-            title,
-            description,
-        );
+        const formData = createUpdateTaskFormData(taskId, title, description);
         saveFetcher.submit(formData, {
             method: "post",
             action: "/api/task/update",
@@ -167,9 +166,7 @@ export function TaskDetailModal({
 
     return (
         <Dialog open={true} onOpenChange={handleOpenChange}>
-            <DialogContent
-                className="max-h-[85vh] overflow-y-auto sm:max-w-lg"
-            >
+            <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle className="sr-only">Task Detail</DialogTitle>
                 </DialogHeader>

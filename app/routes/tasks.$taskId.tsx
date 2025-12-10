@@ -7,7 +7,7 @@ import { TaskDetailPage } from "~/task/task-detail-page";
 import { Welcome } from "~/welcome/welcome";
 import type { Route } from "./+types/tasks.$taskId";
 
-export function meta({ loaderData: loaderData }: Route.MetaArgs) {
+export function meta({ loaderData }: Route.MetaArgs) {
     const title = loaderData?.task?.title?.trim() || "Task Detail";
     return [
         { title: `${title} | Primind` },

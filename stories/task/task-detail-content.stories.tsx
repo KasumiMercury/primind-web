@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { TaskStatus, TaskType } from "~/gen/task/v1/task_pb";
-import { TaskDetailContent } from "~/task/task-detail-content";
 import type { SerializableTask } from "~/task/list-active-tasks.server";
+import { TaskDetailContent } from "~/task/task-detail-content";
 
 function createMockTask(
     overrides: Partial<SerializableTask> = {},
@@ -161,9 +161,7 @@ export const Scheduled: Story = {
             title: "Scheduled Task",
             color: "#EAB308",
             targetAt: {
-                seconds: (
-                    Math.floor(Date.now() / 1000) + 86400
-                ).toString(),
+                seconds: (Math.floor(Date.now() / 1000) + 86400).toString(),
             },
         }),
         title: "Scheduled Task",

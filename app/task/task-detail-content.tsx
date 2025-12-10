@@ -145,7 +145,9 @@ export function TaskDetailContent({
                                     : ""
                             }
                             value={description}
-                            onChange={(e) => onDescriptionChange(e.target.value)}
+                            onChange={(e) =>
+                                onDescriptionChange(e.target.value)
+                            }
                             disabled={isSaving}
                         />
                     ) : description.trim() ? (

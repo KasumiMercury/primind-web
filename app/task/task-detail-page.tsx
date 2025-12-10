@@ -16,8 +16,11 @@ interface TaskDetailPageProps {
 const SAVE_SUCCESS_DURATION_MS = 2500;
 
 export function TaskDetailPage({ task }: TaskDetailPageProps) {
-    const { taskId, title: initialTitle, description: initialDescription } =
-        task;
+    const {
+        taskId,
+        title: initialTitle,
+        description: initialDescription,
+    } = task;
     const navigate = useNavigate();
     const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
