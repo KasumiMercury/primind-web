@@ -15,8 +15,8 @@ import { type IconComponent, ITEMS, type TaskTypeKey } from "./task-type-items";
 
 export interface QuickEditContentProps {
     className?: string;
-    taskId: string;
     taskTypeKey: TaskTypeKey;
+    color: string;
     title: string;
     description: string;
     onTitleChange: (value: string) => void;
@@ -36,6 +36,7 @@ export function QuickEditContent({
     className,
     taskTypeKey,
     title,
+    color,
     description,
     onTitleChange,
     onDescriptionChange,
@@ -63,8 +64,9 @@ export function QuickEditContent({
                 <div className="flex items-start gap-3">
                     <div className="size-16 shrink-0">
                         <TaskTypeIcon
-                            className={taskType.className}
+                            className={""}
                             label={taskType.label}
+                            fillColor={color}
                         />
                     </div>
                     <div className="flex flex-1 flex-col gap-2">

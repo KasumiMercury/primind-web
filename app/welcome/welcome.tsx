@@ -60,6 +60,7 @@ export function Welcome({ tasks }: WelcomeProps) {
                                 className="w-full"
                                 taskId={latestTask.taskId}
                                 taskTypeKey={latestTask.taskTypeKey}
+                                color={latestTask.color}
                                 onDeleted={handleDeleted}
                                 onClosed={handleClosed}
                             />

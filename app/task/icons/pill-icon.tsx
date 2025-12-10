@@ -1,9 +1,16 @@
 interface PillIconProps {
     className?: string;
     label: string;
+    showLabel?: boolean;
+    fillColor?: string;
 }
 
-export function PillIcon({ className = "", label }: PillIconProps) {
+export function PillIcon({
+    className = "",
+    label,
+    showLabel: displayLabel,
+    fillColor,
+}: PillIconProps) {
     return (
         <svg
             viewBox="0 0 100 100"
@@ -19,19 +26,21 @@ export function PillIcon({ className = "", label }: PillIconProps) {
                 height="30"
                 rx="15"
                 ry="15"
-                fill="none"
+                fill={fillColor ?? "none"}
             />
-            <text
-                x="50"
-                y="55"
-                textAnchor="middle"
-                fill="currentColor"
-                stroke="none"
-                fontSize="12"
-                fontWeight="600"
-            >
-                {label}
-            </text>
+            {displayLabel && (
+                <text
+                    x="50"
+                    y="55"
+                    textAnchor="middle"
+                    fill="currentColor"
+                    stroke="none"
+                    fontSize="12"
+                    fontWeight="600"
+                >
+                    {label}
+                </text>
+            )}
         </svg>
     );
 }

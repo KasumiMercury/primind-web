@@ -17,6 +17,7 @@ export async function createTaskAction(request: Request) {
     const formData = await request.formData();
     const taskId = formData.get("task_id");
     const taskTypeRaw = formData.get("task_type");
+    const color = formData.get("color");
 
     try {
         taskLogger.debug(
@@ -74,13 +75,31 @@ export async function createTaskAction(request: Request) {
             throw new Error("Invalid task type value");
         }
 
-        taskLogger.debug({ taskType }, "Creating task");
+        if (typeof color !== "string") {
+            taskLogger.warn(
+                { color },
+                "CreateTask action received invalid color",
+            );
+            throw new Error("Invalid color");
+        }
+
+        const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
+        if (!hexColorRegex.test(color)) {
+            taskLogger.warn(
+                { color },
+                "CreateTask action received invalid hex color format",
+            );
+            throw new Error("Invalid color format");
+        }
+
+        taskLogger.debug({ taskType, color }, "Creating task");
 
         const createRequest = create(CreateTaskRequestSchema, {
             taskId: taskId,
             taskType: taskType as TaskType,
             title: "",
             description: "",
+            color: color,
         });
 
         const response = await taskClient.createTask(createRequest, {

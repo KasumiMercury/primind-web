@@ -25,6 +25,7 @@ export function createTaskMockTransport() {
                     {
                         taskId: req.taskId,
                         taskType: req.taskType,
+                        color: req.color,
                     },
                     "Mock: CreateTask called",
                 );
@@ -44,6 +45,7 @@ export function createTaskMockTransport() {
                     description: req.description || "",
                     scheduledAt: req.scheduledAt,
                     createdAt: createdAt,
+                    color: req.color,
                 });
 
                 mockTasks.set(taskId, task);
@@ -53,6 +55,7 @@ export function createTaskMockTransport() {
                         taskId: task.taskId,
                         taskType: task.taskType,
                         taskStatus: task.taskStatus,
+                        color: task.color,
                     },
                     "Mock: Task created",
                 );

@@ -1,13 +1,20 @@
 interface StarBurstIconProps {
     className?: string;
     label: string;
+    showLabel?: boolean;
+    fillColor?: string;
 }
 
 const toFixed = (num: number, digits: number = 6) => {
     return parseFloat(num.toFixed(digits));
 };
 
-export function StarBurstIcon({ className = "", label }: StarBurstIconProps) {
+export function StarBurstIcon({
+    className = "",
+    label,
+    showLabel: displayLabel,
+    fillColor,
+}: StarBurstIconProps) {
     const points = [];
     const centerX = 50;
     const centerY = 50;
@@ -31,18 +38,20 @@ export function StarBurstIcon({ className = "", label }: StarBurstIconProps) {
             role="img"
             aria-label={label}
         >
-            <polygon points={points.join(" ")} fill="none" />
-            <text
-                x="50"
-                y="55"
-                textAnchor="middle"
-                fontSize="12"
-                fontWeight="600"
-                fill="currentColor"
-                stroke="none"
-            >
-                {label}
-            </text>
+            <polygon points={points.join(" ")} fill={fillColor ?? "none"} />
+            {displayLabel && (
+                <text
+                    x="50"
+                    y="55"
+                    textAnchor="middle"
+                    fontSize="12"
+                    fontWeight="600"
+                    fill="currentColor"
+                    stroke="none"
+                >
+                    {label}
+                </text>
+            )}
         </svg>
     );
 }

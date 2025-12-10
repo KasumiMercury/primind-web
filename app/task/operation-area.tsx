@@ -222,6 +222,7 @@ export function OperationArea({
                     <SelectedIcon
                         className={`h-1/2 ${selectedItem.className}`}
                         label={selectedItem?.label ?? ""}
+                        showLabel={true}
                     />
                 </div>
             ) : null}
