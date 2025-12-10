@@ -45,6 +45,7 @@ const meta = {
         },
     },
     args: {
+        color: "#3B82F6",
         onTitleChange: fn(),
         onDescriptionChange: fn(),
         onSave: fn(),
@@ -60,7 +61,6 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {
         className: "w-full max-w-md",
-        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
         taskTypeKey: TASK_TYPE_KEYS.NORMAL,
         title: "",
         description: "",
@@ -74,7 +74,6 @@ export const Default: Story = {
 export const WithContent: Story = {
     args: {
         className: "w-full max-w-md",
-        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
         taskTypeKey: TASK_TYPE_KEYS.URGENT,
         title: "Complete project documentation",
         description:
@@ -89,7 +88,6 @@ export const WithContent: Story = {
 export const Saving: Story = {
     args: {
         className: "w-full max-w-md",
-        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
         taskTypeKey: TASK_TYPE_KEYS.NORMAL,
         title: "Task being saved",
         description: "This task is currently being saved to the server.",
@@ -103,7 +101,6 @@ export const Saving: Story = {
 export const SaveSuccess: Story = {
     args: {
         className: "w-full max-w-md",
-        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
         taskTypeKey: TASK_TYPE_KEYS.NORMAL,
         title: "Successfully saved task",
         description: "This task was successfully saved.",
@@ -117,7 +114,6 @@ export const SaveSuccess: Story = {
 export const DeleteConfirmDialog: Story = {
     args: {
         className: "w-full max-w-md",
-        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
         taskTypeKey: TASK_TYPE_KEYS.LOW,
         title: "Task to delete",
         description: "This task will be deleted after confirmation.",
@@ -131,7 +127,6 @@ export const DeleteConfirmDialog: Story = {
 export const Deleting: Story = {
     args: {
         className: "w-full max-w-md",
-        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
         taskTypeKey: TASK_TYPE_KEYS.LOW,
         title: "Task being deleted",
         description: "This task is currently being deleted.",
@@ -145,7 +140,6 @@ export const Deleting: Story = {
 export const Scheduled: Story = {
     args: {
         className: "w-full max-w-md",
-        taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
         taskTypeKey: TASK_TYPE_KEYS.SCHEDULED,
         title: "Scheduled task",
         description: "This is a scheduled task with a due time.",
