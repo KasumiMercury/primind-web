@@ -1,6 +1,6 @@
 import { LogIn } from "lucide-react";
 import { useState } from "react";
-import { useSearchParams } from "react-router";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { LoginDialog } from "~/auth/login-dialog";
 import { Button } from "~/components/ui/button";
 import type { SerializableTask } from "~/task/list-active-tasks.server";
@@ -17,6 +17,8 @@ interface WelcomeProps {
 
 export function Welcome({ tasks }: WelcomeProps) {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const location = useLocation();
     const showLogin = searchParams.get("login") === "true";
 
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
@@ -33,7 +35,12 @@ export function Welcome({ tasks }: WelcomeProps) {
     };
 
     const handleTaskClick = (task: SerializableTask) => {
-        console.log("Task clicked:", task.taskId);
+        navigate(`/tasks/${task.taskId}`, {
+            state: {
+                backgroundLocation: location,
+                tasks: tasks,
+            },
+        });
     };
 
     return (
