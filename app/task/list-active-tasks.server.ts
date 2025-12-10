@@ -23,6 +23,7 @@ export interface SerializableTask {
     scheduledAt?: SerializableTimestamp;
     createdAt?: SerializableTimestamp;
     targetAt?: SerializableTimestamp;
+    color: string;
 }
 
 function serializeTask(task: Task): SerializableTask {
@@ -41,6 +42,7 @@ function serializeTask(task: Task): SerializableTask {
         targetAt: task.targetAt
             ? { seconds: task.targetAt.seconds.toString() }
             : undefined,
+        color: task.color,
     };
 }
 
