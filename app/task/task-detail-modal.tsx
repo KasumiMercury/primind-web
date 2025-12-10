@@ -51,6 +51,8 @@ export function TaskDetailModal({
     // Track if save operation was initiated
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Capture values at save time to avoid stale closure issues
+    const pendingSaveValues = useRef<{ title: string; description: string } | null>(null);
 
     useEffect(() => {
         return () => {
@@ -73,8 +75,11 @@ export function TaskDetailModal({
         if (saveFetcher.data?.success) {
             hasStartedSaving.current = false;
             setSaveSuccess(true);
-            setLastSavedTitle(title);
-            setLastSavedDescription(description);
+            if (pendingSaveValues.current) {
+                setLastSavedTitle(pendingSaveValues.current.title);
+                setLastSavedDescription(pendingSaveValues.current.description);
+                pendingSaveValues.current = null;
+            }
             setIsEditing(false);
 
             if (saveResetTimer.current) {
@@ -88,8 +93,9 @@ export function TaskDetailModal({
 
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
+            pendingSaveValues.current = null;
         }
-    }, [saveFetcher.state, saveFetcher.data, title, description]);
+    }, [saveFetcher.state, saveFetcher.data]);
 
     // Handle delete success
     useEffect(() => {
@@ -110,6 +116,7 @@ export function TaskDetailModal({
         setIsEditing(false);
         setSaveSuccess(false);
         hasStartedSaving.current = false;
+        pendingSaveValues.current = null;
         if (saveResetTimer.current) {
             clearTimeout(saveResetTimer.current);
             saveResetTimer.current = null;
@@ -127,6 +134,7 @@ export function TaskDetailModal({
             return;
         }
         hasStartedSaving.current = true;
+        pendingSaveValues.current = { title, description };
         if (saveResetTimer.current) {
             clearTimeout(saveResetTimer.current);
         }
