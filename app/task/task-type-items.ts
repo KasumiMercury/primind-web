@@ -8,6 +8,8 @@ import { StarBurstIcon } from "./icons/starburst-icon";
 export type IconComponent = ComponentType<{
     className?: string;
     label: string;
+    showLabel?: boolean;
+    fillColor?: string;
 }>;
 
 export const TASK_TYPE_KEYS = {

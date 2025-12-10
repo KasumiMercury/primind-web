@@ -51,8 +51,9 @@ export function TaskCard({ task, className, onClick }: TaskCardProps) {
         >
             <div className="shrink-0">
                 <Icon
-                    className={cn("size-12", config.className)}
-                    label={config.label}
+                    className={"size-12"}
+                    label={""}
+                    fillColor={task.color || undefined}
                 />
             </div>
 

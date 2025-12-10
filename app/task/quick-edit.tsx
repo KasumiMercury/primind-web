@@ -11,6 +11,7 @@ interface QuickEditProps {
     className?: string;
     taskId: string;
     taskTypeKey: TaskTypeKey;
+    color: string;
     onDeleted?: () => void;
     onClosed?: () => void;
 }
@@ -21,6 +22,7 @@ export function QuickEdit({
     className,
     taskId,
     taskTypeKey,
+    color,
     onDeleted,
     onClosed,
 }: QuickEditProps) {
@@ -85,9 +87,9 @@ export function QuickEdit({
     return (
         <QuickEditContent
             className={className}
-            taskId={taskId}
             taskTypeKey={taskTypeKey}
             title={title}
+            color={color}
             description={description}
             onTitleChange={setTitle}
             onDescriptionChange={setDescription}
