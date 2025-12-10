@@ -1,12 +1,14 @@
 import { useFetcher } from "react-router";
 import { v7 as uuidv7 } from "uuid";
 import { OperationArea } from "./operation-area";
+import { getRandomTaskColor } from "./task-colors";
 import { createTaskFormData } from "./task-form-data";
 import type { TaskTypeKey } from "./task-type-items";
 
 export interface TaskRegistrationEvent {
     taskId: string;
     taskTypeKey: TaskTypeKey;
+    color: string;
 }
 
 interface TaskRegistrationProps {
@@ -24,14 +26,15 @@ export function TaskRegistration({
 
     const handleRegister = (taskTypeKey: TaskTypeKey) => {
         const taskId = uuidv7();
-        const formData = createTaskFormData(taskId, taskTypeKey);
+        const color = getRandomTaskColor();
+        const formData = createTaskFormData(taskId, taskTypeKey, color);
 
         fetcher.submit(formData, {
             method: "post",
             action: "/api/task",
         });
 
-        onTaskRegistered?.({ taskId, taskTypeKey });
+        onTaskRegistered?.({ taskId, taskTypeKey, color });
     };
 
     return (
