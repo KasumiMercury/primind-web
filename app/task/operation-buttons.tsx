@@ -42,7 +42,7 @@ export function OperationButtons({
             }}
         >
             <button
-                className="bg-linear-to-r from-primary/10 to-transparent hover:bg-primary/10"
+                className="bg-linear-to-r from-primary/5 to-transparent hover:bg-primary/10"
                 type="button"
                 style={{
                     width: `${sideButtonWidth}px`,
@@ -82,7 +82,7 @@ export function OperationButtons({
             </div>
 
             <button
-                className="bg-linear-to-l from-primary/10 to-transparent hover:bg-primary/10"
+                className="bg-linear-to-l from-primary/5 to-transparent hover:bg-primary/10"
                 type="button"
                 style={{
                     width: `${sideButtonWidth}px`,
