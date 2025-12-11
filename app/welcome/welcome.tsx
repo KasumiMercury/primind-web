@@ -1,5 +1,9 @@
+import { Info } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+import { Button } from "~/components/ui/button";
+import { useAppLayoutContext } from "~/layouts/app-layout";
 import type { SerializableTask } from "~/task/list-active-tasks.server";
 import { QuickEdit } from "~/task/quick-edit";
 import { TaskCardGrid } from "~/task/task-card-grid";
@@ -10,11 +14,13 @@ import {
 
 interface WelcomeProps {
     tasks: SerializableTask[];
+    isAuthenticated: boolean;
 }
 
-export function Welcome({ tasks }: WelcomeProps) {
+export function Welcome({ tasks, isAuthenticated }: WelcomeProps) {
     const navigate = useNavigate();
     const location = useLocation();
+    const { openLoginDialog } = useAppLayoutContext();
 
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
         null,
@@ -40,6 +46,28 @@ export function Welcome({ tasks }: WelcomeProps) {
 
     return (
         <>
+            {!isAuthenticated && (
+                <Alert className="w-full max-w-xl">
+                    <Info className="h-4 w-4" />
+                    <div className="ml-3 flex flex-row items-center justify-between">
+                        <div>
+                            <AlertTitle>Login Required</AlertTitle>
+                            <AlertDescription>
+                                <p>Please log in to access all features</p>
+                            </AlertDescription>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={openLoginDialog}
+                        >
+                            Log in
+                        </Button>
+                    </div>
+                </Alert>
+            )}
+
             {latestTask && (
                 <div className="w-full max-w-md rounded-lg border-2 border-secondary px-3 py-3">
                     <QuickEdit
