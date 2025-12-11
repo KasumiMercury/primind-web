@@ -2,7 +2,12 @@ import { LogIn, User } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { LoginDialog } from "~/auth/login-dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import type { SerializableTask } from "~/task/list-active-tasks.server";
 import { QuickEdit } from "~/task/quick-edit";
 import { TaskCardGrid } from "~/task/task-card-grid";
@@ -51,24 +56,27 @@ export function Welcome({ tasks }: WelcomeProps) {
                     <header className="w-full max-w-4xl">
                         <div className="flex w-full items-center justify-end">
                             {isAuthenticated ? (
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <button
-                                      className="inline-flex cursor-pointer items-center rounded-full bg-background p-3 text-primary text-sm ring-2 ring-secondary hover:bg-background hover:text-primary hover:ring-primary focus:outline-none focus:ring-2"
-                                      type="button"
-                                  >
-                                      <User className="h-5 w-5" />
-                                  </button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56" align="end">
-                                  <DropdownMenuItem>Logout</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <button
+                                            className="inline-flex cursor-pointer items-center rounded-full bg-background p-3 text-primary text-sm ring-2 ring-secondary hover:bg-background hover:text-primary hover:ring-primary focus:outline-none focus:ring-2"
+                                            type="button"
+                                        >
+                                            <User className="h-5 w-5" />
+                                        </button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        className="w-56"
+                                        align="end"
+                                    >
+                                        <DropdownMenuItem>
+                                            Logout
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             ) : (
                                 <button
-                                    onClick={
-                                        () => setShowLoginDialog(true)
-                                    }
+                                    onClick={() => setShowLoginDialog(true)}
                                     className="inline-flex cursor-pointer items-center rounded-full bg-primary p-3 text-primary-foreground text-sm ring-2 ring-secondary hover:bg-background hover:text-primary hover:ring-primary focus:outline-none focus:ring-2"
                                     type="button"
                                 >
