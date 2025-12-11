@@ -1,5 +1,5 @@
 import { Info } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
@@ -25,6 +25,12 @@ export function Welcome({ tasks, isAuthenticated }: WelcomeProps) {
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
         null,
     );
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setLatestTask(null);
+        }
+    }, [isAuthenticated]);
 
     const handleDeleted = () => {
         setLatestTask(null);
