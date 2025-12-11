@@ -2,419 +2,424 @@
 // @generated from file task/v1/task.proto (package task.v1, syntax proto3)
 /* eslint-disable */
 
-import type { Message } from "@bufbuild/protobuf";
-import type {
-    GenEnum,
-    GenFile,
-    GenMessage,
-    GenService,
-} from "@bufbuild/protobuf/codegenv2";
-import {
-    enumDesc,
-    fileDesc,
-    messageDesc,
-    serviceDesc,
-} from "@bufbuild/protobuf/codegenv2";
-import type { FieldMask, Timestamp } from "@bufbuild/protobuf/wkt";
-import {
-    file_google_protobuf_field_mask,
-    file_google_protobuf_timestamp,
-} from "@bufbuild/protobuf/wkt";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
+import type { FieldMask, Timestamp } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_field_mask, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file task/v1/task.proto.
  */
-export const file_task_v1_task: GenFile =
-    /*@__PURE__*/
-    fileDesc(
-        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEi5wIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSNQoMc2NoZWR1bGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi0KCXRhcmdldF9hdBgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDQoFY29sb3IYCSABKAlCDwoNX3NjaGVkdWxlZF9hdCLwAQoRQ3JlYXRlVGFza1JlcXVlc3QSHgoHdGFza19pZBgBIAEoCUIIukgFcgOwAQFIAIgBARI0Cgl0YXNrX3R5cGUYAiABKA4yES50YXNrLnYxLlRhc2tUeXBlQg66SAuCAQgYARgCGAMYBBINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRI1CgxzY2hlZHVsZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSAGIAQESDQoFY29sb3IYBiABKAlCCgoIX3Rhc2tfaWRCDwoNX3NjaGVkdWxlZF9hdCIxChJDcmVhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayIrCg5HZXRUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABASIuCg9HZXRUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayJCChZMaXN0QWN0aXZlVGFza3NSZXF1ZXN0EigKCXNvcnRfdHlwZRgBIAEoDjIVLnRhc2sudjEuVGFza1NvcnRUeXBlIjcKF0xpc3RBY3RpdmVUYXNrc1Jlc3BvbnNlEhwKBXRhc2tzGAEgAygLMg0udGFzay52MS5UYXNrIowCChFVcGRhdGVUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABARIoCgt0YXNrX3N0YXR1cxgCIAEoDjITLnRhc2sudjEuVGFza1N0YXR1cxINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRI1CgxzY2hlZHVsZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSACIAQESDQoFY29sb3IYBiABKAkSNwoLdXBkYXRlX21hc2sYByABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrQga6SAPIAQFCDwoNX3NjaGVkdWxlZF9hdCIxChJVcGRhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayp9CghUYXNrVHlwZRIZChVUQVNLX1RZUEVfVU5TUEVDSUZJRUQQABIUChBUQVNLX1RZUEVfVVJHRU5UEAESFAoQVEFTS19UWVBFX05PUk1BTBACEhEKDVRBU0tfVFlQRV9MT1cQAxIXChNUQVNLX1RZUEVfU0NIRURVTEVEEAQqXAoKVGFza1N0YXR1cxIbChdUQVNLX1NUQVRVU19VTlNQRUNJRklFRBAAEhYKElRBU0tfU1RBVFVTX0FDVElWRRABEhkKFVRBU0tfU1RBVFVTX0NPTVBMRVRFRBACKkwKDFRhc2tTb3J0VHlwZRIeChpUQVNLX1NPUlRfVFlQRV9VTlNQRUNJRklFRBAAEhwKGFRBU0tfU09SVF9UWVBFX1RBUkdFVF9BVBABMq8CCgtUYXNrU2VydmljZRJFCgpDcmVhdGVUYXNrEhoudGFzay52MS5DcmVhdGVUYXNrUmVxdWVzdBobLnRhc2sudjEuQ3JlYXRlVGFza1Jlc3BvbnNlEjwKB0dldFRhc2sSFy50YXNrLnYxLkdldFRhc2tSZXF1ZXN0GhgudGFzay52MS5HZXRUYXNrUmVzcG9uc2USVAoPTGlzdEFjdGl2ZVRhc2tzEh8udGFzay52MS5MaXN0QWN0aXZlVGFza3NSZXF1ZXN0GiAudGFzay52MS5MaXN0QWN0aXZlVGFza3NSZXNwb25zZRJFCgpVcGRhdGVUYXNrEhoudGFzay52MS5VcGRhdGVUYXNrUmVxdWVzdBobLnRhc2sudjEuVXBkYXRlVGFza1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z",
-        [
-            file_buf_validate_validate,
-            file_google_protobuf_field_mask,
-            file_google_protobuf_timestamp,
-        ],
-    );
+export const file_task_v1_task: GenFile = /*@__PURE__*/
+  fileDesc("ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEi5wIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSNQoMc2NoZWR1bGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi0KCXRhcmdldF9hdBgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDQoFY29sb3IYCSABKAlCDwoNX3NjaGVkdWxlZF9hdCLwAQoRQ3JlYXRlVGFza1JlcXVlc3QSHgoHdGFza19pZBgBIAEoCUIIukgFcgOwAQFIAIgBARI0Cgl0YXNrX3R5cGUYAiABKA4yES50YXNrLnYxLlRhc2tUeXBlQg66SAuCAQgYARgCGAMYBBINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRI1CgxzY2hlZHVsZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSAGIAQESDQoFY29sb3IYBiABKAlCCgoIX3Rhc2tfaWRCDwoNX3NjaGVkdWxlZF9hdCIxChJDcmVhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayIrCg5HZXRUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABASIuCg9HZXRUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayJCChZMaXN0QWN0aXZlVGFza3NSZXF1ZXN0EigKCXNvcnRfdHlwZRgBIAEoDjIVLnRhc2sudjEuVGFza1NvcnRUeXBlIjcKF0xpc3RBY3RpdmVUYXNrc1Jlc3BvbnNlEhwKBXRhc2tzGAEgAygLMg0udGFzay52MS5UYXNrIowCChFVcGRhdGVUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABARIoCgt0YXNrX3N0YXR1cxgCIAEoDjITLnRhc2sudjEuVGFza1N0YXR1cxINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRI1CgxzY2hlZHVsZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSACIAQESDQoFY29sb3IYBiABKAkSNwoLdXBkYXRlX21hc2sYByABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrQga6SAPIAQFCDwoNX3NjaGVkdWxlZF9hdCIxChJVcGRhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayIuChFEZWxldGVUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABASIUChJEZWxldGVUYXNrUmVzcG9uc2UqfQoIVGFza1R5cGUSGQoVVEFTS19UWVBFX1VOU1BFQ0lGSUVEEAASFAoQVEFTS19UWVBFX1VSR0VOVBABEhQKEFRBU0tfVFlQRV9OT1JNQUwQAhIRCg1UQVNLX1RZUEVfTE9XEAMSFwoTVEFTS19UWVBFX1NDSEVEVUxFRBAEKlwKClRhc2tTdGF0dXMSGwoXVEFTS19TVEFUVVNfVU5TUEVDSUZJRUQQABIWChJUQVNLX1NUQVRVU19BQ1RJVkUQARIZChVUQVNLX1NUQVRVU19DT01QTEVURUQQAipMCgxUYXNrU29ydFR5cGUSHgoaVEFTS19TT1JUX1RZUEVfVU5TUEVDSUZJRUQQABIcChhUQVNLX1NPUlRfVFlQRV9UQVJHRVRfQVQQATL2AgoLVGFza1NlcnZpY2USRQoKQ3JlYXRlVGFzaxIaLnRhc2sudjEuQ3JlYXRlVGFza1JlcXVlc3QaGy50YXNrLnYxLkNyZWF0ZVRhc2tSZXNwb25zZRI8CgdHZXRUYXNrEhcudGFzay52MS5HZXRUYXNrUmVxdWVzdBoYLnRhc2sudjEuR2V0VGFza1Jlc3BvbnNlElQKD0xpc3RBY3RpdmVUYXNrcxIfLnRhc2sudjEuTGlzdEFjdGl2ZVRhc2tzUmVxdWVzdBogLnRhc2sudjEuTGlzdEFjdGl2ZVRhc2tzUmVzcG9uc2USRQoKVXBkYXRlVGFzaxIaLnRhc2sudjEuVXBkYXRlVGFza1JlcXVlc3QaGy50YXNrLnYxLlVwZGF0ZVRhc2tSZXNwb25zZRJFCgpEZWxldGVUYXNrEhoudGFzay52MS5EZWxldGVUYXNrUmVxdWVzdBobLnRhc2sudjEuRGVsZXRlVGFza1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z", [file_buf_validate_validate, file_google_protobuf_field_mask, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message task.v1.Task
  */
 export type Task = Message<"task.v1.Task"> & {
-    /**
-     * @generated from field: string task_id = 1;
-     */
-    taskId: string;
+  /**
+   * @generated from field: string task_id = 1;
+   */
+  taskId: string;
 
-    /**
-     * @generated from field: task.v1.TaskType task_type = 2;
-     */
-    taskType: TaskType;
+  /**
+   * @generated from field: task.v1.TaskType task_type = 2;
+   */
+  taskType: TaskType;
 
-    /**
-     * @generated from field: task.v1.TaskStatus task_status = 3;
-     */
-    taskStatus: TaskStatus;
+  /**
+   * @generated from field: task.v1.TaskStatus task_status = 3;
+   */
+  taskStatus: TaskStatus;
 
-    /**
-     * @generated from field: string title = 4;
-     */
-    title: string;
+  /**
+   * @generated from field: string title = 4;
+   */
+  title: string;
 
-    /**
-     * @generated from field: string description = 5;
-     */
-    description: string;
+  /**
+   * @generated from field: string description = 5;
+   */
+  description: string;
 
-    /**
-     * @generated from field: optional google.protobuf.Timestamp scheduled_at = 6;
-     */
-    scheduledAt?: Timestamp;
+  /**
+   * @generated from field: optional google.protobuf.Timestamp scheduled_at = 6;
+   */
+  scheduledAt?: Timestamp;
 
-    /**
-     * @generated from field: google.protobuf.Timestamp created_at = 7;
-     */
-    createdAt?: Timestamp;
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 7;
+   */
+  createdAt?: Timestamp;
 
-    /**
-     * @generated from field: google.protobuf.Timestamp target_at = 8;
-     */
-    targetAt?: Timestamp;
+  /**
+   * @generated from field: google.protobuf.Timestamp target_at = 8;
+   */
+  targetAt?: Timestamp;
 
-    /**
-     * @generated from field: string color = 9;
-     */
-    color: string;
+  /**
+   * @generated from field: string color = 9;
+   */
+  color: string;
 };
 
 /**
  * Describes the message task.v1.Task.
  * Use `create(TaskSchema)` to create a new message.
  */
-export const TaskSchema: GenMessage<Task> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 0);
+export const TaskSchema: GenMessage<Task> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 0);
 
 /**
  * @generated from message task.v1.CreateTaskRequest
  */
 export type CreateTaskRequest = Message<"task.v1.CreateTaskRequest"> & {
-    /**
-     * @generated from field: optional string task_id = 1;
-     */
-    taskId?: string;
+  /**
+   * @generated from field: optional string task_id = 1;
+   */
+  taskId?: string;
 
-    /**
-     * @generated from field: task.v1.TaskType task_type = 2;
-     */
-    taskType: TaskType;
+  /**
+   * @generated from field: task.v1.TaskType task_type = 2;
+   */
+  taskType: TaskType;
 
-    /**
-     * @generated from field: string title = 3;
-     */
-    title: string;
+  /**
+   * @generated from field: string title = 3;
+   */
+  title: string;
 
-    /**
-     * @generated from field: string description = 4;
-     */
-    description: string;
+  /**
+   * @generated from field: string description = 4;
+   */
+  description: string;
 
-    /**
-     * @generated from field: optional google.protobuf.Timestamp scheduled_at = 5;
-     */
-    scheduledAt?: Timestamp;
+  /**
+   * @generated from field: optional google.protobuf.Timestamp scheduled_at = 5;
+   */
+  scheduledAt?: Timestamp;
 
-    /**
-     * @generated from field: string color = 6;
-     */
-    color: string;
+  /**
+   * @generated from field: string color = 6;
+   */
+  color: string;
 };
 
 /**
  * Describes the message task.v1.CreateTaskRequest.
  * Use `create(CreateTaskRequestSchema)` to create a new message.
  */
-export const CreateTaskRequestSchema: GenMessage<CreateTaskRequest> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 1);
+export const CreateTaskRequestSchema: GenMessage<CreateTaskRequest> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 1);
 
 /**
  * @generated from message task.v1.CreateTaskResponse
  */
 export type CreateTaskResponse = Message<"task.v1.CreateTaskResponse"> & {
-    /**
-     * @generated from field: task.v1.Task task = 1;
-     */
-    task?: Task;
+  /**
+   * @generated from field: task.v1.Task task = 1;
+   */
+  task?: Task;
 };
 
 /**
  * Describes the message task.v1.CreateTaskResponse.
  * Use `create(CreateTaskResponseSchema)` to create a new message.
  */
-export const CreateTaskResponseSchema: GenMessage<CreateTaskResponse> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 2);
+export const CreateTaskResponseSchema: GenMessage<CreateTaskResponse> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 2);
 
 /**
  * @generated from message task.v1.GetTaskRequest
  */
 export type GetTaskRequest = Message<"task.v1.GetTaskRequest"> & {
-    /**
-     * @generated from field: string task_id = 1;
-     */
-    taskId: string;
+  /**
+   * @generated from field: string task_id = 1;
+   */
+  taskId: string;
 };
 
 /**
  * Describes the message task.v1.GetTaskRequest.
  * Use `create(GetTaskRequestSchema)` to create a new message.
  */
-export const GetTaskRequestSchema: GenMessage<GetTaskRequest> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 3);
+export const GetTaskRequestSchema: GenMessage<GetTaskRequest> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 3);
 
 /**
  * @generated from message task.v1.GetTaskResponse
  */
 export type GetTaskResponse = Message<"task.v1.GetTaskResponse"> & {
-    /**
-     * @generated from field: task.v1.Task task = 1;
-     */
-    task?: Task;
+  /**
+   * @generated from field: task.v1.Task task = 1;
+   */
+  task?: Task;
 };
 
 /**
  * Describes the message task.v1.GetTaskResponse.
  * Use `create(GetTaskResponseSchema)` to create a new message.
  */
-export const GetTaskResponseSchema: GenMessage<GetTaskResponse> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 4);
+export const GetTaskResponseSchema: GenMessage<GetTaskResponse> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 4);
 
 /**
  * @generated from message task.v1.ListActiveTasksRequest
  */
-export type ListActiveTasksRequest =
-    Message<"task.v1.ListActiveTasksRequest"> & {
-        /**
-         * @generated from field: task.v1.TaskSortType sort_type = 1;
-         */
-        sortType: TaskSortType;
-    };
+export type ListActiveTasksRequest = Message<"task.v1.ListActiveTasksRequest"> & {
+  /**
+   * @generated from field: task.v1.TaskSortType sort_type = 1;
+   */
+  sortType: TaskSortType;
+};
 
 /**
  * Describes the message task.v1.ListActiveTasksRequest.
  * Use `create(ListActiveTasksRequestSchema)` to create a new message.
  */
-export const ListActiveTasksRequestSchema: GenMessage<ListActiveTasksRequest> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 5);
+export const ListActiveTasksRequestSchema: GenMessage<ListActiveTasksRequest> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 5);
 
 /**
  * @generated from message task.v1.ListActiveTasksResponse
  */
-export type ListActiveTasksResponse =
-    Message<"task.v1.ListActiveTasksResponse"> & {
-        /**
-         * @generated from field: repeated task.v1.Task tasks = 1;
-         */
-        tasks: Task[];
-    };
+export type ListActiveTasksResponse = Message<"task.v1.ListActiveTasksResponse"> & {
+  /**
+   * @generated from field: repeated task.v1.Task tasks = 1;
+   */
+  tasks: Task[];
+};
 
 /**
  * Describes the message task.v1.ListActiveTasksResponse.
  * Use `create(ListActiveTasksResponseSchema)` to create a new message.
  */
-export const ListActiveTasksResponseSchema: GenMessage<ListActiveTasksResponse> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 6);
+export const ListActiveTasksResponseSchema: GenMessage<ListActiveTasksResponse> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 6);
 
 /**
  * @generated from message task.v1.UpdateTaskRequest
  */
 export type UpdateTaskRequest = Message<"task.v1.UpdateTaskRequest"> & {
-    /**
-     * @generated from field: string task_id = 1;
-     */
-    taskId: string;
+  /**
+   * @generated from field: string task_id = 1;
+   */
+  taskId: string;
 
-    /**
-     * @generated from field: task.v1.TaskStatus task_status = 2;
-     */
-    taskStatus: TaskStatus;
+  /**
+   * @generated from field: task.v1.TaskStatus task_status = 2;
+   */
+  taskStatus: TaskStatus;
 
-    /**
-     * @generated from field: string title = 3;
-     */
-    title: string;
+  /**
+   * @generated from field: string title = 3;
+   */
+  title: string;
 
-    /**
-     * @generated from field: string description = 4;
-     */
-    description: string;
+  /**
+   * @generated from field: string description = 4;
+   */
+  description: string;
 
-    /**
-     * @generated from field: optional google.protobuf.Timestamp scheduled_at = 5;
-     */
-    scheduledAt?: Timestamp;
+  /**
+   * @generated from field: optional google.protobuf.Timestamp scheduled_at = 5;
+   */
+  scheduledAt?: Timestamp;
 
-    /**
-     * @generated from field: string color = 6;
-     */
-    color: string;
+  /**
+   * @generated from field: string color = 6;
+   */
+  color: string;
 
-    /**
-     * @generated from field: google.protobuf.FieldMask update_mask = 7;
-     */
-    updateMask?: FieldMask;
+  /**
+   * @generated from field: google.protobuf.FieldMask update_mask = 7;
+   */
+  updateMask?: FieldMask;
 };
 
 /**
  * Describes the message task.v1.UpdateTaskRequest.
  * Use `create(UpdateTaskRequestSchema)` to create a new message.
  */
-export const UpdateTaskRequestSchema: GenMessage<UpdateTaskRequest> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 7);
+export const UpdateTaskRequestSchema: GenMessage<UpdateTaskRequest> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 7);
 
 /**
  * @generated from message task.v1.UpdateTaskResponse
  */
 export type UpdateTaskResponse = Message<"task.v1.UpdateTaskResponse"> & {
-    /**
-     * @generated from field: task.v1.Task task = 1;
-     */
-    task?: Task;
+  /**
+   * @generated from field: task.v1.Task task = 1;
+   */
+  task?: Task;
 };
 
 /**
  * Describes the message task.v1.UpdateTaskResponse.
  * Use `create(UpdateTaskResponseSchema)` to create a new message.
  */
-export const UpdateTaskResponseSchema: GenMessage<UpdateTaskResponse> =
-    /*@__PURE__*/
-    messageDesc(file_task_v1_task, 8);
+export const UpdateTaskResponseSchema: GenMessage<UpdateTaskResponse> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 8);
+
+/**
+ * @generated from message task.v1.DeleteTaskRequest
+ */
+export type DeleteTaskRequest = Message<"task.v1.DeleteTaskRequest"> & {
+  /**
+   * @generated from field: string task_id = 1;
+   */
+  taskId: string;
+};
+
+/**
+ * Describes the message task.v1.DeleteTaskRequest.
+ * Use `create(DeleteTaskRequestSchema)` to create a new message.
+ */
+export const DeleteTaskRequestSchema: GenMessage<DeleteTaskRequest> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 9);
+
+/**
+ * @generated from message task.v1.DeleteTaskResponse
+ */
+export type DeleteTaskResponse = Message<"task.v1.DeleteTaskResponse"> & {
+};
+
+/**
+ * Describes the message task.v1.DeleteTaskResponse.
+ * Use `create(DeleteTaskResponseSchema)` to create a new message.
+ */
+export const DeleteTaskResponseSchema: GenMessage<DeleteTaskResponse> = /*@__PURE__*/
+  messageDesc(file_task_v1_task, 10);
 
 /**
  * @generated from enum task.v1.TaskType
  */
 export enum TaskType {
-    /**
-     * @generated from enum value: TASK_TYPE_UNSPECIFIED = 0;
-     */
-    UNSPECIFIED = 0,
+  /**
+   * @generated from enum value: TASK_TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
 
-    /**
-     * @generated from enum value: TASK_TYPE_URGENT = 1;
-     */
-    URGENT = 1,
+  /**
+   * @generated from enum value: TASK_TYPE_URGENT = 1;
+   */
+  URGENT = 1,
 
-    /**
-     * @generated from enum value: TASK_TYPE_NORMAL = 2;
-     */
-    NORMAL = 2,
+  /**
+   * @generated from enum value: TASK_TYPE_NORMAL = 2;
+   */
+  NORMAL = 2,
 
-    /**
-     * @generated from enum value: TASK_TYPE_LOW = 3;
-     */
-    LOW = 3,
+  /**
+   * @generated from enum value: TASK_TYPE_LOW = 3;
+   */
+  LOW = 3,
 
-    /**
-     * @generated from enum value: TASK_TYPE_SCHEDULED = 4;
-     */
-    SCHEDULED = 4,
+  /**
+   * @generated from enum value: TASK_TYPE_SCHEDULED = 4;
+   */
+  SCHEDULED = 4,
 }
 
 /**
  * Describes the enum task.v1.TaskType.
  */
-export const TaskTypeSchema: GenEnum<TaskType> =
-    /*@__PURE__*/
-    enumDesc(file_task_v1_task, 0);
+export const TaskTypeSchema: GenEnum<TaskType> = /*@__PURE__*/
+  enumDesc(file_task_v1_task, 0);
 
 /**
  * @generated from enum task.v1.TaskStatus
  */
 export enum TaskStatus {
-    /**
-     * @generated from enum value: TASK_STATUS_UNSPECIFIED = 0;
-     */
-    UNSPECIFIED = 0,
+  /**
+   * @generated from enum value: TASK_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
 
-    /**
-     * @generated from enum value: TASK_STATUS_ACTIVE = 1;
-     */
-    ACTIVE = 1,
+  /**
+   * @generated from enum value: TASK_STATUS_ACTIVE = 1;
+   */
+  ACTIVE = 1,
 
-    /**
-     * @generated from enum value: TASK_STATUS_COMPLETED = 2;
-     */
-    COMPLETED = 2,
+  /**
+   * @generated from enum value: TASK_STATUS_COMPLETED = 2;
+   */
+  COMPLETED = 2,
 }
 
 /**
  * Describes the enum task.v1.TaskStatus.
  */
-export const TaskStatusSchema: GenEnum<TaskStatus> =
-    /*@__PURE__*/
-    enumDesc(file_task_v1_task, 1);
+export const TaskStatusSchema: GenEnum<TaskStatus> = /*@__PURE__*/
+  enumDesc(file_task_v1_task, 1);
 
 /**
  * @generated from enum task.v1.TaskSortType
  */
 export enum TaskSortType {
-    /**
-     * @generated from enum value: TASK_SORT_TYPE_UNSPECIFIED = 0;
-     */
-    UNSPECIFIED = 0,
+  /**
+   * @generated from enum value: TASK_SORT_TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
 
-    /**
-     * @generated from enum value: TASK_SORT_TYPE_TARGET_AT = 1;
-     */
-    TARGET_AT = 1,
+  /**
+   * @generated from enum value: TASK_SORT_TYPE_TARGET_AT = 1;
+   */
+  TARGET_AT = 1,
 }
 
 /**
  * Describes the enum task.v1.TaskSortType.
  */
-export const TaskSortTypeSchema: GenEnum<TaskSortType> =
-    /*@__PURE__*/
-    enumDesc(file_task_v1_task, 2);
+export const TaskSortTypeSchema: GenEnum<TaskSortType> = /*@__PURE__*/
+  enumDesc(file_task_v1_task, 2);
 
 /**
  * @generated from service task.v1.TaskService
  */
 export const TaskService: GenService<{
-    /**
-     * @generated from rpc task.v1.TaskService.CreateTask
-     */
-    createTask: {
-        methodKind: "unary";
-        input: typeof CreateTaskRequestSchema;
-        output: typeof CreateTaskResponseSchema;
-    };
-    /**
-     * @generated from rpc task.v1.TaskService.GetTask
-     */
-    getTask: {
-        methodKind: "unary";
-        input: typeof GetTaskRequestSchema;
-        output: typeof GetTaskResponseSchema;
-    };
-    /**
-     * @generated from rpc task.v1.TaskService.ListActiveTasks
-     */
-    listActiveTasks: {
-        methodKind: "unary";
-        input: typeof ListActiveTasksRequestSchema;
-        output: typeof ListActiveTasksResponseSchema;
-    };
-    /**
-     * @generated from rpc task.v1.TaskService.UpdateTask
-     */
-    updateTask: {
-        methodKind: "unary";
-        input: typeof UpdateTaskRequestSchema;
-        output: typeof UpdateTaskResponseSchema;
-    };
-}> = /*@__PURE__*/ serviceDesc(file_task_v1_task, 0);
+  /**
+   * @generated from rpc task.v1.TaskService.CreateTask
+   */
+  createTask: {
+    methodKind: "unary";
+    input: typeof CreateTaskRequestSchema;
+    output: typeof CreateTaskResponseSchema;
+  },
+  /**
+   * @generated from rpc task.v1.TaskService.GetTask
+   */
+  getTask: {
+    methodKind: "unary";
+    input: typeof GetTaskRequestSchema;
+    output: typeof GetTaskResponseSchema;
+  },
+  /**
+   * @generated from rpc task.v1.TaskService.ListActiveTasks
+   */
+  listActiveTasks: {
+    methodKind: "unary";
+    input: typeof ListActiveTasksRequestSchema;
+    output: typeof ListActiveTasksResponseSchema;
+  },
+  /**
+   * @generated from rpc task.v1.TaskService.UpdateTask
+   */
+  updateTask: {
+    methodKind: "unary";
+    input: typeof UpdateTaskRequestSchema;
+    output: typeof UpdateTaskResponseSchema;
+  },
+  /**
+   * @generated from rpc task.v1.TaskService.DeleteTask
+   */
+  deleteTask: {
+    methodKind: "unary";
+    input: typeof DeleteTaskRequestSchema;
+    output: typeof DeleteTaskResponseSchema;
+  },
+}> = /*@__PURE__*/
+  serviceDesc(file_task_v1_task, 0);
+
