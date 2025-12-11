@@ -87,7 +87,6 @@ export function Welcome({ tasks }: WelcomeProps) {
                 <div className="fixed inset-x-0 bottom-0 flex items-center justify-center p-4">
                     <TaskRegistration
                         className="w-full max-w-xl"
-                        innerClassName="bg-secondary"
                         onTaskRegistered={setLatestTask}
                     />
                 </div>
