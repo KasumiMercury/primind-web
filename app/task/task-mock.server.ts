@@ -3,6 +3,7 @@ import { timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { Code, ConnectError, createRouterTransport } from "@connectrpc/connect";
 import {
     CreateTaskResponseSchema,
+    DeleteTaskResponseSchema,
     GetTaskResponseSchema,
     ListActiveTasksResponseSchema,
     type Task,
@@ -195,6 +196,32 @@ export function createTaskMockTransport() {
                 return create(UpdateTaskResponseSchema, {
                     task: updatedTask,
                 });
+            },
+
+            deleteTask: (req) => {
+                taskLogger.debug(
+                    { taskId: req.taskId },
+                    "Mock: DeleteTask called",
+                );
+
+                const existingTask = mockTasks.get(req.taskId);
+
+                if (!existingTask) {
+                    taskLogger.warn(
+                        { taskId: req.taskId },
+                        "Mock: Task not found for delete",
+                    );
+                    throw new ConnectError(
+                        `Task not found: ${req.taskId}`,
+                        Code.NotFound,
+                    );
+                }
+
+                mockTasks.delete(req.taskId);
+
+                taskLogger.info({ taskId: req.taskId }, "Mock: Task deleted");
+
+                return create(DeleteTaskResponseSchema, {});
             },
         });
     });

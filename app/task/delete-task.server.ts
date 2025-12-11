@@ -1,8 +1,19 @@
+import { create } from "@bufbuild/protobuf";
 import { data } from "react-router";
 import { validate as uuidValidate, version as uuidVersion } from "uuid";
+import { DeleteTaskRequestSchema } from "~/gen/task/v1/task_pb";
+import { createAuthContext } from "~/lib/request-context.server";
 import { taskLogger } from "~/task/logger.server";
+import { taskClient } from "~/task/task-client.server";
 
 export async function deleteTaskAction(request: Request) {
+    const { contextValues, sessionToken } = await createAuthContext(request);
+
+    if (!sessionToken) {
+        taskLogger.warn("DeleteTask action called without session token");
+        return data({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const formData = await request.formData();
     const taskId = formData.get("task_id");
 
@@ -25,13 +36,15 @@ export async function deleteTaskAction(request: Request) {
             throw new Error("Invalid task ID");
         }
 
+        const deleteRequest = create(DeleteTaskRequestSchema, {
+            taskId: taskId,
+        });
+
+        await taskClient.deleteTask(deleteRequest, { contextValues });
+
         taskLogger.info({ taskId }, "DeleteTask action completed");
 
-        // TODO: Implement actual task deletion logic
-        return data(
-            { success: true, taskId, message: "Delete logged" },
-            { status: 200 },
-        );
+        return data({ success: true, taskId }, { status: 200 });
     } catch (err) {
         taskLogger.error({ err, taskId }, "DeleteTask action failed");
         return data(
