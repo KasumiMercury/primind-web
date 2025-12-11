@@ -1,8 +1,16 @@
-import { index, type RouteConfig, route } from "@react-router/dev/routes";
+import {
+    index,
+    layout,
+    type RouteConfig,
+    route,
+} from "@react-router/dev/routes";
 
 export default [
-    index("routes/home.tsx"),
-    route("/tasks/:taskId", "routes/tasks.$taskId.tsx"),
+    layout("layouts/app-layout.tsx", [
+        index("routes/home.tsx"),
+        route("/tasks/:taskId", "routes/tasks.$taskId.tsx"),
+    ]),
+
     route("/login", "auth/login.tsx"),
     route("/callback/google", "auth/oidc/callback.google.tsx"),
     route("/api/task", "routes/api/task.tsx"),
