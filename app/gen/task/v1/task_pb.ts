@@ -15,8 +15,11 @@ import {
     messageDesc,
     serviceDesc,
 } from "@bufbuild/protobuf/codegenv2";
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import type { FieldMask, Timestamp } from "@bufbuild/protobuf/wkt";
+import {
+    file_google_protobuf_field_mask,
+    file_google_protobuf_timestamp,
+} from "@bufbuild/protobuf/wkt";
 import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 
 /**
@@ -25,8 +28,12 @@ import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 export const file_task_v1_task: GenFile =
     /*@__PURE__*/
     fileDesc(
-        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEi5wIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSNQoMc2NoZWR1bGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi0KCXRhcmdldF9hdBgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDQoFY29sb3IYCSABKAlCDwoNX3NjaGVkdWxlZF9hdCLwAQoRQ3JlYXRlVGFza1JlcXVlc3QSHgoHdGFza19pZBgBIAEoCUIIukgFcgOwAQFIAIgBARI0Cgl0YXNrX3R5cGUYAiABKA4yES50YXNrLnYxLlRhc2tUeXBlQg66SAuCAQgYARgCGAMYBBINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRI1CgxzY2hlZHVsZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSAGIAQESDQoFY29sb3IYBiABKAlCCgoIX3Rhc2tfaWRCDwoNX3NjaGVkdWxlZF9hdCIxChJDcmVhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayIrCg5HZXRUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABASIuCg9HZXRUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayJCChZMaXN0QWN0aXZlVGFza3NSZXF1ZXN0EigKCXNvcnRfdHlwZRgBIAEoDjIVLnRhc2sudjEuVGFza1NvcnRUeXBlIjcKF0xpc3RBY3RpdmVUYXNrc1Jlc3BvbnNlEhwKBXRhc2tzGAEgAygLMg0udGFzay52MS5UYXNrKn0KCFRhc2tUeXBlEhkKFVRBU0tfVFlQRV9VTlNQRUNJRklFRBAAEhQKEFRBU0tfVFlQRV9VUkdFTlQQARIUChBUQVNLX1RZUEVfTk9STUFMEAISEQoNVEFTS19UWVBFX0xPVxADEhcKE1RBU0tfVFlQRV9TQ0hFRFVMRUQQBCpcCgpUYXNrU3RhdHVzEhsKF1RBU0tfU1RBVFVTX1VOU1BFQ0lGSUVEEAASFgoSVEFTS19TVEFUVVNfQUNUSVZFEAESGQoVVEFTS19TVEFUVVNfQ09NUExFVEVEEAIqTAoMVGFza1NvcnRUeXBlEh4KGlRBU0tfU09SVF9UWVBFX1VOU1BFQ0lGSUVEEAASHAoYVEFTS19TT1JUX1RZUEVfVEFSR0VUX0FUEAEy6AEKC1Rhc2tTZXJ2aWNlEkUKCkNyZWF0ZVRhc2sSGi50YXNrLnYxLkNyZWF0ZVRhc2tSZXF1ZXN0GhsudGFzay52MS5DcmVhdGVUYXNrUmVzcG9uc2USPAoHR2V0VGFzaxIXLnRhc2sudjEuR2V0VGFza1JlcXVlc3QaGC50YXNrLnYxLkdldFRhc2tSZXNwb25zZRJUCg9MaXN0QWN0aXZlVGFza3MSHy50YXNrLnYxLkxpc3RBY3RpdmVUYXNrc1JlcXVlc3QaIC50YXNrLnYxLkxpc3RBY3RpdmVUYXNrc1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z",
-        [file_buf_validate_validate, file_google_protobuf_timestamp],
+        "ChJ0YXNrL3YxL3Rhc2sucHJvdG8SB3Rhc2sudjEi5wIKBFRhc2sSGQoHdGFza19pZBgBIAEoCUIIukgFcgOwAQESNAoJdGFza190eXBlGAIgASgOMhEudGFzay52MS5UYXNrVHlwZUIOukgLggEIGAEYAhgDGAQSNAoLdGFza19zdGF0dXMYAyABKA4yEy50YXNrLnYxLlRhc2tTdGF0dXNCCrpIB4IBBBgBGAISDQoFdGl0bGUYBCABKAkSEwoLZGVzY3JpcHRpb24YBSABKAkSNQoMc2NoZWR1bGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgAiAEBEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi0KCXRhcmdldF9hdBgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDQoFY29sb3IYCSABKAlCDwoNX3NjaGVkdWxlZF9hdCLwAQoRQ3JlYXRlVGFza1JlcXVlc3QSHgoHdGFza19pZBgBIAEoCUIIukgFcgOwAQFIAIgBARI0Cgl0YXNrX3R5cGUYAiABKA4yES50YXNrLnYxLlRhc2tUeXBlQg66SAuCAQgYARgCGAMYBBINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRI1CgxzY2hlZHVsZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSAGIAQESDQoFY29sb3IYBiABKAlCCgoIX3Rhc2tfaWRCDwoNX3NjaGVkdWxlZF9hdCIxChJDcmVhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayIrCg5HZXRUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABASIuCg9HZXRUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayJCChZMaXN0QWN0aXZlVGFza3NSZXF1ZXN0EigKCXNvcnRfdHlwZRgBIAEoDjIVLnRhc2sudjEuVGFza1NvcnRUeXBlIjcKF0xpc3RBY3RpdmVUYXNrc1Jlc3BvbnNlEhwKBXRhc2tzGAEgAygLMg0udGFzay52MS5UYXNrIowCChFVcGRhdGVUYXNrUmVxdWVzdBIZCgd0YXNrX2lkGAEgASgJQgi6SAVyA7ABARIoCgt0YXNrX3N0YXR1cxgCIAEoDjITLnRhc2sudjEuVGFza1N0YXR1cxINCgV0aXRsZRgDIAEoCRITCgtkZXNjcmlwdGlvbhgEIAEoCRI1CgxzY2hlZHVsZWRfYXQYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSACIAQESDQoFY29sb3IYBiABKAkSNwoLdXBkYXRlX21hc2sYByABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrQga6SAPIAQFCDwoNX3NjaGVkdWxlZF9hdCIxChJVcGRhdGVUYXNrUmVzcG9uc2USGwoEdGFzaxgBIAEoCzINLnRhc2sudjEuVGFzayp9CghUYXNrVHlwZRIZChVUQVNLX1RZUEVfVU5TUEVDSUZJRUQQABIUChBUQVNLX1RZUEVfVVJHRU5UEAESFAoQVEFTS19UWVBFX05PUk1BTBACEhEKDVRBU0tfVFlQRV9MT1cQAxIXChNUQVNLX1RZUEVfU0NIRURVTEVEEAQqXAoKVGFza1N0YXR1cxIbChdUQVNLX1NUQVRVU19VTlNQRUNJRklFRBAAEhYKElRBU0tfU1RBVFVTX0FDVElWRRABEhkKFVRBU0tfU1RBVFVTX0NPTVBMRVRFRBACKkwKDFRhc2tTb3J0VHlwZRIeChpUQVNLX1NPUlRfVFlQRV9VTlNQRUNJRklFRBAAEhwKGFRBU0tfU09SVF9UWVBFX1RBUkdFVF9BVBABMq8CCgtUYXNrU2VydmljZRJFCgpDcmVhdGVUYXNrEhoudGFzay52MS5DcmVhdGVUYXNrUmVxdWVzdBobLnRhc2sudjEuQ3JlYXRlVGFza1Jlc3BvbnNlEjwKB0dldFRhc2sSFy50YXNrLnYxLkdldFRhc2tSZXF1ZXN0GhgudGFzay52MS5HZXRUYXNrUmVzcG9uc2USVAoPTGlzdEFjdGl2ZVRhc2tzEh8udGFzay52MS5MaXN0QWN0aXZlVGFza3NSZXF1ZXN0GiAudGFzay52MS5MaXN0QWN0aXZlVGFza3NSZXNwb25zZRJFCgpVcGRhdGVUYXNrEhoudGFzay52MS5VcGRhdGVUYXNrUmVxdWVzdBobLnRhc2sudjEuVXBkYXRlVGFza1Jlc3BvbnNlQhRaEmdlbi90YXNrL3YxO3Rhc2t2MWIGcHJvdG8z",
+        [
+            file_buf_validate_validate,
+            file_google_protobuf_field_mask,
+            file_google_protobuf_timestamp,
+        ],
     );
 
 /**
@@ -223,6 +230,72 @@ export const ListActiveTasksResponseSchema: GenMessage<ListActiveTasksResponse> 
     messageDesc(file_task_v1_task, 6);
 
 /**
+ * @generated from message task.v1.UpdateTaskRequest
+ */
+export type UpdateTaskRequest = Message<"task.v1.UpdateTaskRequest"> & {
+    /**
+     * @generated from field: string task_id = 1;
+     */
+    taskId: string;
+
+    /**
+     * @generated from field: task.v1.TaskStatus task_status = 2;
+     */
+    taskStatus: TaskStatus;
+
+    /**
+     * @generated from field: string title = 3;
+     */
+    title: string;
+
+    /**
+     * @generated from field: string description = 4;
+     */
+    description: string;
+
+    /**
+     * @generated from field: optional google.protobuf.Timestamp scheduled_at = 5;
+     */
+    scheduledAt?: Timestamp;
+
+    /**
+     * @generated from field: string color = 6;
+     */
+    color: string;
+
+    /**
+     * @generated from field: google.protobuf.FieldMask update_mask = 7;
+     */
+    updateMask?: FieldMask;
+};
+
+/**
+ * Describes the message task.v1.UpdateTaskRequest.
+ * Use `create(UpdateTaskRequestSchema)` to create a new message.
+ */
+export const UpdateTaskRequestSchema: GenMessage<UpdateTaskRequest> =
+    /*@__PURE__*/
+    messageDesc(file_task_v1_task, 7);
+
+/**
+ * @generated from message task.v1.UpdateTaskResponse
+ */
+export type UpdateTaskResponse = Message<"task.v1.UpdateTaskResponse"> & {
+    /**
+     * @generated from field: task.v1.Task task = 1;
+     */
+    task?: Task;
+};
+
+/**
+ * Describes the message task.v1.UpdateTaskResponse.
+ * Use `create(UpdateTaskResponseSchema)` to create a new message.
+ */
+export const UpdateTaskResponseSchema: GenMessage<UpdateTaskResponse> =
+    /*@__PURE__*/
+    messageDesc(file_task_v1_task, 8);
+
+/**
  * @generated from enum task.v1.TaskType
  */
 export enum TaskType {
@@ -335,5 +408,13 @@ export const TaskService: GenService<{
         methodKind: "unary";
         input: typeof ListActiveTasksRequestSchema;
         output: typeof ListActiveTasksResponseSchema;
+    };
+    /**
+     * @generated from rpc task.v1.TaskService.UpdateTask
+     */
+    updateTask: {
+        methodKind: "unary";
+        input: typeof UpdateTaskRequestSchema;
+        output: typeof UpdateTaskResponseSchema;
     };
 }> = /*@__PURE__*/ serviceDesc(file_task_v1_task, 0);
