@@ -150,19 +150,29 @@ export function createTaskMockTransport() {
                 for (const path of paths) {
                     switch (path) {
                         case "task_status":
-                            updatedTask.taskStatus = req.taskStatus;
+                            if (req.taskStatus !== undefined) {
+                                updatedTask.taskStatus = req.taskStatus;
+                            }
                             break;
                         case "title":
-                            updatedTask.title = req.title;
+                            if (req.title !== undefined) {
+                                updatedTask.title = req.title;
+                            }
                             break;
                         case "description":
-                            updatedTask.description = req.description;
+                            if (req.description !== undefined) {
+                                updatedTask.description = req.description;
+                            }
                             break;
                         case "scheduled_at":
-                            updatedTask.scheduledAt = req.scheduledAt;
+                            if (req.scheduledAt !== undefined) {
+                                updatedTask.scheduledAt = req.scheduledAt;
+                            }
                             break;
                         case "color":
-                            updatedTask.color = req.color;
+                            if (req.color !== undefined) {
+                                updatedTask.color = req.color;
+                            }
                             break;
                         default:
                             taskLogger.warn(
