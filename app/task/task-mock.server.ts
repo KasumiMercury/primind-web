@@ -10,6 +10,7 @@ import {
     TaskService,
     TaskSortType,
     TaskStatus,
+    UpdateTaskResponseSchema,
 } from "~/gen/task/v1/task_pb";
 import { taskLogger } from "~/task/logger.server";
 
@@ -118,6 +119,71 @@ export function createTaskMockTransport() {
 
                 return create(ListActiveTasksResponseSchema, {
                     tasks: activeTasks,
+                });
+            },
+
+            updateTask: (req) => {
+                taskLogger.debug(
+                    {
+                        taskId: req.taskId,
+                        updateMask: req.updateMask?.paths,
+                    },
+                    "Mock: UpdateTask called",
+                );
+
+                const existingTask = mockTasks.get(req.taskId);
+
+                if (!existingTask) {
+                    taskLogger.warn(
+                        { taskId: req.taskId },
+                        "Mock: Task not found for update",
+                    );
+                    throw new ConnectError(
+                        `Task not found: ${req.taskId}`,
+                        Code.NotFound,
+                    );
+                }
+
+                const updatedTask = create(TaskSchema, { ...existingTask });
+                const paths = req.updateMask?.paths ?? [];
+
+                for (const path of paths) {
+                    switch (path) {
+                        case "task_status":
+                            updatedTask.taskStatus = req.taskStatus;
+                            break;
+                        case "title":
+                            updatedTask.title = req.title;
+                            break;
+                        case "description":
+                            updatedTask.description = req.description;
+                            break;
+                        case "scheduled_at":
+                            updatedTask.scheduledAt = req.scheduledAt;
+                            break;
+                        case "color":
+                            updatedTask.color = req.color;
+                            break;
+                        default:
+                            taskLogger.warn(
+                                { path },
+                                "Mock: Unknown field in update_mask",
+                            );
+                    }
+                }
+
+                mockTasks.set(req.taskId, updatedTask);
+
+                taskLogger.info(
+                    {
+                        taskId: updatedTask.taskId,
+                        updatedFields: paths,
+                    },
+                    "Mock: Task updated",
+                );
+
+                return create(UpdateTaskResponseSchema, {
+                    task: updatedTask,
                 });
             },
         });
