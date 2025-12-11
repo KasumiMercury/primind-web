@@ -1,12 +1,15 @@
+import { useAtomValue } from "jotai";
+import { isAuthenticatedAtom } from "~/store/auth";
 import { LoginButton } from "./login-button";
 import { UserMenu } from "./user-menu";
 
 interface HeaderProps {
-    isAuthenticated: boolean;
     onLoginClick: () => void;
 }
 
-export function Header({ isAuthenticated, onLoginClick }: HeaderProps) {
+export function Header({ onLoginClick }: HeaderProps) {
+    const isAuthenticated = useAtomValue(isAuthenticatedAtom);
+
     return (
         <header className="w-full max-w-4xl">
             <div className="flex w-full items-center justify-end">
