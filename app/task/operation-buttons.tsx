@@ -33,7 +33,7 @@ export function OperationButtons({
             }}
         >
             <button
-                className="cursor-pointer bg-trasnparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-linear-to-r"
+                className="cursor-pointer bg-transparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-linear-to-r"
                 type="button"
                 style={{
                     width: `${sideButtonWidth}px`,
@@ -53,7 +53,7 @@ export function OperationButtons({
             ></button>
 
             <button
-                className="cursor-pointer bg-trasnparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-linear-to-l"
+                className="cursor-pointer bg-transparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-linear-to-l"
                 type="button"
                 style={{
                     width: `${sideButtonWidth}px`,
