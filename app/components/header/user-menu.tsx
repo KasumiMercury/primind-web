@@ -6,7 +6,11 @@ import {
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-export function UserMenu() {
+interface UserMenuProps {
+    onLogout: () => void;
+}
+
+export function UserMenu({ onLogout }: UserMenuProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -19,7 +23,7 @@ export function UserMenu() {
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end">
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem onSelect={onLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

@@ -16,4 +16,5 @@ export default [
     route("/api/task", "routes/api/task.tsx"),
     route("/api/task/update", "routes/api/task.update.tsx"),
     route("/api/task/delete", "routes/api/task.delete.tsx"),
+    route("/api/logout", "routes/api/logout.tsx"),
 ] satisfies RouteConfig;

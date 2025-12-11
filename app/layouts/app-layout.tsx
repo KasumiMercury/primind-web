@@ -1,7 +1,7 @@
 import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useState } from "react";
-import { Outlet, useOutletContext } from "react-router";
+import { Outlet, useOutletContext, useSubmit } from "react-router";
 import { LoginDialog } from "~/auth/login-dialog";
 import { getUserSession } from "~/auth/session.server";
 import { Header } from "~/components/header/header";
@@ -36,6 +36,11 @@ function AuthHydrator({
 export default function AppLayout({ loaderData }: Route.ComponentProps) {
     const { isAuthenticated } = loaderData;
     const [showLoginDialog, setShowLoginDialog] = useState(false);
+    const submit = useSubmit();
+
+    const handleLogout = () => {
+        submit(null, { method: "post", action: "/api/logout" });
+    };
 
     const authState: AuthState = {
         isAuthenticated,
@@ -52,7 +57,10 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
             <AuthHydrator authState={authState}>
                 <main className="flex items-center justify-center pt-8">
                     <div className="flex min-h-0 flex-1 flex-col items-center gap-4 px-4">
-                        <Header onLoginClick={() => setShowLoginDialog(true)} />
+                        <Header
+                            onLoginClick={() => setShowLoginDialog(true)}
+                            onLogout={handleLogout}
+                        />
                         <Outlet context={contextValue} />
                     </div>
                 </main>
