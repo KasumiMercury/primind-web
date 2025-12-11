@@ -17,6 +17,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export interface AppLayoutContext {
     isAuthenticated: boolean;
+    openLoginDialog: () => void;
 }
 
 function AuthHydrator({
@@ -43,6 +44,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
 
     const contextValue: AppLayoutContext = {
         isAuthenticated,
+        openLoginDialog: () => setShowLoginDialog(true),
     };
 
     return (
