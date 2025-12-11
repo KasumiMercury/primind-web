@@ -5,7 +5,7 @@ import { Outlet, useOutletContext } from "react-router";
 import { LoginDialog } from "~/auth/login-dialog";
 import { getUserSession } from "~/auth/session.server";
 import { Header } from "~/components/header/header";
-import { authStateAtom, type AuthState } from "~/store/auth";
+import { type AuthState, authStateAtom } from "~/store/auth";
 import type { Route } from "./+types/app-layout";
 
 export async function loader({ request }: Route.LoaderArgs) {
