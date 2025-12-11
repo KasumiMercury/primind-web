@@ -219,10 +219,7 @@ export function createTaskMockTransport() {
 
                 mockTasks.delete(req.taskId);
 
-                taskLogger.info(
-                    { taskId: req.taskId },
-                    "Mock: Task deleted",
-                );
+                taskLogger.info({ taskId: req.taskId }, "Mock: Task deleted");
 
                 return create(DeleteTaskResponseSchema, {});
             },

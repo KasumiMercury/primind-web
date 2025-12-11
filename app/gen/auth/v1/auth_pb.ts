@@ -2,171 +2,194 @@
 // @generated from file auth/v1/auth.proto (package auth.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
+import type {
+    GenEnum,
+    GenFile,
+    GenMessage,
+    GenService,
+} from "@bufbuild/protobuf/codegenv2";
+import {
+    enumDesc,
+    fileDesc,
+    messageDesc,
+    serviceDesc,
+} from "@bufbuild/protobuf/codegenv2";
 
 /**
  * Describes the file auth/v1/auth.proto.
  */
-export const file_auth_v1_auth: GenFile = /*@__PURE__*/
-  fileDesc("ChJhdXRoL3YxL2F1dGgucHJvdG8SB2F1dGgudjEiTwoRT0lEQ1BhcmFtc1JlcXVlc3QSJwoIcHJvdmlkZXIYASABKA4yFS5hdXRoLnYxLk9JRENQcm92aWRlchIRCgljbGllbnRfaWQYAiABKAkiPgoST0lEQ1BhcmFtc1Jlc3BvbnNlEhkKEWF1dGhvcml6YXRpb25fdXJsGAEgASgJEg0KBXN0YXRlGAIgASgJIlgKEE9JRENMb2dpblJlcXVlc3QSJwoIcHJvdmlkZXIYASABKA4yFS5hdXRoLnYxLk9JRENQcm92aWRlchIMCgRjb2RlGAIgASgJEg0KBXN0YXRlGAMgASgJIioKEU9JRENMb2dpblJlc3BvbnNlEhUKDXNlc3Npb25fdG9rZW4YASABKAkiJgoNTG9nb3V0UmVxdWVzdBIVCg1zZXNzaW9uX3Rva2VuGAEgASgJIiEKDkxvZ291dFJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgiLwoWVmFsaWRhdGVTZXNzaW9uUmVxdWVzdBIVCg1zZXNzaW9uX3Rva2VuGAEgASgJIioKF1ZhbGlkYXRlU2Vzc2lvblJlc3BvbnNlEg8KB3VzZXJfaWQYASABKAkqRwoMT0lEQ1Byb3ZpZGVyEh0KGU9JRENfUFJPVklERVJfVU5TUEVDSUZJRUQQABIYChRPSURDX1BST1ZJREVSX0dPT0dMRRABMqkCCgtBdXRoU2VydmljZRJFCgpPSURDUGFyYW1zEhouYXV0aC52MS5PSURDUGFyYW1zUmVxdWVzdBobLmF1dGgudjEuT0lEQ1BhcmFtc1Jlc3BvbnNlEkIKCU9JRENMb2dpbhIZLmF1dGgudjEuT0lEQ0xvZ2luUmVxdWVzdBoaLmF1dGgudjEuT0lEQ0xvZ2luUmVzcG9uc2USOQoGTG9nb3V0EhYuYXV0aC52MS5Mb2dvdXRSZXF1ZXN0GhcuYXV0aC52MS5Mb2dvdXRSZXNwb25zZRJUCg9WYWxpZGF0ZVNlc3Npb24SHy5hdXRoLnYxLlZhbGlkYXRlU2Vzc2lvblJlcXVlc3QaIC5hdXRoLnYxLlZhbGlkYXRlU2Vzc2lvblJlc3BvbnNlQhRaEmdlbi9hdXRoL3YxO2F1dGh2MWIGcHJvdG8z");
+export const file_auth_v1_auth: GenFile =
+    /*@__PURE__*/
+    fileDesc(
+        "ChJhdXRoL3YxL2F1dGgucHJvdG8SB2F1dGgudjEiTwoRT0lEQ1BhcmFtc1JlcXVlc3QSJwoIcHJvdmlkZXIYASABKA4yFS5hdXRoLnYxLk9JRENQcm92aWRlchIRCgljbGllbnRfaWQYAiABKAkiPgoST0lEQ1BhcmFtc1Jlc3BvbnNlEhkKEWF1dGhvcml6YXRpb25fdXJsGAEgASgJEg0KBXN0YXRlGAIgASgJIlgKEE9JRENMb2dpblJlcXVlc3QSJwoIcHJvdmlkZXIYASABKA4yFS5hdXRoLnYxLk9JRENQcm92aWRlchIMCgRjb2RlGAIgASgJEg0KBXN0YXRlGAMgASgJIioKEU9JRENMb2dpblJlc3BvbnNlEhUKDXNlc3Npb25fdG9rZW4YASABKAkiJgoNTG9nb3V0UmVxdWVzdBIVCg1zZXNzaW9uX3Rva2VuGAEgASgJIiEKDkxvZ291dFJlc3BvbnNlEg8KB3N1Y2Nlc3MYASABKAgiLwoWVmFsaWRhdGVTZXNzaW9uUmVxdWVzdBIVCg1zZXNzaW9uX3Rva2VuGAEgASgJIioKF1ZhbGlkYXRlU2Vzc2lvblJlc3BvbnNlEg8KB3VzZXJfaWQYASABKAkqRwoMT0lEQ1Byb3ZpZGVyEh0KGU9JRENfUFJPVklERVJfVU5TUEVDSUZJRUQQABIYChRPSURDX1BST1ZJREVSX0dPT0dMRRABMqkCCgtBdXRoU2VydmljZRJFCgpPSURDUGFyYW1zEhouYXV0aC52MS5PSURDUGFyYW1zUmVxdWVzdBobLmF1dGgudjEuT0lEQ1BhcmFtc1Jlc3BvbnNlEkIKCU9JRENMb2dpbhIZLmF1dGgudjEuT0lEQ0xvZ2luUmVxdWVzdBoaLmF1dGgudjEuT0lEQ0xvZ2luUmVzcG9uc2USOQoGTG9nb3V0EhYuYXV0aC52MS5Mb2dvdXRSZXF1ZXN0GhcuYXV0aC52MS5Mb2dvdXRSZXNwb25zZRJUCg9WYWxpZGF0ZVNlc3Npb24SHy5hdXRoLnYxLlZhbGlkYXRlU2Vzc2lvblJlcXVlc3QaIC5hdXRoLnYxLlZhbGlkYXRlU2Vzc2lvblJlc3BvbnNlQhRaEmdlbi9hdXRoL3YxO2F1dGh2MWIGcHJvdG8z",
+    );
 
 /**
  * @generated from message auth.v1.OIDCParamsRequest
  */
 export type OIDCParamsRequest = Message<"auth.v1.OIDCParamsRequest"> & {
-  /**
-   * @generated from field: auth.v1.OIDCProvider provider = 1;
-   */
-  provider: OIDCProvider;
+    /**
+     * @generated from field: auth.v1.OIDCProvider provider = 1;
+     */
+    provider: OIDCProvider;
 
-  /**
-   * @generated from field: string client_id = 2;
-   */
-  clientId: string;
+    /**
+     * @generated from field: string client_id = 2;
+     */
+    clientId: string;
 };
 
 /**
  * Describes the message auth.v1.OIDCParamsRequest.
  * Use `create(OIDCParamsRequestSchema)` to create a new message.
  */
-export const OIDCParamsRequestSchema: GenMessage<OIDCParamsRequest> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 0);
+export const OIDCParamsRequestSchema: GenMessage<OIDCParamsRequest> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 0);
 
 /**
  * @generated from message auth.v1.OIDCParamsResponse
  */
 export type OIDCParamsResponse = Message<"auth.v1.OIDCParamsResponse"> & {
-  /**
-   * @generated from field: string authorization_url = 1;
-   */
-  authorizationUrl: string;
+    /**
+     * @generated from field: string authorization_url = 1;
+     */
+    authorizationUrl: string;
 
-  /**
-   * @generated from field: string state = 2;
-   */
-  state: string;
+    /**
+     * @generated from field: string state = 2;
+     */
+    state: string;
 };
 
 /**
  * Describes the message auth.v1.OIDCParamsResponse.
  * Use `create(OIDCParamsResponseSchema)` to create a new message.
  */
-export const OIDCParamsResponseSchema: GenMessage<OIDCParamsResponse> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 1);
+export const OIDCParamsResponseSchema: GenMessage<OIDCParamsResponse> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 1);
 
 /**
  * @generated from message auth.v1.OIDCLoginRequest
  */
 export type OIDCLoginRequest = Message<"auth.v1.OIDCLoginRequest"> & {
-  /**
-   * @generated from field: auth.v1.OIDCProvider provider = 1;
-   */
-  provider: OIDCProvider;
+    /**
+     * @generated from field: auth.v1.OIDCProvider provider = 1;
+     */
+    provider: OIDCProvider;
 
-  /**
-   * @generated from field: string code = 2;
-   */
-  code: string;
+    /**
+     * @generated from field: string code = 2;
+     */
+    code: string;
 
-  /**
-   * @generated from field: string state = 3;
-   */
-  state: string;
+    /**
+     * @generated from field: string state = 3;
+     */
+    state: string;
 };
 
 /**
  * Describes the message auth.v1.OIDCLoginRequest.
  * Use `create(OIDCLoginRequestSchema)` to create a new message.
  */
-export const OIDCLoginRequestSchema: GenMessage<OIDCLoginRequest> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 2);
+export const OIDCLoginRequestSchema: GenMessage<OIDCLoginRequest> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 2);
 
 /**
  * @generated from message auth.v1.OIDCLoginResponse
  */
 export type OIDCLoginResponse = Message<"auth.v1.OIDCLoginResponse"> & {
-  /**
-   * @generated from field: string session_token = 1;
-   */
-  sessionToken: string;
+    /**
+     * @generated from field: string session_token = 1;
+     */
+    sessionToken: string;
 };
 
 /**
  * Describes the message auth.v1.OIDCLoginResponse.
  * Use `create(OIDCLoginResponseSchema)` to create a new message.
  */
-export const OIDCLoginResponseSchema: GenMessage<OIDCLoginResponse> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 3);
+export const OIDCLoginResponseSchema: GenMessage<OIDCLoginResponse> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 3);
 
 /**
  * @generated from message auth.v1.LogoutRequest
  */
 export type LogoutRequest = Message<"auth.v1.LogoutRequest"> & {
-  /**
-   * @generated from field: string session_token = 1;
-   */
-  sessionToken: string;
+    /**
+     * @generated from field: string session_token = 1;
+     */
+    sessionToken: string;
 };
 
 /**
  * Describes the message auth.v1.LogoutRequest.
  * Use `create(LogoutRequestSchema)` to create a new message.
  */
-export const LogoutRequestSchema: GenMessage<LogoutRequest> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 4);
+export const LogoutRequestSchema: GenMessage<LogoutRequest> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 4);
 
 /**
  * @generated from message auth.v1.LogoutResponse
  */
 export type LogoutResponse = Message<"auth.v1.LogoutResponse"> & {
-  /**
-   * @generated from field: bool success = 1;
-   */
-  success: boolean;
+    /**
+     * @generated from field: bool success = 1;
+     */
+    success: boolean;
 };
 
 /**
  * Describes the message auth.v1.LogoutResponse.
  * Use `create(LogoutResponseSchema)` to create a new message.
  */
-export const LogoutResponseSchema: GenMessage<LogoutResponse> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 5);
+export const LogoutResponseSchema: GenMessage<LogoutResponse> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 5);
 
 /**
  * @generated from message auth.v1.ValidateSessionRequest
  */
-export type ValidateSessionRequest = Message<"auth.v1.ValidateSessionRequest"> & {
-  /**
-   * @generated from field: string session_token = 1;
-   */
-  sessionToken: string;
-};
+export type ValidateSessionRequest =
+    Message<"auth.v1.ValidateSessionRequest"> & {
+        /**
+         * @generated from field: string session_token = 1;
+         */
+        sessionToken: string;
+    };
 
 /**
  * Describes the message auth.v1.ValidateSessionRequest.
  * Use `create(ValidateSessionRequestSchema)` to create a new message.
  */
-export const ValidateSessionRequestSchema: GenMessage<ValidateSessionRequest> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 6);
+export const ValidateSessionRequestSchema: GenMessage<ValidateSessionRequest> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 6);
 
 /**
  * @generated from message auth.v1.ValidateSessionResponse
  */
-export type ValidateSessionResponse = Message<"auth.v1.ValidateSessionResponse"> & {
-  /**
-   * @generated from field: string user_id = 1;
-   */
-  userId: string;
-};
+export type ValidateSessionResponse =
+    Message<"auth.v1.ValidateSessionResponse"> & {
+        /**
+         * @generated from field: string user_id = 1;
+         */
+        userId: string;
+    };
 
 /**
  * Describes the message auth.v1.ValidateSessionResponse.
  * Use `create(ValidateSessionResponseSchema)` to create a new message.
  */
-export const ValidateSessionResponseSchema: GenMessage<ValidateSessionResponse> = /*@__PURE__*/
-  messageDesc(file_auth_v1_auth, 7);
+export const ValidateSessionResponseSchema: GenMessage<ValidateSessionResponse> =
+    /*@__PURE__*/
+    messageDesc(file_auth_v1_auth, 7);
 
 /**
  * OIDCProvider represents an external OpenID Connect identity provider.
@@ -174,63 +197,62 @@ export const ValidateSessionResponseSchema: GenMessage<ValidateSessionResponse> 
  * @generated from enum auth.v1.OIDCProvider
  */
 export enum OIDCProvider {
-  /**
-   * OIDC_PROVIDER_UNSPECIFIED should not be used.
-   *
-   * @generated from enum value: OIDC_PROVIDER_UNSPECIFIED = 0;
-   */
-  OIDC_PROVIDER_UNSPECIFIED = 0,
+    /**
+     * OIDC_PROVIDER_UNSPECIFIED should not be used.
+     *
+     * @generated from enum value: OIDC_PROVIDER_UNSPECIFIED = 0;
+     */
+    OIDC_PROVIDER_UNSPECIFIED = 0,
 
-  /**
-   * Google as an OIDC provider.
-   *
-   * @generated from enum value: OIDC_PROVIDER_GOOGLE = 1;
-   */
-  OIDC_PROVIDER_GOOGLE = 1,
+    /**
+     * Google as an OIDC provider.
+     *
+     * @generated from enum value: OIDC_PROVIDER_GOOGLE = 1;
+     */
+    OIDC_PROVIDER_GOOGLE = 1,
 }
 
 /**
  * Describes the enum auth.v1.OIDCProvider.
  */
-export const OIDCProviderSchema: GenEnum<OIDCProvider> = /*@__PURE__*/
-  enumDesc(file_auth_v1_auth, 0);
+export const OIDCProviderSchema: GenEnum<OIDCProvider> =
+    /*@__PURE__*/
+    enumDesc(file_auth_v1_auth, 0);
 
 /**
  * @generated from service auth.v1.AuthService
  */
 export const AuthService: GenService<{
-  /**
-   * @generated from rpc auth.v1.AuthService.OIDCParams
-   */
-  oIDCParams: {
-    methodKind: "unary";
-    input: typeof OIDCParamsRequestSchema;
-    output: typeof OIDCParamsResponseSchema;
-  },
-  /**
-   * @generated from rpc auth.v1.AuthService.OIDCLogin
-   */
-  oIDCLogin: {
-    methodKind: "unary";
-    input: typeof OIDCLoginRequestSchema;
-    output: typeof OIDCLoginResponseSchema;
-  },
-  /**
-   * @generated from rpc auth.v1.AuthService.Logout
-   */
-  logout: {
-    methodKind: "unary";
-    input: typeof LogoutRequestSchema;
-    output: typeof LogoutResponseSchema;
-  },
-  /**
-   * @generated from rpc auth.v1.AuthService.ValidateSession
-   */
-  validateSession: {
-    methodKind: "unary";
-    input: typeof ValidateSessionRequestSchema;
-    output: typeof ValidateSessionResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_auth_v1_auth, 0);
-
+    /**
+     * @generated from rpc auth.v1.AuthService.OIDCParams
+     */
+    oIDCParams: {
+        methodKind: "unary";
+        input: typeof OIDCParamsRequestSchema;
+        output: typeof OIDCParamsResponseSchema;
+    };
+    /**
+     * @generated from rpc auth.v1.AuthService.OIDCLogin
+     */
+    oIDCLogin: {
+        methodKind: "unary";
+        input: typeof OIDCLoginRequestSchema;
+        output: typeof OIDCLoginResponseSchema;
+    };
+    /**
+     * @generated from rpc auth.v1.AuthService.Logout
+     */
+    logout: {
+        methodKind: "unary";
+        input: typeof LogoutRequestSchema;
+        output: typeof LogoutResponseSchema;
+    };
+    /**
+     * @generated from rpc auth.v1.AuthService.ValidateSession
+     */
+    validateSession: {
+        methodKind: "unary";
+        input: typeof ValidateSessionRequestSchema;
+        output: typeof ValidateSessionResponseSchema;
+    };
+}> = /*@__PURE__*/ serviceDesc(file_auth_v1_auth, 0);
