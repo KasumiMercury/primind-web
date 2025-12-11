@@ -191,7 +191,7 @@ export function OperationArea({
             <OperationShape
                 dimensions={dimensions}
                 radius={(radius * 2) / 3}
-                className="w-full"
+                className="w-full drop-shadow-lg"
                 arrowClassName="stroke-primary stroke-4"
             >
                 <OperationSwipe
@@ -200,10 +200,7 @@ export function OperationArea({
                 >
                     <OperationButtons
                         dimensions={dimensions}
-                        topButton={{
-                            onClick: () => handleUpAction("button"),
-                        }}
-                        bottomButtons={{
+                        buttonsConfig={{
                             left: {
                                 onClick: () => handleLeftAction("button"),
                             },
