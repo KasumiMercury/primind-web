@@ -2,6 +2,7 @@ import { LoginForm } from "~/auth/login-form";
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
 } from "~/components/ui/dialog";
@@ -29,6 +30,9 @@ export function LoginDialog({
                 <DialogHeader>
                     <DialogTitle>Sign in</DialogTitle>
                 </DialogHeader>
+                <DialogDescription className="sr-only">
+                    Sign in to your account.
+                </DialogDescription>
                 {children || <LoginForm action={action} />}
             </DialogContent>
         </Dialog>
