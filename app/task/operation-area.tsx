@@ -191,7 +191,7 @@ export function OperationArea({
             <OperationShape
                 dimensions={dimensions}
                 radius={(radius * 2) / 3}
-                className="w-full drop-shadow-lg"
+                className="w-full shadow-primary/20 drop-shadow-md"
                 arrowClassName="stroke-primary stroke-4"
             >
                 <OperationSwipe
@@ -228,7 +228,7 @@ export function OperationArea({
                 <OperationIndicator
                     itemCount={itemsCount}
                     selectedIndex={selectedIndex}
-                    className="gap-1.5 rounded-full bg-secondary px-3 py-2 shadow-background shadow-sm"
+                    className="gap-1.5 rounded-full bg-accent px-3 py-2 shadow-background shadow-sm"
                 />
             </div>
         </div>
