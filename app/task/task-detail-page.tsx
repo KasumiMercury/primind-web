@@ -150,38 +150,36 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     };
 
     return (
-        <main className="flex min-h-screen items-start justify-center pt-8">
-            <div className="w-full max-w-lg px-4">
-                <div className="mb-6">
-                    <Button variant="ghost" size="sm" asChild>
-                        <Link to="/">
-                            <ArrowLeft className="mr-2 size-4" />
-                            Back to Tasks
-                        </Link>
-                    </Button>
-                </div>
-                <div className="rounded-lg border bg-card p-6">
-                    <TaskDetailContent
-                        task={task}
-                        title={title}
-                        description={description}
-                        isEditing={isEditing}
-                        onTitleChange={setTitle}
-                        onDescriptionChange={setDescription}
-                        onEditClick={handleEditClick}
-                        onEditCancel={handleEditCancel}
-                        onSave={handleSave}
-                        onDelete={handleDelete}
-                        isSaving={isSaving}
-                        saveSuccess={saveSuccess}
-                        isDeleting={isDeleting}
-                        isDirty={isDirty}
-                        showDeleteConfirm={showDeleteConfirm}
-                        onDeleteConfirm={handleDeleteConfirm}
-                        onDeleteCancel={handleDeleteCancel}
-                    />
-                </div>
+        <div className="w-full max-w-lg">
+            <div className="mb-6">
+                <Button variant="ghost" size="sm" asChild>
+                    <Link to="/">
+                        <ArrowLeft className="mr-2 size-4" />
+                        Back to Tasks
+                    </Link>
+                </Button>
             </div>
-        </main>
+            <div className="rounded-lg border bg-card p-6">
+                <TaskDetailContent
+                    task={task}
+                    title={title}
+                    description={description}
+                    isEditing={isEditing}
+                    onTitleChange={setTitle}
+                    onDescriptionChange={setDescription}
+                    onEditClick={handleEditClick}
+                    onEditCancel={handleEditCancel}
+                    onSave={handleSave}
+                    onDelete={handleDelete}
+                    isSaving={isSaving}
+                    saveSuccess={saveSuccess}
+                    isDeleting={isDeleting}
+                    isDirty={isDirty}
+                    showDeleteConfirm={showDeleteConfirm}
+                    onDeleteConfirm={handleDeleteConfirm}
+                    onDeleteCancel={handleDeleteCancel}
+                />
+            </div>
+        </div>
     );
 }

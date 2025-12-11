@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { data, useLocation } from "react-router";
+import { getUserSession } from "~/auth/session.server";
 import { getTask } from "~/task/get-task.server";
 import type { SerializableTask } from "~/task/list-active-tasks.server";
 import { TaskDetailModal } from "~/task/task-detail-modal";
@@ -22,6 +23,9 @@ export async function loader({ request, params }: Route.LoaderArgs) {
         throw data({ message: "Task ID is required" }, { status: 400 });
     }
 
+    const { sessionToken } = await getUserSession(request);
+    const isAuthenticated = Boolean(sessionToken);
+
     const result = await getTask(request, taskId);
 
     if (result.error || !result.task) {
@@ -31,7 +35,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
         );
     }
 
-    return { task: result.task };
+    return { task: result.task, isAuthenticated };
 }
 
 export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
@@ -55,7 +59,10 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
     if (isHydrated && backgroundPath && tasksFromState) {
         return (
             <>
-                <Welcome tasks={tasksFromState} />
+                <Welcome
+                    tasks={tasksFromState}
+                    isAuthenticated={loaderData.isAuthenticated}
+                />
                 <TaskDetailModal
                     key={loaderData.task.taskId}
                     task={loaderData.task}
