@@ -67,7 +67,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
 
                 <LoginDialog
                     open={showLoginDialog}
-                    onOpenChange={(open) => !open && setShowLoginDialog(false)}
+                    onOpenChange={setShowLoginDialog}
                 />
             </AuthHydrator>
         </Provider>
