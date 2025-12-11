@@ -33,6 +33,7 @@ export function TaskCardGrid({
                     key={task.taskId}
                     task={task}
                     onClick={() => onTaskClick?.(task)}
+                    className="shadow shadow-primary/20"
                 />
             ))}
         </div>

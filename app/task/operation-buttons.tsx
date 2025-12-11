@@ -7,8 +7,7 @@ export interface ButtonConfig {
 
 interface OperationButtonsProps {
     dimensions: Dimensions;
-    topButton: ButtonConfig;
-    bottomButtons: {
+    buttonsConfig: {
         left: ButtonConfig;
         center: ButtonConfig;
         right: ButtonConfig;
@@ -18,18 +17,10 @@ interface OperationButtonsProps {
 
 export function OperationButtons({
     dimensions,
-    topButton,
-    bottomButtons,
-    className = "bg-secondary",
+    buttonsConfig,
+    className = "bg-popover",
 }: OperationButtonsProps) {
-    const {
-        width,
-        height,
-        upperHeight,
-        lowerHeight,
-        sideButtonWidth,
-        centerButtonWidth,
-    } = dimensions;
+    const { width, height, sideButtonWidth, centerButtonWidth } = dimensions;
 
     return (
         <div
@@ -42,53 +33,33 @@ export function OperationButtons({
             }}
         >
             <button
-                className="cursor-pointer bg-linear-to-r from-primary/5 to-transparent hover:bg-primary/10"
+                className="cursor-pointer bg-transparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-linear-to-r"
                 type="button"
                 style={{
                     width: `${sideButtonWidth}px`,
                     height: "100%",
                 }}
-                onClick={bottomButtons.left.onClick}
+                onClick={buttonsConfig.left.onClick}
             ></button>
 
-            <div
-                className="hover:bg-primary/10"
+            <button
+                type="button"
+                className="cursor-pointer bg-transparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-radial"
                 style={{
                     width: `${centerButtonWidth}px`,
                     height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
                 }}
-            >
-                <button
-                    className="cursor-pointer bg-transparent"
-                    type="button"
-                    style={{
-                        width: "100%",
-                        height: `${upperHeight}px`,
-                    }}
-                    onClick={topButton.onClick}
-                ></button>
-
-                <button
-                    className="cursor-pointer bg-transparent"
-                    type="button"
-                    style={{
-                        width: `${centerButtonWidth}px`,
-                        height: `${lowerHeight}px`,
-                    }}
-                    onClick={bottomButtons.center.onClick}
-                ></button>
-            </div>
+                onClick={buttonsConfig.center.onClick}
+            ></button>
 
             <button
-                className="cursor-pointer bg-linear-to-l from-primary/5 to-transparent hover:bg-primary/10"
+                className="cursor-pointer bg-transparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-linear-to-l"
                 type="button"
                 style={{
                     width: `${sideButtonWidth}px`,
                     height: "100%",
                 }}
-                onClick={bottomButtons.right.onClick}
+                onClick={buttonsConfig.right.onClick}
             ></button>
         </div>
     );
