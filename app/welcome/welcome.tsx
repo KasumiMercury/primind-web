@@ -61,7 +61,7 @@ export function Welcome({ tasks }: WelcomeProps) {
                         </div>
                     </header>
                     {latestTask && (
-                        <div className="w-full max-w-md rounded-md border-2 border-secondary px-3 py-3">
+                        <div className="w-full max-w-md rounded-lg border-2 border-secondary px-3 py-3">
                             <QuickEdit
                                 key={latestTask.taskId}
                                 className="w-full"
