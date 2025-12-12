@@ -97,7 +97,14 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
     // Handle delete error
     useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.error) {
+        if (deleteFetcher.state !== "idle") {
+            return;
+        }
+        if (deleteFetcher.data?.success) {
+            setShowDeleteConfirm(false);
+            return;
+        }
+        if (deleteFetcher.data?.error) {
             setDeleteError(true);
         }
     }, [deleteFetcher.state, deleteFetcher.data]);
