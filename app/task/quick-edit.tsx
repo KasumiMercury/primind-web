@@ -86,10 +86,12 @@ export function QuickEdit({
     };
 
     const handleDelete = () => {
+        setDeleteError(false);
         setShowDeleteConfirm(true);
     };
 
     const handleDeleteConfirm = () => {
+        setDeleteError(false);
         const formData = createDeleteTaskFormData(taskId);
         deleteFetcher.submit(formData, {
             method: "post",
