@@ -51,6 +51,8 @@ export async function deleteTaskAction(request: Request) {
             return redirect("/");
         } catch (err) {
             taskLogger.error({ err, taskId }, "DeleteTask action failed");
+            const isValidationError =
+                err instanceof Error && err.message === "Invalid task ID";
             return data(
                 {
                     error:
@@ -58,7 +60,7 @@ export async function deleteTaskAction(request: Request) {
                             ? err.message
                             : "Failed to delete task",
                 },
-                { status: 400 },
+                { status: isValidationError ? 400 : 500 },
             );
         }
     });
