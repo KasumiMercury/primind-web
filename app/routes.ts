@@ -9,7 +9,7 @@ export default [
     layout("layouts/app-layout.tsx", [
         layout("layouts/home-shell.tsx", [
             index("routes/home.tsx"),
-            route("/tasks/:taskId", "routes/tasks.$taskId.tsx"),
+            route("tasks/:taskId", "routes/tasks.$taskId.tsx"),
         ]),
     ]),
 
