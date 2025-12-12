@@ -1,21 +1,37 @@
+import type { Client, Transport } from "@connectrpc/connect";
 import { createClient } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-node";
-import { TaskService } from "~/gen/task/v1/task_pb";
+import {
+    TaskService,
+    type TaskService as TaskServiceType,
+} from "~/gen/task/v1/task_pb";
 import { authInterceptor } from "~/interceptor/auth-interceptor";
 import { connectMockApi, logTransportMode } from "~/lib/mock-utils.server";
 import { taskLogger } from "~/task/logger.server";
-import { createTaskMockTransport } from "~/task/task-mock.server";
 
 const useMock = connectMockApi();
 
-const transport = useMock
-    ? createTaskMockTransport()
-    : createConnectTransport({
-          baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
-          httpVersion: "1.1",
-          interceptors: [authInterceptor],
-      });
+async function createTransport(): Promise<Transport> {
+    if (useMock) {
+        const { createTaskMockTransport } = await import(
+            "~/task/task-mock.server"
+        );
+        return createTaskMockTransport();
+    }
+    return createConnectTransport({
+        baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
+        httpVersion: "1.1",
+        interceptors: [authInterceptor],
+    });
+}
 
-logTransportMode("TaskService", useMock, taskLogger);
+let taskClientInstance: Client<typeof TaskServiceType> | null = null;
 
-export const taskClient = createClient(TaskService, transport);
+export async function getTaskClient(): Promise<Client<typeof TaskServiceType>> {
+    if (!taskClientInstance) {
+        const transport = await createTransport();
+        logTransportMode("TaskService", useMock, taskLogger);
+        taskClientInstance = createClient(TaskService, transport);
+    }
+    return taskClientInstance;
+}

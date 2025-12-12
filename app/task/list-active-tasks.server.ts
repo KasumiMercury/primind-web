@@ -6,9 +6,10 @@ import {
     type TaskStatus,
     type TaskType,
 } from "~/gen/task/v1/task_pb";
+import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
 import { createAuthContext } from "~/lib/request-context.server";
 import { taskLogger } from "~/task/logger.server";
-import { taskClient } from "~/task/task-client.server";
+import { getTaskClient } from "~/task/task-client.server";
 
 export interface SerializableTimestamp {
     seconds: string;
@@ -54,33 +55,38 @@ export interface ActiveTasksResult {
 export async function listActiveTasks(
     request: Request,
 ): Promise<ActiveTasksResult> {
-    const { contextValues, sessionToken } = await createAuthContext(request);
+    return withRequestErrorContext(request, async () => {
+        const { contextValues, sessionToken } =
+            await createAuthContext(request);
 
-    if (!sessionToken) {
-        taskLogger.warn("ListActiveTasks called without session token");
-        return { tasks: [], error: "Unauthorized" };
-    }
+        if (!sessionToken) {
+            taskLogger.warn("ListActiveTasks called without session token");
+            return { tasks: [], error: "Unauthorized" };
+        }
 
-    try {
-        const listRequest = create(ListActiveTasksRequestSchema, {
-            sortType: TaskSortType.TARGET_AT,
-        });
+        try {
+            const listRequest = create(ListActiveTasksRequestSchema, {
+                sortType: TaskSortType.TARGET_AT,
+            });
 
-        const response = await taskClient.listActiveTasks(listRequest, {
-            contextValues,
-        });
+            const taskClient = await getTaskClient();
+            const response = await taskClient.listActiveTasks(listRequest, {
+                contextValues,
+            });
 
-        taskLogger.info(
-            { count: response.tasks.length },
-            "ListActiveTasks completed successfully",
-        );
+            taskLogger.info(
+                { count: response.tasks.length },
+                "ListActiveTasks completed successfully",
+            );
 
-        return { tasks: response.tasks.map(serializeTask) };
-    } catch (err) {
-        taskLogger.error({ err }, "ListActiveTasks failed");
-        return {
-            tasks: [],
-            error: err instanceof Error ? err.message : "Failed to list tasks",
-        };
-    }
+            return { tasks: response.tasks.map(serializeTask) };
+        } catch (err) {
+            taskLogger.error({ err }, "ListActiveTasks failed");
+            return {
+                tasks: [],
+                error:
+                    err instanceof Error ? err.message : "Failed to list tasks",
+            };
+        }
+    });
 }

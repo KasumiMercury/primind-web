@@ -1,6 +1,6 @@
 import { create } from "@bufbuild/protobuf";
 import { redirect } from "react-router";
-import { authClient } from "~/auth/auth-client.server";
+import { getAuthClient } from "~/auth/auth-client.server";
 import { authLogger } from "~/auth/logger.server";
 import { initiateMockOIDCFlow } from "~/auth/oidc/flow-mock.server";
 import type { OIDCProviderDefinition } from "~/auth/oidc/provider.server";
@@ -32,6 +32,7 @@ export async function initiateOIDCFlow(
             "Requesting OIDC authorization parameters",
         );
 
+        const authClient = await getAuthClient();
         const params = await authClient.oIDCParams(paramsRequest);
         authLogger.debug(
             {

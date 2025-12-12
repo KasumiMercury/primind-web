@@ -1,6 +1,6 @@
 import { create } from "@bufbuild/protobuf";
 import { redirect } from "react-router";
-import { authClient } from "~/auth/auth-client.server";
+import { getAuthClient } from "~/auth/auth-client.server";
 import { authLogger } from "~/auth/logger.server";
 import type { CallbackError } from "~/auth/oidc/callback-status";
 import { oidcStateCookie } from "~/auth/oidc/state-cookie.server";
@@ -80,6 +80,7 @@ export async function handleOAuthCallback({
             { provider },
             "Exchanging authorization code for session token",
         );
+        const authClient = await getAuthClient();
         const response = await authClient.oIDCLogin(loginRequest);
         authLogger.debug(
             { provider },
