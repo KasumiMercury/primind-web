@@ -48,9 +48,9 @@ const meta = {
             description: "Whether to show the delete confirmation dialog.",
         },
         deleteError: {
-            control: "text",
+            control: "boolean",
             description:
-                "Error message to display in the delete confirmation dialog.",
+                "Whether to show error message in the delete confirmation dialog.",
         },
     },
     args: {
@@ -184,6 +184,6 @@ export const DeleteError: Story = {
         saveError: false,
         isDeleting: false,
         showDeleteConfirm: true,
-        deleteError: "Failed to delete task. Please try again.",
+        deleteError: true,
     },
 };
