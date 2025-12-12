@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-import { data, useLocation } from "react-router";
-import { getUserSession } from "~/auth/session.server";
-import { getTask } from "~/task/get-task.server";
-import type { SerializableTask } from "~/task/list-active-tasks.server";
-import { TaskDetailModal } from "~/task/task-detail-modal";
-import { TaskDetailPage } from "~/task/task-detail-page";
-import { Welcome } from "~/welcome/welcome";
+import { data } from "react-router";
+import { getUserSession } from "~/features/auth/server/session.server";
+import { TaskDetailModal } from "~/features/task/components/task-detail-modal";
+import { TaskDetailPage } from "~/features/task/pages/task-detail-page";
+import { getTask } from "~/features/task/server/get-task.server";
+import { useHomeShellContext } from "~/layouts/home-shell";
 import type { Route } from "./+types/tasks.$taskId";
 
 export function meta({ loaderData }: Route.MetaArgs) {
@@ -39,39 +37,16 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 }
 
 export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
-    const location = useLocation();
-    const backgroundLocation = location.state?.backgroundLocation;
-    const tasksFromState = Array.isArray(location.state?.tasks)
-        ? (location.state?.tasks as SerializableTask[])
-        : undefined;
-    const [isHydrated, setIsHydrated] = useState(false);
+    const { isModal } = useHomeShellContext();
 
-    useEffect(() => {
-        setIsHydrated(true);
-    }, []);
-
-    const backgroundPath =
-        backgroundLocation && typeof backgroundLocation === "object"
-            ? backgroundLocation.pathname
-            : undefined;
-
-    // If we have a background location and tasks, render Welcome + Modal
-    if (isHydrated && backgroundPath && tasksFromState) {
+    if (isModal) {
         return (
-            <>
-                <Welcome
-                    tasks={tasksFromState}
-                    isAuthenticated={loaderData.isAuthenticated}
-                />
-                <TaskDetailModal
-                    key={loaderData.task.taskId}
-                    task={loaderData.task}
-                    backgroundLocation={backgroundPath}
-                />
-            </>
+            <TaskDetailModal
+                key={loaderData.task.taskId}
+                task={loaderData.task}
+            />
         );
     }
 
-    // Otherwise, render as standalone page
     return <TaskDetailPage task={loaderData.task} />;
 }

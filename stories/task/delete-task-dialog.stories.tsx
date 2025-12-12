@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { fn } from "storybook/test";
-import { DeleteTaskDialog } from "~/task/delete-task-dialog";
+import { DeleteTaskDialog } from "~/features/task/components/delete-task-dialog";
 
 const meta = {
     title: "Task/DeleteTaskDialog",

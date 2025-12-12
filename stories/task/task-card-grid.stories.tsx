@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
+import { TaskCardGrid } from "~/features/task/components/task-card-grid";
+import { TASK_COLORS } from "~/features/task/lib/task-colors";
+import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
 import { TaskStatus, TaskType } from "~/gen/task/v1/task_pb";
-import type { SerializableTask } from "~/task/list-active-tasks.server";
-import { TaskCardGrid } from "~/task/task-card-grid";
-
-import { TASK_COLORS } from "~/task/task-colors";
 
 function createMockTask(
     id: string,

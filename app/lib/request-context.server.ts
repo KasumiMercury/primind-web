@@ -1,5 +1,5 @@
 import { createContextValues } from "@connectrpc/connect";
-import { getUserSession } from "~/auth/session.server";
+import { getUserSession } from "~/features/auth/server/session.server";
 import { sessionTokenKey } from "~/interceptor/auth-interceptor";
 
 export async function createAuthContext(request: Request) {

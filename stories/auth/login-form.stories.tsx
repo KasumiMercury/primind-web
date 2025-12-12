@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
-import { LoginFormContent } from "~/auth/login-form";
+import { LoginFormContent } from "~/features/auth/components/login-form";
 import { mockProviders, singleProvider } from "./mock-providers";
 
 const meta = {

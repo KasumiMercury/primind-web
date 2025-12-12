@@ -1,4 +1,4 @@
-import { createTaskAction } from "~/task/create-task.server";
+import { createTaskAction } from "~/features/task/server/create-task.server";
 import type { Route } from "./+types/task";
 
 export async function loader() {

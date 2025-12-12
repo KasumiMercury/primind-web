@@ -2,9 +2,9 @@ import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useState } from "react";
 import { Outlet, useOutletContext, useSubmit } from "react-router";
-import { LoginDialog } from "~/auth/login-dialog";
-import { getUserSession } from "~/auth/session.server";
 import { Header } from "~/components/header/header";
+import { LoginDialog } from "~/features/auth/components/login-dialog";
+import { getUserSession } from "~/features/auth/server/session.server";
 import { type AuthState, authStateAtom } from "~/store/auth";
 import type { Route } from "./+types/app-layout";
 
