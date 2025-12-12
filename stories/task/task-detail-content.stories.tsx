@@ -28,7 +28,6 @@ const meta = {
     parameters: {
         layout: "centered",
     },
-    tags: ["autodocs"],
     argTypes: {
         isEditing: {
             control: "boolean",
@@ -43,6 +42,11 @@ const meta = {
             description:
                 "Whether the save was successful (shows success feedback).",
         },
+        saveError: {
+            control: "boolean",
+            description:
+                "Whether the save action failed (shows error feedback).",
+        },
         isDeleting: {
             control: "boolean",
             description: "Whether a delete operation is in progress.",
@@ -54,6 +58,11 @@ const meta = {
         showDeleteConfirm: {
             control: "boolean",
             description: "Whether to show the delete confirmation dialog.",
+        },
+        deleteError: {
+            control: "text",
+            description:
+                "Error message to display in the delete confirmation dialog.",
         },
         title: {
             control: "text",
@@ -273,5 +282,36 @@ export const SaveSuccess: Story = {
         isDeleting: false,
         isDirty: false,
         showDeleteConfirm: false,
+    },
+};
+
+export const SaveError: Story = {
+    args: {
+        task: createMockTask(),
+        title: "Failed to save task",
+        description: "This task failed to save to the server.",
+        isEditing: false,
+        isSaving: false,
+        saveSuccess: false,
+        saveError: true,
+        isDeleting: false,
+        isDirty: false,
+        showDeleteConfirm: false,
+    },
+};
+
+export const DeleteError: Story = {
+    args: {
+        task: createMockTask(),
+        title: "Task failed to delete",
+        description: "This task could not be deleted.",
+        isEditing: false,
+        isSaving: false,
+        saveSuccess: false,
+        saveError: false,
+        isDeleting: false,
+        isDirty: false,
+        showDeleteConfirm: true,
+        deleteError: "Failed to delete task. Please try again.",
     },
 };

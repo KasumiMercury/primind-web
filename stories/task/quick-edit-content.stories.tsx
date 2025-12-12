@@ -35,6 +35,10 @@ const meta = {
             control: "boolean",
             description: "Whether the save action was successful.",
         },
+        saveError: {
+            control: "boolean",
+            description: "Whether the save action failed.",
+        },
         isDeleting: {
             control: "boolean",
             description: "Whether the delete action is in progress.",
@@ -42,6 +46,11 @@ const meta = {
         showDeleteConfirm: {
             control: "boolean",
             description: "Whether to show the delete confirmation dialog.",
+        },
+        deleteError: {
+            control: "text",
+            description:
+                "Error message to display in the delete confirmation dialog.",
         },
     },
     args: {
@@ -147,5 +156,34 @@ export const Scheduled: Story = {
         saveSuccess: false,
         isDeleting: false,
         showDeleteConfirm: false,
+    },
+};
+
+export const SaveError: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskTypeKey: TASK_TYPE_KEYS.NORMAL,
+        title: "Failed to save task",
+        description: "This task failed to save.",
+        isSaving: false,
+        saveSuccess: false,
+        saveError: true,
+        isDeleting: false,
+        showDeleteConfirm: false,
+    },
+};
+
+export const DeleteError: Story = {
+    args: {
+        className: "w-full max-w-md",
+        taskTypeKey: TASK_TYPE_KEYS.LOW,
+        title: "Task failed to delete",
+        description: "This task could not be deleted.",
+        isSaving: false,
+        saveSuccess: false,
+        saveError: false,
+        isDeleting: false,
+        showDeleteConfirm: true,
+        deleteError: "Failed to delete task. Please try again.",
     },
 };
