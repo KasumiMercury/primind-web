@@ -1,7 +1,10 @@
 import { redirect } from "react-router";
-import { getAuthClient } from "~/auth/auth-client.server";
-import { authLogger } from "~/auth/logger.server";
-import { getUserSession, sessionStorage } from "~/auth/session.server";
+import { getAuthClient } from "~/features/auth/server/auth-client.server";
+import { authLogger } from "~/features/auth/server/logger.server";
+import {
+    getUserSession,
+    sessionStorage,
+} from "~/features/auth/server/session.server";
 import type { Route } from "./+types/logout";
 
 export async function loader() {

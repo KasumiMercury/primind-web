@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
-import { QuickEditContent } from "~/task/quick-edit-content";
-import { TASK_TYPE_KEYS } from "~/task/task-type-items";
+import { QuickEditContent } from "~/features/task/components/quick-edit-content";
+import { TASK_TYPE_KEYS } from "~/features/task/lib/task-type-items";
 
 const meta = {
     title: "Task/QuickEditContent",

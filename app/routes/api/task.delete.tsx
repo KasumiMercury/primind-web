@@ -1,4 +1,4 @@
-import { deleteTaskAction } from "~/task/delete-task.server";
+import { deleteTaskAction } from "~/features/task/server/delete-task.server";
 import type { Route } from "./+types/task.delete";
 
 export async function loader() {

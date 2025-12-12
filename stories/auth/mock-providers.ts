@@ -1,4 +1,4 @@
-import type { UIProviderConfig } from "~/auth/oidc/providers";
+import type { UIProviderConfig } from "~/features/auth/oidc/providers";
 
 export const mockProviders: UIProviderConfig[] = [
     {

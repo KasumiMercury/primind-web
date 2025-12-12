@@ -1,6 +1,6 @@
-import { getUserSession } from "~/auth/session.server";
-import { listActiveTasks } from "~/task/list-active-tasks.server";
-import { Welcome } from "../welcome/welcome";
+import { getUserSession } from "~/features/auth/server/session.server";
+import { TaskListPage } from "~/features/task/pages/task-list-page";
+import { listActiveTasks } from "~/features/task/server/list-active-tasks.server";
 import type { Route } from "./+types/home";
 
 export function meta(_: Route.MetaArgs) {
@@ -31,7 +31,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
     return (
-        <Welcome
+        <TaskListPage
             tasks={loaderData.tasks}
             isAuthenticated={loaderData.isAuthenticated}
         />

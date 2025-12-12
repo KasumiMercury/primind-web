@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
-import type { OperationConfig } from "~/task/operation-area";
-import { OperationArea } from "~/task/operation-area";
+import type { OperationConfig } from "~/features/task/components/operation-area";
+import { OperationArea } from "~/features/task/components/operation-area";
 
 const defaultOperation: OperationConfig = {
     upAction: () => console.log("Up"),

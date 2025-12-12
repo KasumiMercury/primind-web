@@ -1,4 +1,4 @@
-import { updateTaskAction } from "~/task/update-task.server";
+import { updateTaskAction } from "~/features/task/server/update-task.server";
 import type { Route } from "./+types/task.update";
 
 export async function loader() {

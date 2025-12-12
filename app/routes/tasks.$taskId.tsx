@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { data, useLocation } from "react-router";
-import { getUserSession } from "~/auth/session.server";
-import { getTask } from "~/task/get-task.server";
-import type { SerializableTask } from "~/task/list-active-tasks.server";
-import { TaskDetailModal } from "~/task/task-detail-modal";
-import { TaskDetailPage } from "~/task/task-detail-page";
-import { Welcome } from "~/welcome/welcome";
+import { getUserSession } from "~/features/auth/server/session.server";
+import { TaskDetailModal } from "~/features/task/components/task-detail-modal";
+import { TaskDetailPage } from "~/features/task/pages/task-detail-page";
+import { TaskListPage } from "~/features/task/pages/task-list-page";
+import { getTask } from "~/features/task/server/get-task.server";
+import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
 import type { Route } from "./+types/tasks.$taskId";
 
 export function meta({ loaderData }: Route.MetaArgs) {
@@ -55,11 +55,11 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
             ? backgroundLocation.pathname
             : undefined;
 
-    // If we have a background location and tasks, render Welcome + Modal
+    // If we have a background location and tasks, render TaskListPage + Modal
     if (isHydrated && backgroundPath && tasksFromState) {
         return (
             <>
-                <Welcome
+                <TaskListPage
                     tasks={tasksFromState}
                     isAuthenticated={loaderData.isAuthenticated}
                 />

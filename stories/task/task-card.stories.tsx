@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
+import { TaskCard } from "~/features/task/components/task-card";
+import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
 import { TaskStatus, TaskType } from "~/gen/task/v1/task_pb";
-import type { SerializableTask } from "~/task/list-active-tasks.server";
-import { TaskCard } from "~/task/task-card";
 
 function createMockTask(
     overrides: Partial<SerializableTask> = {},

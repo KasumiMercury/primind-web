@@ -11,8 +11,8 @@ export default [
         route("/tasks/:taskId", "routes/tasks.$taskId.tsx"),
     ]),
 
-    route("/login", "auth/login.tsx"),
-    route("/callback/google", "auth/oidc/callback.google.tsx"),
+    route("/login", "features/auth/components/login.tsx"),
+    route("/callback/google", "features/auth/oidc/callback.google.tsx"),
     route("/api/task", "routes/api/task.tsx"),
     route("/api/task/update", "routes/api/task.update.tsx"),
     route("/api/task/delete", "routes/api/task.delete.tsx"),

@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { calculateDimensions, OperationShape } from "~/task/operation-shape";
+import {
+    calculateDimensions,
+    OperationShape,
+} from "~/features/task/components/operation-shape";
 
 const meta = {
     title: "Task/OperationShape",

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { OperationIndicator } from "~/task/operation-indicator";
+import { OperationIndicator } from "~/features/task/components/operation-indicator";
 
 const meta = {
     title: "Task/OperationIndicator",
