@@ -27,7 +27,13 @@ export function DeleteTaskDialog({
     isDeleting,
 }: DeleteTaskDialogProps) {
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog
+            open={open}
+            onOpenChange={(nextOpen) => {
+                onOpenChange(nextOpen);
+                if (!nextOpen) onCancel();
+            }}
+        >
             <DialogContent showCloseButton={false}>
                 <DialogHeader>
                     <DialogTitle>Delete Task</DialogTitle>
