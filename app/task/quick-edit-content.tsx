@@ -154,7 +154,7 @@ export function QuickEditContent({
                         </DialogDescription>
                     </DialogHeader>
                     {deleteError && (
-                        <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950 dark:text-red-400">
+                        <div className="rounded-md bg-red-50 p-3 text-red-600 text-sm dark:bg-red-950 dark:text-red-400">
                             {deleteError}
                         </div>
                     )}
