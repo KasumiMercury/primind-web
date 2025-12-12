@@ -37,7 +37,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const [deleteError, setDeleteError] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
-    const isDeleting = deleteFetcher.state === "submitting";
+    const isDeleting = deleteFetcher.state === "idle";
     const isDirty =
         title !== lastSavedTitle || description !== lastSavedDescription;
 
@@ -127,6 +127,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         if (saveResetTimer.current) {
             clearTimeout(saveResetTimer.current);
         }
+        setSaveError(false);
         setSaveSuccess(false);
         const formData = createUpdateTaskFormData(taskId, title, description);
         saveFetcher.submit(formData, {
@@ -140,6 +141,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     };
 
     const handleDeleteConfirm = () => {
+        setDeleteError(false);
         const formData = createDeleteTaskFormData(taskId);
         deleteFetcher.submit(formData, {
             method: "post",
