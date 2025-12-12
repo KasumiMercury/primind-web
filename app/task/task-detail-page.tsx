@@ -102,6 +102,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         }
         if (deleteFetcher.data?.success) {
             setShowDeleteConfirm(false);
+            setDeleteError(false);
             return;
         }
         if (deleteFetcher.data?.error) {
