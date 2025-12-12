@@ -37,7 +37,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const [deleteError, setDeleteError] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
-    const isDeleting = deleteFetcher.state === "idle";
+    const isDeleting = deleteFetcher.state !== "idle";
     const isDirty =
         title !== lastSavedTitle || description !== lastSavedDescription;
 
