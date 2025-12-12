@@ -23,6 +23,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         return {
             tasks: [],
             isAuthenticated,
+            error: undefined,
         };
     }
 
