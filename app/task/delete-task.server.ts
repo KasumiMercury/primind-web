@@ -1,5 +1,5 @@
 import { create } from "@bufbuild/protobuf";
-import { data } from "react-router";
+import { data, redirect } from "react-router";
 import { validate as uuidValidate, version as uuidVersion } from "uuid";
 import { DeleteTaskRequestSchema } from "~/gen/task/v1/task_pb";
 import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
@@ -48,7 +48,7 @@ export async function deleteTaskAction(request: Request) {
 
             taskLogger.info({ taskId }, "DeleteTask action completed");
 
-            return data({ success: true, taskId }, { status: 200 });
+            return redirect("/");
         } catch (err) {
             taskLogger.error({ err, taskId }, "DeleteTask action failed");
             return data(

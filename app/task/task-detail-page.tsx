@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useFetcher, useNavigate } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { Button } from "~/components/ui/button";
 import type { SerializableTask } from "./list-active-tasks.server";
 import {
@@ -22,7 +22,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         title: initialTitle,
         description: initialDescription,
     } = task;
-    const navigate = useNavigate();
     const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
 
@@ -95,14 +94,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
             }, ERROR_DISPLAY_DURATION_MS);
         }
     }, [saveFetcher.state, saveFetcher.data, title, description]);
-
-    // Handle delete success
-    useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.success) {
-            setShowDeleteConfirm(false);
-            navigate("/", { replace: true });
-        }
-    }, [deleteFetcher.state, deleteFetcher.data, navigate]);
 
     // Handle delete error
     useEffect(() => {

@@ -114,14 +114,6 @@ export function TaskDetailModal({
         }
     }, [saveFetcher.state, saveFetcher.data]);
 
-    // Handle delete success
-    useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.success) {
-            setShowDeleteConfirm(false);
-            navigate(backgroundLocation, { replace: true });
-        }
-    }, [deleteFetcher.state, deleteFetcher.data, navigate, backgroundLocation]);
-
     // Handle delete error
     useEffect(() => {
         if (deleteFetcher.state === "idle" && deleteFetcher.data?.error) {
