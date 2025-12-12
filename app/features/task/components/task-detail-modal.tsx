@@ -16,16 +16,12 @@ import { TaskDetailContent } from "./task-detail-content";
 
 interface TaskDetailModalProps {
     task: SerializableTask;
-    backgroundLocation: string;
 }
 
 const SAVE_SUCCESS_DURATION_MS = 2500;
 const ERROR_DISPLAY_DURATION_MS = 2500;
 
-export function TaskDetailModal({
-    task,
-    backgroundLocation,
-}: TaskDetailModalProps) {
+export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const {
         taskId,
         title: initialTitle,
@@ -123,14 +119,14 @@ export function TaskDetailModal({
         if (deleteFetcher.data?.success) {
             setDeleteError(false);
             setShowDeleteConfirm(false);
-            navigate(backgroundLocation, { replace: true });
+            navigate("/", { replace: true, preventScrollReset: true });
             return;
         }
 
         if (deleteFetcher.data?.error) {
             setDeleteError(true);
         }
-    }, [deleteFetcher.state, deleteFetcher.data, navigate, backgroundLocation]);
+    }, [deleteFetcher.state, deleteFetcher.data, navigate]);
 
     useEffect(() => {
         if (!taskId) {
@@ -157,7 +153,7 @@ export function TaskDetailModal({
 
     const handleOpenChange = (open: boolean) => {
         if (!open) {
-            navigate(backgroundLocation, { replace: true });
+            navigate("/", { replace: true, preventScrollReset: true });
         }
     };
 

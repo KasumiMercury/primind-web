@@ -1,6 +1,6 @@
 import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import { QuickEdit } from "~/features/task/components/quick-edit";
@@ -12,14 +12,13 @@ import {
 import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
 import { useAppLayoutContext } from "~/layouts/app-layout";
 
-interface TaskListPageProps {
+interface HomeViewProps {
     tasks: SerializableTask[];
     isAuthenticated: boolean;
 }
 
-export function TaskListPage({ tasks, isAuthenticated }: TaskListPageProps) {
+export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
     const navigate = useNavigate();
-    const location = useLocation();
     const { openLoginDialog } = useAppLayoutContext();
 
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
@@ -43,10 +42,8 @@ export function TaskListPage({ tasks, isAuthenticated }: TaskListPageProps) {
 
     const handleTaskClick = (task: SerializableTask) => {
         navigate(`/tasks/${task.taskId}`, {
-            state: {
-                backgroundLocation: location,
-                tasks: tasks,
-            },
+            state: { modal: true },
+            preventScrollReset: true,
         });
     };
 
