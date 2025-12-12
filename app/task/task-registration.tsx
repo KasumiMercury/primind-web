@@ -1,9 +1,16 @@
+import { useEffect } from "react";
 import { useFetcher } from "react-router";
+import { toast } from "sonner";
 import { v7 as uuidv7 } from "uuid";
 import { OperationArea } from "./operation-area";
 import { getRandomTaskColor } from "./task-colors";
 import { createTaskFormData } from "./task-form-data";
 import type { TaskTypeKey } from "./task-type-items";
+
+interface FetcherData {
+    success?: boolean;
+    error?: string;
+}
 
 export interface TaskRegistrationEvent {
     taskId: string;
@@ -23,6 +30,13 @@ export function TaskRegistration({
     onTaskRegistered,
 }: TaskRegistrationProps) {
     const fetcher = useFetcher();
+
+    useEffect(() => {
+        const data = fetcher.data as FetcherData | undefined;
+        if (fetcher.state === "idle" && data?.error) {
+            toast.error("failed to create task");
+        }
+    }, [fetcher.state, fetcher.data]);
 
     const handleRegister = (taskTypeKey: TaskTypeKey) => {
         const taskId = uuidv7();

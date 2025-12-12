@@ -30,9 +30,11 @@ interface TaskDetailContentProps {
     onDelete: () => void;
     isSaving?: boolean;
     saveSuccess?: boolean;
+    saveError?: boolean;
     isDeleting?: boolean;
     isDirty?: boolean;
     showDeleteConfirm?: boolean;
+    deleteError?: string | null;
     onDeleteConfirm?: () => void;
     onDeleteCancel?: () => void;
 }
@@ -76,9 +78,11 @@ export function TaskDetailContent({
     onDelete,
     isSaving = false,
     saveSuccess = false,
+    saveError = false,
     isDeleting = false,
     isDirty = false,
     showDeleteConfirm = false,
+    deleteError = null,
     onDeleteConfirm,
     onDeleteCancel,
 }: TaskDetailContentProps) {
@@ -199,7 +203,12 @@ export function TaskDetailContent({
                 )}
 
                 <div className="flex flex-row-reverse items-center justify-between gap-2 border-t pt-4">
-                    {saveSuccess ? (
+                    {saveError ? (
+                        <div className="flex h-9 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
+                            <X className="size-4" />
+                            <span>Failed</span>
+                        </div>
+                    ) : saveSuccess ? (
                         <div className="flex h-9 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
                             <Check className="size-4" />
                             <span>Saved</span>
@@ -265,6 +274,11 @@ export function TaskDetailContent({
                             Are you sure you want to delete this task?
                         </DialogDescription>
                     </DialogHeader>
+                    {deleteError && (
+                        <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950 dark:text-red-400">
+                            {deleteError}
+                        </div>
+                    )}
                     <DialogFooter>
                         <Button
                             variant="outline"

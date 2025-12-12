@@ -1,4 +1,4 @@
-import { Check, ChevronUp, Loader2, Trash } from "lucide-react";
+import { Check, ChevronUp, Loader2, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -26,8 +26,10 @@ export interface QuickEditContentProps {
     onClose?: () => void;
     isSaving?: boolean;
     saveSuccess?: boolean;
+    saveError?: boolean;
     isDeleting?: boolean;
     showDeleteConfirm?: boolean;
+    deleteError?: string | null;
     onDeleteConfirm?: () => void;
     onDeleteCancel?: () => void;
 }
@@ -45,8 +47,10 @@ export function QuickEditContent({
     onClose,
     isSaving = false,
     saveSuccess = false,
+    saveError = false,
     isDeleting = false,
     showDeleteConfirm = false,
+    deleteError = null,
     onDeleteConfirm,
     onDeleteCancel,
 }: QuickEditContentProps) {
@@ -92,7 +96,12 @@ export function QuickEditContent({
 
                 {/* reverse flex direction to place delete button's focus order after save button */}
                 <div className="mt-2 flex flex-row-reverse justify-between">
-                    {saveSuccess ? (
+                    {saveError ? (
+                        <div className="flex h-8 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
+                            <X className="size-4" />
+                            <span>Failed</span>
+                        </div>
+                    ) : saveSuccess ? (
                         <div className="flex h-8 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
                             <Check className="size-4" />
                             <span>Saved</span>
@@ -144,6 +153,11 @@ export function QuickEditContent({
                             Are you sure you want to delete this task?
                         </DialogDescription>
                     </DialogHeader>
+                    {deleteError && (
+                        <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950 dark:text-red-400">
+                            {deleteError}
+                        </div>
+                    )}
                     <DialogFooter>
                         <Button
                             variant="outline"
