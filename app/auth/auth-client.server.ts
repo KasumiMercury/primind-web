@@ -6,9 +6,9 @@ import {
     AuthService,
     type AuthService as AuthServiceType,
 } from "~/gen/auth/v1/auth_pb";
-import { connectMockApi, logTransportMode } from "~/lib/mock-utils.server";
+import { logTransportMode, mockApiEnabled } from "~/lib/mock-utils.server";
 
-const useMock = connectMockApi();
+const useMock = mockApiEnabled;
 
 async function createTransport(): Promise<Transport> {
     if (useMock) {

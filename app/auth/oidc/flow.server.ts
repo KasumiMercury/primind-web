@@ -2,20 +2,22 @@ import { create } from "@bufbuild/protobuf";
 import { redirect } from "react-router";
 import { getAuthClient } from "~/auth/auth-client.server";
 import { authLogger } from "~/auth/logger.server";
-import { initiateMockOIDCFlow } from "~/auth/oidc/flow-mock.server";
 import type { OIDCProviderDefinition } from "~/auth/oidc/provider.server";
 import { oidcStateCookie } from "~/auth/oidc/state-cookie.server";
 import { OIDCParamsRequestSchema } from "~/gen/auth/v1/auth_pb";
-import { connectMockApi } from "~/lib/mock-utils.server";
+import { mockApiEnabled } from "~/lib/mock-utils.server";
 
 export async function initiateOIDCFlow(
     request: Request,
     providerDef: OIDCProviderDefinition,
 ): Promise<Response> {
-    if (connectMockApi()) {
+    if (mockApiEnabled) {
         authLogger.debug(
             { provider: providerDef.name },
             "Delegating to mock OIDC flow (VITE_USE_MOCK_API=true)",
+        );
+        const { initiateMockOIDCFlow } = await import(
+            "~/auth/oidc/flow-mock.server"
         );
         return initiateMockOIDCFlow(request, providerDef);
     }

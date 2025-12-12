@@ -1,7 +1,7 @@
-export function connectMockApi(): boolean {
-    const useMock = import.meta.env.VITE_USE_MOCK_API;
-    return useMock === "true" || useMock === true;
-}
+const mockApiEnv = import.meta.env.VITE_USE_MOCK_API;
+const mockFlag = mockApiEnv === "true" || mockApiEnv === true;
+
+export const mockApiEnabled = import.meta.env.DEV && mockFlag;
 
 export function logTransportMode(
     serviceName: string,

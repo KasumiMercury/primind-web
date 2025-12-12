@@ -6,10 +6,10 @@ import {
     type TaskService as TaskServiceType,
 } from "~/gen/task/v1/task_pb";
 import { authInterceptor } from "~/interceptor/auth-interceptor";
-import { connectMockApi, logTransportMode } from "~/lib/mock-utils.server";
+import { logTransportMode, mockApiEnabled } from "~/lib/mock-utils.server";
 import { taskLogger } from "~/task/logger.server";
 
-const useMock = connectMockApi();
+const useMock = mockApiEnabled;
 
 async function createTransport(): Promise<Transport> {
     if (useMock) {

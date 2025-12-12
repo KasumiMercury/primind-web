@@ -5,9 +5,9 @@ import {
     type MockErrorConfig,
     type MockErrorMode,
 } from "./mock-error-config";
-import { connectMockApi } from "./mock-utils.server";
+import { mockApiEnabled } from "./mock-utils.server";
 
-const useMock = connectMockApi();
+const useMock = mockApiEnabled;
 
 interface ErrorContext {
     errorMode: MockErrorMode;
