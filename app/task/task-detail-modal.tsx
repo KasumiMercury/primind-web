@@ -114,12 +114,23 @@ export function TaskDetailModal({
         }
     }, [saveFetcher.state, saveFetcher.data]);
 
-    // Handle delete error
+    // Handle delete success and error
     useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.error) {
+        if (deleteFetcher.state !== "idle") {
+            return;
+        }
+
+        if (deleteFetcher.data?.success) {
+            setDeleteError(false);
+            setShowDeleteConfirm(false);
+            navigate(backgroundLocation, { replace: true });
+            return;
+        }
+
+        if (deleteFetcher.data?.error) {
             setDeleteError(true);
         }
-    }, [deleteFetcher.state, deleteFetcher.data]);
+    }, [deleteFetcher.state, deleteFetcher.data, navigate, backgroundLocation]);
 
     useEffect(() => {
         if (!taskId) {
