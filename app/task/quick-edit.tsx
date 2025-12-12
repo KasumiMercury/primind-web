@@ -17,6 +17,7 @@ interface QuickEditProps {
 }
 
 const SAVE_SUCCESS_DURATION_MS = 2500;
+const ERROR_DISPLAY_DURATION_MS = 2500;
 
 export function QuickEdit({
     className,
@@ -33,6 +34,8 @@ export function QuickEdit({
     const [description, setDescription] = useState("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [saveError, setSaveError] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
 
     const isSaving = saveFetcher.state === "submitting";
     const isDeleting = deleteFetcher.state === "submitting";
@@ -48,6 +51,17 @@ export function QuickEdit({
         }
     }, [saveFetcher.state, saveFetcher.data]);
 
+    // Handle save error feedback
+    useEffect(() => {
+        if (saveFetcher.state === "idle" && saveFetcher.data?.error) {
+            setSaveError(true);
+            const timer = setTimeout(() => {
+                setSaveError(false);
+            }, ERROR_DISPLAY_DURATION_MS);
+            return () => clearTimeout(timer);
+        }
+    }, [saveFetcher.state, saveFetcher.data]);
+
     // Handle delete success
     useEffect(() => {
         if (deleteFetcher.state === "idle" && deleteFetcher.data?.success) {
@@ -55,6 +69,13 @@ export function QuickEdit({
             onDeleted?.();
         }
     }, [deleteFetcher.state, deleteFetcher.data, onDeleted]);
+
+    // Handle delete error
+    useEffect(() => {
+        if (deleteFetcher.state === "idle" && deleteFetcher.data?.error) {
+            setDeleteError(true);
+        }
+    }, [deleteFetcher.state, deleteFetcher.data]);
 
     const handleSave = () => {
         const formData = createUpdateTaskFormData(taskId, title, description);
@@ -65,10 +86,12 @@ export function QuickEdit({
     };
 
     const handleDelete = () => {
+        setDeleteError(false);
         setShowDeleteConfirm(true);
     };
 
     const handleDeleteConfirm = () => {
+        setDeleteError(false);
         const formData = createDeleteTaskFormData(taskId);
         deleteFetcher.submit(formData, {
             method: "post",
@@ -78,6 +101,7 @@ export function QuickEdit({
 
     const handleDeleteCancel = () => {
         setShowDeleteConfirm(false);
+        setDeleteError(false);
     };
 
     const handleClose = () => {
@@ -98,8 +122,10 @@ export function QuickEdit({
             onClose={handleClose}
             isSaving={isSaving}
             saveSuccess={saveSuccess}
+            saveError={saveError}
             isDeleting={isDeleting}
             showDeleteConfirm={showDeleteConfirm}
+            deleteError={deleteError}
             onDeleteConfirm={handleDeleteConfirm}
             onDeleteCancel={handleDeleteCancel}
         />

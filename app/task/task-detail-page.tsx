@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useFetcher, useNavigate } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { Button } from "~/components/ui/button";
 import type { SerializableTask } from "./list-active-tasks.server";
 import {
@@ -14,6 +14,7 @@ interface TaskDetailPageProps {
 }
 
 const SAVE_SUCCESS_DURATION_MS = 2500;
+const ERROR_DISPLAY_DURATION_MS = 2500;
 
 export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const {
@@ -21,7 +22,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         title: initialTitle,
         description: initialDescription,
     } = task;
-    const navigate = useNavigate();
     const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
 
@@ -33,20 +33,26 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [saveError, setSaveError] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
-    const isDeleting = deleteFetcher.state === "submitting";
+    const isDeleting = deleteFetcher.state !== "idle";
     const isDirty =
         title !== lastSavedTitle || description !== lastSavedDescription;
 
     // Track if save operation was initiated
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         return () => {
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
+            }
+            if (errorResetTimer.current) {
+                clearTimeout(errorResetTimer.current);
             }
         };
     }, []);
@@ -79,16 +85,30 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
+            setSaveError(true);
+            if (errorResetTimer.current) {
+                clearTimeout(errorResetTimer.current);
+            }
+            errorResetTimer.current = setTimeout(() => {
+                setSaveError(false);
+            }, ERROR_DISPLAY_DURATION_MS);
         }
     }, [saveFetcher.state, saveFetcher.data, title, description]);
 
-    // Handle delete success
+    // Handle delete error
     useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.success) {
-            setShowDeleteConfirm(false);
-            navigate("/", { replace: true });
+        if (deleteFetcher.state !== "idle") {
+            return;
         }
-    }, [deleteFetcher.state, deleteFetcher.data, navigate]);
+        if (deleteFetcher.data?.success) {
+            setShowDeleteConfirm(false);
+            setDeleteError(false);
+            return;
+        }
+        if (deleteFetcher.data?.error) {
+            setDeleteError(true);
+        }
+    }, [deleteFetcher.state, deleteFetcher.data]);
 
     useEffect(() => {
         if (!taskId) {
@@ -115,6 +135,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         if (saveResetTimer.current) {
             clearTimeout(saveResetTimer.current);
         }
+        setSaveError(false);
         setSaveSuccess(false);
         const formData = createUpdateTaskFormData(taskId, title, description);
         saveFetcher.submit(formData, {
@@ -128,6 +149,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     };
 
     const handleDeleteConfirm = () => {
+        setDeleteError(false);
         const formData = createDeleteTaskFormData(taskId);
         deleteFetcher.submit(formData, {
             method: "post",
@@ -137,6 +159,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
     const handleDeleteCancel = () => {
         setShowDeleteConfirm(false);
+        setDeleteError(false);
     };
 
     const handleEditClick = () => {
@@ -173,9 +196,11 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     onDelete={handleDelete}
                     isSaving={isSaving}
                     saveSuccess={saveSuccess}
+                    saveError={saveError}
                     isDeleting={isDeleting}
                     isDirty={isDirty}
                     showDeleteConfirm={showDeleteConfirm}
+                    deleteError={deleteError}
                     onDeleteConfirm={handleDeleteConfirm}
                     onDeleteCancel={handleDeleteCancel}
                 />

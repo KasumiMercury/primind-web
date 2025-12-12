@@ -20,6 +20,7 @@ interface TaskDetailModalProps {
 }
 
 const SAVE_SUCCESS_DURATION_MS = 2500;
+const ERROR_DISPLAY_DURATION_MS = 2500;
 
 export function TaskDetailModal({
     task,
@@ -42,6 +43,8 @@ export function TaskDetailModal({
     const [isEditing, setIsEditing] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [saveError, setSaveError] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
     const isDeleting = deleteFetcher.state === "submitting";
@@ -51,6 +54,7 @@ export function TaskDetailModal({
     // Track if save operation was initiated
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     // Capture values at save time to avoid stale closure issues
     const pendingSaveValues = useRef<{
         title: string;
@@ -61,6 +65,9 @@ export function TaskDetailModal({
         return () => {
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
+            }
+            if (errorResetTimer.current) {
+                clearTimeout(errorResetTimer.current);
             }
         };
     }, []);
@@ -97,14 +104,31 @@ export function TaskDetailModal({
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
             pendingSaveValues.current = null;
+            setSaveError(true);
+            if (errorResetTimer.current) {
+                clearTimeout(errorResetTimer.current);
+            }
+            errorResetTimer.current = setTimeout(() => {
+                setSaveError(false);
+            }, ERROR_DISPLAY_DURATION_MS);
         }
     }, [saveFetcher.state, saveFetcher.data]);
 
-    // Handle delete success
+    // Handle delete success and error
     useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.success) {
+        if (deleteFetcher.state !== "idle") {
+            return;
+        }
+
+        if (deleteFetcher.data?.success) {
+            setDeleteError(false);
             setShowDeleteConfirm(false);
             navigate(backgroundLocation, { replace: true });
+            return;
+        }
+
+        if (deleteFetcher.data?.error) {
+            setDeleteError(true);
         }
     }, [deleteFetcher.state, deleteFetcher.data, navigate, backgroundLocation]);
 
@@ -168,6 +192,7 @@ export function TaskDetailModal({
 
     const handleDeleteCancel = () => {
         setShowDeleteConfirm(false);
+        setDeleteError(false);
     };
 
     const handleEditClick = () => {
@@ -202,9 +227,11 @@ export function TaskDetailModal({
                     onDelete={handleDelete}
                     isSaving={isSaving}
                     saveSuccess={saveSuccess}
+                    saveError={saveError}
                     isDeleting={isDeleting}
                     isDirty={isDirty}
                     showDeleteConfirm={showDeleteConfirm}
+                    deleteError={deleteError}
                     onDeleteConfirm={handleDeleteConfirm}
                     onDeleteCancel={handleDeleteCancel}
                 />

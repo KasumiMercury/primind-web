@@ -1,7 +1,10 @@
 import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Preview, ReactRenderer } from "@storybook/react-vite";
+import React from "react";
+import { Toaster } from "sonner";
 
 import "../app/app.css";
+import { toastOptions } from "../app/components/ui/toaster";
 
 const preview: Preview = {
     parameters: {
@@ -20,6 +23,16 @@ const preview: Preview = {
             },
             defaultTheme: "light",
         }),
+        (Story) =>
+            React.createElement(
+                React.Fragment,
+                null,
+                React.createElement(Story),
+                React.createElement(Toaster, {
+                    position: "bottom-right",
+                    toastOptions,
+                }),
+            ),
     ],
 };
 

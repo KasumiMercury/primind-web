@@ -1,5 +1,5 @@
 import { redirect } from "react-router";
-import { authClient } from "~/auth/auth-client.server";
+import { getAuthClient } from "~/auth/auth-client.server";
 import { authLogger } from "~/auth/logger.server";
 import { getUserSession, sessionStorage } from "~/auth/session.server";
 import type { Route } from "./+types/logout";
@@ -13,6 +13,7 @@ export async function action({ request }: Route.ActionArgs) {
 
     if (sessionToken) {
         try {
+            const authClient = await getAuthClient();
             await authClient.logout({ sessionToken });
             authLogger.info("User logged out successfully");
         } catch (error) {

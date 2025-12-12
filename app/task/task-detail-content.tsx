@@ -1,19 +1,12 @@
 import { Check, Loader2, Pencil, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { TaskStatus, type TaskType } from "~/gen/task/v1/task_pb";
 import { formatTimestampAbsolute } from "~/lib/absolute-time";
 import { formatTimestampRelative } from "~/lib/relative-time";
+import { DeleteTaskDialog } from "./delete-task-dialog";
 import type { SerializableTask } from "./list-active-tasks.server";
 import { ITEMS, TASK_TYPE_KEYS, type TaskTypeKey } from "./task-type-items";
 
@@ -30,9 +23,11 @@ interface TaskDetailContentProps {
     onDelete: () => void;
     isSaving?: boolean;
     saveSuccess?: boolean;
+    saveError?: boolean;
     isDeleting?: boolean;
     isDirty?: boolean;
     showDeleteConfirm?: boolean;
+    deleteError?: boolean;
     onDeleteConfirm?: () => void;
     onDeleteCancel?: () => void;
 }
@@ -76,9 +71,11 @@ export function TaskDetailContent({
     onDelete,
     isSaving = false,
     saveSuccess = false,
+    saveError = false,
     isDeleting = false,
     isDirty = false,
     showDeleteConfirm = false,
+    deleteError = false,
     onDeleteConfirm,
     onDeleteCancel,
 }: TaskDetailContentProps) {
@@ -199,7 +196,12 @@ export function TaskDetailContent({
                 )}
 
                 <div className="flex flex-row-reverse items-center justify-between gap-2 border-t pt-4">
-                    {saveSuccess ? (
+                    {saveError ? (
+                        <div className="flex h-9 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
+                            <X className="size-4" />
+                            <span>Failed</span>
+                        </div>
+                    ) : saveSuccess ? (
                         <div className="flex h-9 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
                             <Check className="size-4" />
                             <span>Saved</span>
@@ -254,42 +256,14 @@ export function TaskDetailContent({
                 </div>
             </form>
 
-            <Dialog
+            <DeleteTaskDialog
                 open={showDeleteConfirm}
                 onOpenChange={(open) => !open && onDeleteCancel?.()}
-            >
-                <DialogContent showCloseButton={false}>
-                    <DialogHeader>
-                        <DialogTitle>Delete Task</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete this task?
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={onDeleteCancel}
-                            disabled={isDeleting}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={onDeleteConfirm}
-                            disabled={isDeleting}
-                        >
-                            {isDeleting ? (
-                                <>
-                                    <Loader2 className="size-4 animate-spin" />
-                                    <span>Deleting...</span>
-                                </>
-                            ) : (
-                                "Delete"
-                            )}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                onConfirm={() => onDeleteConfirm?.()}
+                onCancel={() => onDeleteCancel?.()}
+                error={deleteError}
+                isDeleting={isDeleting}
+            />
         </>
     );
 }
