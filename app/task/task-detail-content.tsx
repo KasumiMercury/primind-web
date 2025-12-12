@@ -1,19 +1,12 @@
 import { Check, Loader2, Pencil, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { TaskStatus, type TaskType } from "~/gen/task/v1/task_pb";
 import { formatTimestampAbsolute } from "~/lib/absolute-time";
 import { formatTimestampRelative } from "~/lib/relative-time";
+import { DeleteTaskDialog } from "./delete-task-dialog";
 import type { SerializableTask } from "./list-active-tasks.server";
 import { ITEMS, TASK_TYPE_KEYS, type TaskTypeKey } from "./task-type-items";
 
@@ -34,7 +27,7 @@ interface TaskDetailContentProps {
     isDeleting?: boolean;
     isDirty?: boolean;
     showDeleteConfirm?: boolean;
-    deleteError?: string | null;
+    deleteError?: boolean;
     onDeleteConfirm?: () => void;
     onDeleteCancel?: () => void;
 }
@@ -82,7 +75,7 @@ export function TaskDetailContent({
     isDeleting = false,
     isDirty = false,
     showDeleteConfirm = false,
-    deleteError = null,
+    deleteError = false,
     onDeleteConfirm,
     onDeleteCancel,
 }: TaskDetailContentProps) {
@@ -263,47 +256,14 @@ export function TaskDetailContent({
                 </div>
             </form>
 
-            <Dialog
+            <DeleteTaskDialog
                 open={showDeleteConfirm}
                 onOpenChange={(open) => !open && onDeleteCancel?.()}
-            >
-                <DialogContent showCloseButton={false}>
-                    <DialogHeader>
-                        <DialogTitle>Delete Task</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete this task?
-                        </DialogDescription>
-                    </DialogHeader>
-                    {deleteError && (
-                        <div className="rounded-md bg-red-50 p-3 text-red-600 text-sm dark:bg-red-950 dark:text-red-400">
-                            {deleteError}
-                        </div>
-                    )}
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={onDeleteCancel}
-                            disabled={isDeleting}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={onDeleteConfirm}
-                            disabled={isDeleting}
-                        >
-                            {isDeleting ? (
-                                <>
-                                    <Loader2 className="size-4 animate-spin" />
-                                    <span>Deleting...</span>
-                                </>
-                            ) : (
-                                "Delete"
-                            )}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                onConfirm={() => onDeleteConfirm?.()}
+                onCancel={() => onDeleteCancel?.()}
+                error={deleteError}
+                isDeleting={isDeleting}
+            />
         </>
     );
 }

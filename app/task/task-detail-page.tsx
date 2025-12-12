@@ -35,7 +35,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [saveError, setSaveError] = useState(false);
-    const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [deleteError, setDeleteError] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
     const isDeleting = deleteFetcher.state === "submitting";
@@ -107,7 +107,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     // Handle delete error
     useEffect(() => {
         if (deleteFetcher.state === "idle" && deleteFetcher.data?.error) {
-            setDeleteError(deleteFetcher.data.error);
+            setDeleteError(true);
         }
     }, [deleteFetcher.state, deleteFetcher.data]);
 
@@ -158,7 +158,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
     const handleDeleteCancel = () => {
         setShowDeleteConfirm(false);
-        setDeleteError(null);
+        setDeleteError(false);
     };
 
     const handleEditClick = () => {

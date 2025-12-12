@@ -1,16 +1,9 @@
 import { Check, ChevronUp, Loader2, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "~/components/ui/dialog";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { DeleteTaskDialog } from "./delete-task-dialog";
 import { type IconComponent, ITEMS, type TaskTypeKey } from "./task-type-items";
 
 export interface QuickEditContentProps {
@@ -29,7 +22,7 @@ export interface QuickEditContentProps {
     saveError?: boolean;
     isDeleting?: boolean;
     showDeleteConfirm?: boolean;
-    deleteError?: string | null;
+    deleteError?: boolean;
     onDeleteConfirm?: () => void;
     onDeleteCancel?: () => void;
 }
@@ -50,7 +43,7 @@ export function QuickEditContent({
     saveError = false,
     isDeleting = false,
     showDeleteConfirm = false,
-    deleteError = null,
+    deleteError = false,
     onDeleteConfirm,
     onDeleteCancel,
 }: QuickEditContentProps) {
@@ -142,47 +135,14 @@ export function QuickEditContent({
                 </button>
             </form>
 
-            <Dialog
+            <DeleteTaskDialog
                 open={showDeleteConfirm}
                 onOpenChange={(open) => !open && onDeleteCancel?.()}
-            >
-                <DialogContent showCloseButton={false}>
-                    <DialogHeader>
-                        <DialogTitle>Delete Task</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete this task?
-                        </DialogDescription>
-                    </DialogHeader>
-                    {deleteError && (
-                        <div className="rounded-md bg-red-50 p-3 text-red-600 text-sm dark:bg-red-950 dark:text-red-400">
-                            {deleteError}
-                        </div>
-                    )}
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={onDeleteCancel}
-                            disabled={isDeleting}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={onDeleteConfirm}
-                            disabled={isDeleting}
-                        >
-                            {isDeleting ? (
-                                <>
-                                    <Loader2 className="size-4 animate-spin" />
-                                    <span>Deleting...</span>
-                                </>
-                            ) : (
-                                "Delete"
-                            )}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                onConfirm={() => onDeleteConfirm?.()}
+                onCancel={() => onDeleteCancel?.()}
+                error={deleteError}
+                isDeleting={isDeleting}
+            />
         </>
     );
 }
