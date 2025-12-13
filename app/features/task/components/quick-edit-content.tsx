@@ -104,7 +104,7 @@ export function QuickEditContent({
                             <span>Saved</span>
                         </div>
                     ) : (
-                        <Button type="submit" size="sm" disabled={isSaving}>
+                        <Button type="submit" size="sm" isDisabled={isSaving}>
                             {isSaving ? (
                                 <>
                                     <Loader2 className="size-4 animate-spin" />
@@ -119,9 +119,9 @@ export function QuickEditContent({
                         variant="ghost"
                         size="icon-sm"
                         type="button"
-                        onClick={onDelete}
-                        disabled={isDeleting || isSaving}
-                        className="text-destructive hover:bg-destructive/10"
+                        onPress={onDelete}
+                        isDisabled={isDeleting || isSaving}
+                        className="text-destructive data-hovered:bg-destructive/10"
                         aria-label="Delete Task"
                     >
                         <Trash className="size-4" />

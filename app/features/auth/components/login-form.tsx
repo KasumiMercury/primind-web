@@ -25,16 +25,16 @@ export function LoginFormContent({
     };
 
     return (
-        <div className="space-y-6" data-action={action}>
+        <div className="space-y-6 py-4" data-action={action}>
             <div className="space-y-3">
                 {providers.map((provider) => (
                     <Button
                         key={provider.id}
                         type="button"
-                        onClick={() => handleProviderSubmit(provider.id)}
+                        onPress={() => handleProviderSubmit(provider.id)}
                         className="w-full"
                         size="lg"
-                        disabled={isSubmitting}
+                        isDisabled={isSubmitting}
                     >
                         {isSubmitting
                             ? "Signing in..."

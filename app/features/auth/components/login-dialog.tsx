@@ -11,7 +11,6 @@ interface LoginDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     action?: string;
-    modal?: boolean;
     withOverlay?: boolean;
     inline?: boolean;
     children?: React.ReactNode;
@@ -21,11 +20,10 @@ export function LoginDialog({
     open,
     onOpenChange,
     action = "/login",
-    modal = true,
     children,
 }: LoginDialogProps) {
     return (
-        <Dialog open={open} onOpenChange={onOpenChange} modal={modal}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>Sign in</DialogTitle>

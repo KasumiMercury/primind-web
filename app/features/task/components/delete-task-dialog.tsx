@@ -49,15 +49,15 @@ export function DeleteTaskDialog({
                 <DialogFooter>
                     <Button
                         variant="outline"
-                        onClick={onCancel}
-                        disabled={isDeleting}
+                        onPress={onCancel}
+                        isDisabled={isDeleting}
                     >
                         Cancel
                     </Button>
                     <Button
                         variant="destructive"
-                        onClick={onConfirm}
-                        disabled={isDeleting}
+                        onPress={onConfirm}
+                        isDisabled={isDeleting}
                     >
                         {isDeleting ? (
                             <>

@@ -214,7 +214,7 @@ export function TaskDetailContent({
                         <div className="flex items-center gap-2">
                             <Button
                                 type="submit"
-                                disabled={!isDirty || isSaving}
+                                isDisabled={!isDirty || isSaving}
                             >
                                 {isSaving ? (
                                     <>
@@ -228,8 +228,8 @@ export function TaskDetailContent({
                             <Button
                                 type="button"
                                 variant="ghost"
-                                onClick={onEditCancel}
-                                disabled={isSaving}
+                                onPress={onEditCancel}
+                                isDisabled={isSaving}
                             >
                                 <X className="size-4" />
                                 Cancel
@@ -239,8 +239,8 @@ export function TaskDetailContent({
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={onEditClick}
-                            disabled={isSaving}
+                            onPress={onEditClick}
+                            isDisabled={isSaving}
                         >
                             <Pencil className="size-4" />
                             Edit
@@ -250,9 +250,9 @@ export function TaskDetailContent({
                         variant="ghost"
                         size="icon"
                         type="button"
-                        onClick={onDelete}
-                        disabled={isDeleting || isSaving}
-                        className="text-destructive hover:bg-destructive/10"
+                        onPress={onDelete}
+                        isDisabled={isDeleting || isSaving}
+                        className="text-destructive data-hovered:bg-destructive/10"
                         aria-label="Delete Task"
                     >
                         <Trash className="size-4" />
