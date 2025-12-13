@@ -2,6 +2,7 @@ import { Check, Loader2, Pencil, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { TextField } from "~/components/ui/text-field";
 import { Textarea } from "~/components/ui/textarea";
 import { formatTimestampAbsolute } from "~/features/task/lib/absolute-time";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
@@ -110,19 +111,20 @@ export function TaskDetailContent({
                         Title
                     </h3>
                     {isEditing ? (
-                        <Input
-                            id="task-title"
-                            type="text"
-                            placeholder="No title"
-                            className={
-                                !title.trim()
-                                    ? "placeholder:text-muted-foreground placeholder:italic"
-                                    : ""
-                            }
-                            value={title}
-                            onChange={(e) => onTitleChange(e.target.value)}
-                            disabled={isSaving}
-                        />
+                        <TextField isDisabled={isSaving}>
+                            <Input
+                                id="task-title"
+                                type="text"
+                                placeholder="No title"
+                                className={
+                                    !title.trim()
+                                        ? "placeholder:text-muted-foreground placeholder:italic"
+                                        : ""
+                                }
+                                value={title}
+                                onChange={(e) => onTitleChange(e.target.value)}
+                            />
+                        </TextField>
                     ) : title.trim() ? (
                         <p className="font-semibold text-foreground text-lg">
                             {title}

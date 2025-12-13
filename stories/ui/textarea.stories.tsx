@@ -29,7 +29,7 @@ export const WithValue: Story = {
 export const Disabled: Story = {
     args: {
         placeholder: "Disabled textarea",
-        isDisabled: true,
+        disabled: true,
     },
 };
 

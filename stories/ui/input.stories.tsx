@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { Input } from "~/components/ui/input";
+import { TextField } from "~/components/ui/text-field";
 
 const meta = {
     title: "ui/Input",
@@ -22,22 +23,22 @@ export const Default: Story = {
 
 export const WithValue: Story = {
     args: {
-        value: "Hello World",
+        defaultValue: "Hello World",
     },
 };
 
 export const Disabled: Story = {
     args: {
         placeholder: "Disabled input",
-        isDisabled: true,
+        disabled: true,
     },
 };
 
 export const Invalid: Story = {
     render: () => (
-        <div className="w-64">
-            <Input placeholder="Invalid input" isInvalid={true} />
-        </div>
+        <TextField isInvalid>
+            <Input placeholder="Invalid input" />
+        </TextField>
     ),
 };
 

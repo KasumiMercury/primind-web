@@ -2,6 +2,7 @@ import { Check, ChevronUp, Loader2, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { TextField } from "~/components/ui/text-field";
 import { Textarea } from "~/components/ui/textarea";
 import {
     type IconComponent,
@@ -71,14 +72,15 @@ export function QuickEditContent({
                         />
                     </div>
                     <div className="flex flex-1 flex-col gap-2">
-                        <Input
-                            type="text"
-                            placeholder="Task Title"
-                            className="h-8 px-2 py-1 text-sm"
-                            value={title}
-                            onChange={(e) => onTitleChange(e.target.value)}
-                            disabled={isSaving}
-                        />
+                        <TextField isDisabled={isSaving}>
+                            <Input
+                                type="text"
+                                placeholder="Task Title"
+                                className="h-8 px-2 py-1 text-sm"
+                                value={title}
+                                onChange={(e) => onTitleChange(e.target.value)}
+                            />
+                        </TextField>
                         <Textarea
                             placeholder="Task Description"
                             className="px-2 py-1 text-sm"
