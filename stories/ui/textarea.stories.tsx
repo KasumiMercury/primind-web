@@ -29,14 +29,14 @@ export const WithValue: Story = {
 export const Disabled: Story = {
     args: {
         placeholder: "Disabled textarea",
-        disabled: true,
+        isDisabled: true,
     },
 };
 
 export const Invalid: Story = {
     render: () => (
         <div className="w-64">
-            <Textarea placeholder="Invalid textarea" aria-invalid="true" />
+            <Textarea placeholder="Invalid textarea" aria-invalid={true} />
         </div>
     ),
 };

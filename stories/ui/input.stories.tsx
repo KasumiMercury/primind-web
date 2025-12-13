@@ -29,14 +29,14 @@ export const WithValue: Story = {
 export const Disabled: Story = {
     args: {
         placeholder: "Disabled input",
-        disabled: true,
+        isDisabled: true,
     },
 };
 
 export const Invalid: Story = {
     render: () => (
         <div className="w-64">
-            <Input placeholder="Invalid input" aria-invalid="true" />
+            <Input placeholder="Invalid input" isInvalid={true} />
         </div>
     ),
 };
