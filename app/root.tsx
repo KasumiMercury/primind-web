@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { RouterProvider } from "./components/router-provider";
 import { ThemeProvider } from "./components/theme-provider";
 import { AppToaster } from "./components/ui/toaster";
 
@@ -55,7 +56,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-    return <Outlet />;
+    return (
+        <RouterProvider>
+            <Outlet />
+        </RouterProvider>
+    );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
