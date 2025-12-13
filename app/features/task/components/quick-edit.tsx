@@ -78,7 +78,6 @@ export function QuickEdit({
 
             if (deleteFetcher.data?.success) {
                 setShowDeleteConfirm(false);
-                console.log("Task deleted successfully");
                 onDeletedRef.current?.();
             }
         }
