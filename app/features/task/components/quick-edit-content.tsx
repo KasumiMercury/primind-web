@@ -134,7 +134,7 @@ export function QuickEditContent({
                     type="button"
                     variant="ghost"
                     onPress={onClose}
-                    className="mt-3 flex w-full items-center justify-center rounded-md bg-background py-1 text-muted-foreground transition-colors data-hovered:bg-accent data-hovered:text-accent-foreground"
+                    className="mt-3 flex w-full items-center justify-center rounded-md bg-background py-1 text-muted-foreground"
                     isDisabled={isSaving || isDeleting}
                     aria-label="Close Quick Edit"
                 >
