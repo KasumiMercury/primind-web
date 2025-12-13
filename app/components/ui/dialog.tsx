@@ -36,6 +36,8 @@ interface DialogContentProps {
     children: React.ReactNode;
     showCloseButton?: boolean;
     isDismissable?: boolean;
+    isOpen?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
 function DialogContent({
@@ -43,10 +45,14 @@ function DialogContent({
     children,
     showCloseButton = true,
     isDismissable = true,
+    isOpen,
+    onOpenChange,
 }: DialogContentProps) {
     return (
         <ModalOverlay
             data-slot="dialog-overlay"
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
             isDismissable={isDismissable}
             className={cn(
                 "fixed inset-0 z-50 bg-black/50",

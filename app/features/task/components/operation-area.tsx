@@ -202,13 +202,13 @@ export function OperationArea({
                         dimensions={dimensions}
                         buttonsConfig={{
                             left: {
-                                onClick: () => handleLeftAction("button"),
+                                onPress: () => handleLeftAction("button"),
                             },
                             center: {
-                                onClick: () => handleDownAction("button"),
+                                onPress: () => handleDownAction("button"),
                             },
                             right: {
-                                onClick: () => handleRightAction("button"),
+                                onPress: () => handleRightAction("button"),
                             },
                         }}
                         className={innerClassName}

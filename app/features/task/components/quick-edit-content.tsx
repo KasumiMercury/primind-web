@@ -128,15 +128,16 @@ export function QuickEditContent({
                     </Button>
                 </div>
 
-                <button
+                <Button
                     type="button"
-                    onClick={onClose}
-                    className="mt-3 flex w-full items-center justify-center rounded-md bg-background py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                    disabled={isSaving || isDeleting}
+                    variant="ghost"
+                    onPress={onClose}
+                    className="mt-3 flex w-full items-center justify-center rounded-md bg-background py-1 text-muted-foreground transition-colors data-hovered:bg-accent data-hovered:text-accent-foreground"
+                    isDisabled={isSaving || isDeleting}
                     aria-label="Close Quick Edit"
                 >
                     <ChevronUp className="size-5" />
-                </button>
+                </Button>
             </form>
 
             <DeleteTaskDialog

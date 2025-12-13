@@ -1,3 +1,4 @@
+import { Button } from "~/components/ui/button";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
 import type { TaskType } from "~/gen/task/v1/task_pb";
 import { cn } from "~/lib/utils";
@@ -11,7 +12,7 @@ import type { SerializableTask } from "../server/list-active-tasks.server";
 interface TaskCardProps {
     task: SerializableTask;
     className?: string;
-    onClick?: () => void;
+    onPress?: () => void;
 }
 
 function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
@@ -29,7 +30,7 @@ function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
     }
 }
 
-export function TaskCard({ task, className, onClick }: TaskCardProps) {
+export function TaskCard({ task, className, onPress }: TaskCardProps) {
     const taskTypeKey = getTaskTypeKey(task.taskType);
     const config = ITEMS[taskTypeKey];
     const Icon = config.icon;
@@ -38,15 +39,16 @@ export function TaskCard({ task, className, onClick }: TaskCardProps) {
     const relativeTime = formatTimestampRelative(task.createdAt);
 
     return (
-        <button
+        <Button
+            variant="ghost"
             type="button"
-            onClick={onClick}
+            onPress={onPress}
             className={cn(
-                "flex w-full items-start gap-3 rounded-lg border border-border bg-card p-4",
+                "flex h-auto w-full items-start gap-3 rounded-lg border border-border bg-card p-4",
                 "text-left transition-colors",
                 "cursor-pointer",
-                "hover:bg-accent",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                "data-hovered:bg-accent",
+                "data-focus-visible:outline-none data-focus-visible:ring-2 data-focus-visible:ring-ring data-focus-visible:ring-offset-2",
                 className,
             )}
             aria-label={
@@ -79,6 +81,6 @@ export function TaskCard({ task, className, onClick }: TaskCardProps) {
                     </p>
                 )}
             </div>
-        </button>
+        </Button>
     );
 }

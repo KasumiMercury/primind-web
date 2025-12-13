@@ -36,7 +36,7 @@ const meta = {
         },
     },
     args: {
-        onClick: fn(),
+        onPress: fn(),
     },
     decorators: [
         (Story) => (

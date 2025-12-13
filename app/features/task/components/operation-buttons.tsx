@@ -1,8 +1,9 @@
-import type { MouseEvent } from "react";
+import type { PressEvent } from "react-aria-components";
+import { Button } from "~/components/ui/button";
 import type { Dimensions } from "./operation-shape";
 
 export interface ButtonConfig {
-    onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+    onPress: (event: PressEvent) => void;
 }
 
 interface OperationButtonsProps {
@@ -32,35 +33,38 @@ export function OperationButtons({
                 flexDirection: "row",
             }}
         >
-            <button
-                className="cursor-pointer bg-transparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-linear-to-r"
+            <Button
+                variant="ghost"
+                className="cursor-pointer rounded-none bg-transparent from-primary/15 to-transparent data-focus-visible:bg-linear-to-r data-hovered:bg-primary/10"
                 type="button"
                 style={{
                     width: `${sideButtonWidth}px`,
                     height: "100%",
                 }}
-                onClick={buttonsConfig.left.onClick}
-            ></button>
+                onPress={buttonsConfig.left.onPress}
+            />
 
-            <button
+            <Button
+                variant="ghost"
                 type="button"
-                className="cursor-pointer bg-transparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-radial"
+                className="cursor-pointer rounded-none bg-transparent from-primary/15 to-transparent data-focus-visible:bg-radial data-hovered:bg-primary/10"
                 style={{
                     width: `${centerButtonWidth}px`,
                     height: "100%",
                 }}
-                onClick={buttonsConfig.center.onClick}
-            ></button>
+                onPress={buttonsConfig.center.onPress}
+            />
 
-            <button
-                className="cursor-pointer bg-transparent from-primary/15 to-transparent hover:bg-primary/10 focus:bg-linear-to-l"
+            <Button
+                variant="ghost"
+                className="cursor-pointer rounded-none bg-transparent from-primary/15 to-transparent data-focus-visible:bg-linear-to-l data-hovered:bg-primary/10"
                 type="button"
                 style={{
                     width: `${sideButtonWidth}px`,
                     height: "100%",
                 }}
-                onClick={buttonsConfig.right.onClick}
-            ></button>
+                onPress={buttonsConfig.right.onPress}
+            />
         </div>
     );
 }

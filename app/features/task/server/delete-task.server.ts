@@ -50,9 +50,7 @@ export async function deleteTaskAction(request: Request) {
             taskLogger.info({ taskId }, "DeleteTask action completed");
 
             if (typeof redirectTo === "string") {
-                const target = redirectTo.startsWith("/")
-                    ? redirectTo
-                    : "/";
+                const target = redirectTo.startsWith("/") ? redirectTo : "/";
                 return redirect(target);
             }
 

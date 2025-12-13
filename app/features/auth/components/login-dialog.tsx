@@ -1,5 +1,4 @@
 import {
-    Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
@@ -11,8 +10,6 @@ interface LoginDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     action?: string;
-    withOverlay?: boolean;
-    inline?: boolean;
     children?: React.ReactNode;
 }
 
@@ -23,16 +20,18 @@ export function LoginDialog({
     children,
 }: LoginDialogProps) {
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Sign in</DialogTitle>
-                </DialogHeader>
-                <DialogDescription className="sr-only">
-                    Sign in to your account.
-                </DialogDescription>
-                {children || <LoginForm action={action} />}
-            </DialogContent>
-        </Dialog>
+        <DialogContent
+            isOpen={open}
+            onOpenChange={onOpenChange}
+            className="sm:max-w-md"
+        >
+            <DialogHeader>
+                <DialogTitle>Sign in</DialogTitle>
+            </DialogHeader>
+            <DialogDescription className="sr-only">
+                Sign in to your account.
+            </DialogDescription>
+            {children || <LoginForm action={action} />}
+        </DialogContent>
     );
 }

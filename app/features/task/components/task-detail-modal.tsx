@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useNavigate } from "react-router";
 import {
-    Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
@@ -125,7 +124,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         if (deleteFetcher.data?.error) {
             setDeleteError(true);
         }
-    }, [deleteFetcher.state, deleteFetcher.data, navigate]);
+    }, [deleteFetcher.state, deleteFetcher.data]);
 
     useEffect(() => {
         if (!taskId) {
@@ -203,36 +202,38 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     };
 
     return (
-        <Dialog open={true} onOpenChange={handleOpenChange}>
-            <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
-                <DialogHeader>
-                    <DialogTitle className="sr-only">Task Detail</DialogTitle>
-                </DialogHeader>
-                <DialogDescription className="sr-only">
-                    View and edit the details of task.
-                </DialogDescription>
-                <TaskDetailContent
-                    task={task}
-                    title={title}
-                    description={description}
-                    isEditing={isEditing}
-                    onTitleChange={setTitle}
-                    onDescriptionChange={setDescription}
-                    onEditClick={handleEditClick}
-                    onEditCancel={handleEditCancel}
-                    onSave={handleSave}
-                    onDelete={handleDelete}
-                    isSaving={isSaving}
-                    saveSuccess={saveSuccess}
-                    saveError={saveError}
-                    isDeleting={isDeleting}
-                    isDirty={isDirty}
-                    showDeleteConfirm={showDeleteConfirm}
-                    deleteError={deleteError}
-                    onDeleteConfirm={handleDeleteConfirm}
-                    onDeleteCancel={handleDeleteCancel}
-                />
-            </DialogContent>
-        </Dialog>
+        <DialogContent
+            isOpen={true}
+            onOpenChange={handleOpenChange}
+            className="max-h-[85vh] overflow-y-auto sm:max-w-lg"
+        >
+            <DialogHeader>
+                <DialogTitle className="sr-only">Task Detail</DialogTitle>
+            </DialogHeader>
+            <DialogDescription className="sr-only">
+                View and edit the details of task.
+            </DialogDescription>
+            <TaskDetailContent
+                task={task}
+                title={title}
+                description={description}
+                isEditing={isEditing}
+                onTitleChange={setTitle}
+                onDescriptionChange={setDescription}
+                onEditClick={handleEditClick}
+                onEditCancel={handleEditCancel}
+                onSave={handleSave}
+                onDelete={handleDelete}
+                isSaving={isSaving}
+                saveSuccess={saveSuccess}
+                saveError={saveError}
+                isDeleting={isDeleting}
+                isDirty={isDirty}
+                showDeleteConfirm={showDeleteConfirm}
+                deleteError={deleteError}
+                onDeleteConfirm={handleDeleteConfirm}
+                onDeleteCancel={handleDeleteCancel}
+            />
+        </DialogContent>
     );
 }
