@@ -62,20 +62,20 @@ export function QuickEdit({
         }
     }, [saveFetcher.state, saveFetcher.data]);
 
-    // Handle delete success
+    // Handle delete result
     useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.success) {
+        if (deleteFetcher.state !== "idle") return;
+
+        if (deleteFetcher.data?.error) {
+            setDeleteError(true);
+        }
+
+        if (deleteFetcher.data?.success) {
             setShowDeleteConfirm(false);
+            console.log("Task deleted successfully");
             onDeleted?.();
         }
     }, [deleteFetcher.state, deleteFetcher.data, onDeleted]);
-
-    // Handle delete error
-    useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.error) {
-            setDeleteError(true);
-        }
-    }, [deleteFetcher.state, deleteFetcher.data]);
 
     const handleSave = () => {
         const formData = createUpdateTaskFormData(taskId, title, description);

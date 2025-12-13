@@ -119,7 +119,6 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         if (deleteFetcher.data?.success) {
             setDeleteError(false);
             setShowDeleteConfirm(false);
-            navigate("/", { replace: true, preventScrollReset: true });
             return;
         }
 
@@ -179,7 +178,9 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     };
 
     const handleDeleteConfirm = () => {
-        const formData = createDeleteTaskFormData(taskId);
+        const formData = createDeleteTaskFormData(taskId, {
+            redirectTo: "/",
+        });
         deleteFetcher.submit(formData, {
             method: "post",
             action: "/api/task/delete",

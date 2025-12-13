@@ -12,8 +12,14 @@ export function createUpdateTaskFormData(
     return formData;
 }
 
-export function createDeleteTaskFormData(taskId: string): FormData {
+export function createDeleteTaskFormData(
+    taskId: string,
+    options?: { redirectTo?: string },
+): FormData {
     const formData = new FormData();
     formData.append("task_id", taskId);
+    if (options?.redirectTo) {
+        formData.append("redirect_to", options.redirectTo);
+    }
     return formData;
 }
