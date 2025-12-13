@@ -2,6 +2,7 @@ import { Check, Loader2, Pencil, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { TextField } from "~/components/ui/text-field";
 import { Textarea } from "~/components/ui/textarea";
 import { formatTimestampAbsolute } from "~/features/task/lib/absolute-time";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
@@ -110,19 +111,20 @@ export function TaskDetailContent({
                         Title
                     </h3>
                     {isEditing ? (
-                        <Input
-                            id="task-title"
-                            type="text"
-                            placeholder="No title"
-                            className={
-                                !title.trim()
-                                    ? "placeholder:text-muted-foreground placeholder:italic"
-                                    : ""
-                            }
-                            value={title}
-                            onChange={(e) => onTitleChange(e.target.value)}
-                            disabled={isSaving}
-                        />
+                        <TextField isDisabled={isSaving}>
+                            <Input
+                                id="task-title"
+                                type="text"
+                                placeholder="No title"
+                                className={
+                                    !title.trim()
+                                        ? "placeholder:text-muted-foreground placeholder:italic"
+                                        : ""
+                                }
+                                value={title}
+                                onChange={(e) => onTitleChange(e.target.value)}
+                            />
+                        </TextField>
                     ) : title.trim() ? (
                         <p className="font-semibold text-foreground text-lg">
                             {title}
@@ -214,7 +216,7 @@ export function TaskDetailContent({
                         <div className="flex items-center gap-2">
                             <Button
                                 type="submit"
-                                disabled={!isDirty || isSaving}
+                                isDisabled={!isDirty || isSaving}
                             >
                                 {isSaving ? (
                                     <>
@@ -228,8 +230,8 @@ export function TaskDetailContent({
                             <Button
                                 type="button"
                                 variant="ghost"
-                                onClick={onEditCancel}
-                                disabled={isSaving}
+                                onPress={onEditCancel}
+                                isDisabled={isSaving}
                             >
                                 <X className="size-4" />
                                 Cancel
@@ -239,8 +241,8 @@ export function TaskDetailContent({
                         <Button
                             type="button"
                             variant="outline"
-                            onClick={onEditClick}
-                            disabled={isSaving}
+                            onPress={onEditClick}
+                            isDisabled={isSaving}
                         >
                             <Pencil className="size-4" />
                             Edit
@@ -250,9 +252,9 @@ export function TaskDetailContent({
                         variant="ghost"
                         size="icon"
                         type="button"
-                        onClick={onDelete}
-                        disabled={isDeleting || isSaving}
-                        className="text-destructive hover:bg-destructive/10"
+                        onPress={onDelete}
+                        isDisabled={isDeleting || isSaving}
+                        className="text-destructive data-hovered:bg-destructive/10"
                         aria-label="Delete Task"
                     >
                         <Trash className="size-4" />

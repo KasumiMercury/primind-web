@@ -14,7 +14,7 @@ function ToastDemo({ message }: { message: string }) {
 }
 
 const meta = {
-    title: "Feedback/Toast",
+    title: "ui/Toast",
     component: ToastDemo,
     parameters: {
         layout: "centered",

@@ -17,7 +17,7 @@ export function Header({ onLoginClick, onLogout }: HeaderProps) {
                 {isAuthenticated ? (
                     <UserMenu onLogout={onLogout} />
                 ) : (
-                    <LoginButton onClick={onLoginClick} />
+                    <LoginButton onPress={onLoginClick} />
                 )}
             </div>
         </header>

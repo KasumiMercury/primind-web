@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link, useFetcher } from "react-router";
-import { Button } from "~/components/ui/button";
+import { useFetcher } from "react-router";
+import { LinkButton } from "~/components/ui/link-button";
 import { TaskDetailContent } from "../components/task-detail-content";
 import {
     createDeleteTaskFormData,
@@ -175,12 +175,10 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     return (
         <div className="w-full max-w-lg">
             <div className="mb-6">
-                <Button variant="ghost" size="sm" asChild>
-                    <Link to="/">
-                        <ArrowLeft className="mr-2 size-4" />
-                        Back to Tasks
-                    </Link>
-                </Button>
+                <LinkButton variant="ghost" size="sm" href="/">
+                    <ArrowLeft className="mr-2 size-4" />
+                    Back to Tasks
+                </LinkButton>
             </div>
             <div className="rounded-lg border bg-card p-6">
                 <TaskDetailContent

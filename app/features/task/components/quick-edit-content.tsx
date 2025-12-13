@@ -2,6 +2,7 @@ import { Check, ChevronUp, Loader2, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { TextField } from "~/components/ui/text-field";
 import { Textarea } from "~/components/ui/textarea";
 import {
     type IconComponent,
@@ -71,14 +72,15 @@ export function QuickEditContent({
                         />
                     </div>
                     <div className="flex flex-1 flex-col gap-2">
-                        <Input
-                            type="text"
-                            placeholder="Task Title"
-                            className="h-8 px-2 py-1 text-sm"
-                            value={title}
-                            onChange={(e) => onTitleChange(e.target.value)}
-                            disabled={isSaving}
-                        />
+                        <TextField isDisabled={isSaving}>
+                            <Input
+                                type="text"
+                                placeholder="Task Title"
+                                className="h-8 px-2 py-1 text-sm"
+                                value={title}
+                                onChange={(e) => onTitleChange(e.target.value)}
+                            />
+                        </TextField>
                         <Textarea
                             placeholder="Task Description"
                             className="px-2 py-1 text-sm"
@@ -104,7 +106,7 @@ export function QuickEditContent({
                             <span>Saved</span>
                         </div>
                     ) : (
-                        <Button type="submit" size="sm" disabled={isSaving}>
+                        <Button type="submit" size="sm" isDisabled={isSaving}>
                             {isSaving ? (
                                 <>
                                     <Loader2 className="size-4 animate-spin" />
@@ -119,24 +121,25 @@ export function QuickEditContent({
                         variant="ghost"
                         size="icon-sm"
                         type="button"
-                        onClick={onDelete}
-                        disabled={isDeleting || isSaving}
-                        className="text-destructive hover:bg-destructive/10"
+                        onPress={onDelete}
+                        isDisabled={isDeleting || isSaving}
+                        className="text-destructive data-hovered:bg-destructive/10"
                         aria-label="Delete Task"
                     >
                         <Trash className="size-4" />
                     </Button>
                 </div>
 
-                <button
+                <Button
                     type="button"
-                    onClick={onClose}
-                    className="mt-3 flex w-full items-center justify-center rounded-md bg-background py-1 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                    disabled={isSaving || isDeleting}
+                    variant="ghost"
+                    onPress={onClose}
+                    className="mt-3 flex w-full items-center justify-center rounded-md bg-background py-1 text-muted-foreground"
+                    isDisabled={isSaving || isDeleting}
                     aria-label="Close Quick Edit"
                 >
                     <ChevronUp className="size-5" />
-                </button>
+                </Button>
             </form>
 
             <DeleteTaskDialog

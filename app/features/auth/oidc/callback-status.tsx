@@ -1,5 +1,4 @@
-import { Link } from "react-router";
-import { Button } from "~/components/ui/button";
+import { LinkButton } from "~/components/ui/link-button";
 
 export type CallbackState = "loading" | "success" | "error";
 
@@ -43,9 +42,7 @@ export function CallbackStatus({
                             {error.message}
                         </p>
                         <div className="mt-6 flex justify-center gap-4">
-                            <Button asChild>
-                                <Link to="/login">Back to Login</Link>
-                            </Button>
+                            <LinkButton href="/login">Back to Login</LinkButton>
                         </div>
                     </>
                 )}

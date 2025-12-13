@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import {
     createDeleteTaskFormData,
@@ -29,6 +29,10 @@ export function QuickEdit({
 }: QuickEditProps) {
     const saveFetcher = useFetcher();
     const deleteFetcher = useFetcher();
+
+    const prevDeleteStateRef = useRef(deleteFetcher.state);
+    const onDeletedRef = useRef(onDeleted);
+    onDeletedRef.current = onDeleted;
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -62,19 +66,23 @@ export function QuickEdit({
         }
     }, [saveFetcher.state, saveFetcher.data]);
 
-    // Handle delete success
+    // Handle delete result - only fire when transitioning to idle from a non-idle state
     useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.success) {
-            setShowDeleteConfirm(false);
-            onDeleted?.();
-        }
-    }, [deleteFetcher.state, deleteFetcher.data, onDeleted]);
+        const prevState = prevDeleteStateRef.current;
+        const currentState = deleteFetcher.state;
 
-    // Handle delete error
-    useEffect(() => {
-        if (deleteFetcher.state === "idle" && deleteFetcher.data?.error) {
-            setDeleteError(true);
+        if (prevState !== "idle" && currentState === "idle") {
+            if (deleteFetcher.data?.error) {
+                setDeleteError(true);
+            }
+
+            if (deleteFetcher.data?.success) {
+                setShowDeleteConfirm(false);
+                onDeletedRef.current?.();
+            }
         }
+
+        prevDeleteStateRef.current = currentState;
     }, [deleteFetcher.state, deleteFetcher.data]);
 
     const handleSave = () => {

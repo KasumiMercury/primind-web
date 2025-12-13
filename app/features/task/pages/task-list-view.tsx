@@ -41,6 +41,7 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
     };
 
     const handleTaskClick = (task: SerializableTask) => {
+        setLatestTask(null);
         navigate(`/tasks/${task.taskId}`, {
             state: { modal: true },
             preventScrollReset: true,

@@ -19,6 +19,7 @@ export async function deleteTaskAction(request: Request) {
 
         const formData = await request.formData();
         const taskId = formData.get("task_id");
+        const redirectTo = formData.get("redirect_to");
 
         try {
             taskLogger.debug({ taskId }, "DeleteTask action received");
@@ -48,7 +49,12 @@ export async function deleteTaskAction(request: Request) {
 
             taskLogger.info({ taskId }, "DeleteTask action completed");
 
-            return redirect("/");
+            if (typeof redirectTo === "string") {
+                const target = redirectTo.startsWith("/") ? redirectTo : "/";
+                return redirect(target);
+            }
+
+            return data({ success: true });
         } catch (err) {
             taskLogger.error({ err, taskId }, "DeleteTask action failed");
             const isValidationError =

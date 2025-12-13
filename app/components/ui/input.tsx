@@ -1,16 +1,16 @@
-import type * as React from "react";
+import { Input as AriaInput, type InputProps } from "react-aria-components";
 
 import { cn } from "~/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+function Input({ className, ...props }: InputProps) {
     return (
-        <input
-            type={type}
+        <AriaInput
             data-slot="input"
             className={cn(
-                "h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30",
-                "focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
-                "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
+                "h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground md:text-sm dark:bg-input/30",
+                "data-focus-visible:border-ring data-focus-visible:ring-[3px] data-focus-visible:ring-ring/50",
+                "data-invalid:border-destructive data-invalid:ring-destructive/20 dark:data-invalid:ring-destructive/40",
+                "data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-50",
                 className,
             )}
             {...props}

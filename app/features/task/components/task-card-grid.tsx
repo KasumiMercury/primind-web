@@ -32,7 +32,7 @@ export function TaskCardGrid({
                 <TaskCard
                     key={task.taskId}
                     task={task}
-                    onClick={() => onTaskClick?.(task)}
+                    onPress={() => onTaskClick?.(task)}
                     className="shadow shadow-primary/20"
                 />
             ))}
