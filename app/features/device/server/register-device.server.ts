@@ -132,10 +132,7 @@ export async function registerDeviceAction(request: Request) {
             deviceLogger.error({ err }, "RegisterDevice action failed");
             return data(
                 {
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to register device",
+                    error: "Failed to register device",
                 },
                 { status: 500 },
             );
