@@ -23,10 +23,10 @@ export function NotificationPermissionDialog() {
     const handleEnableNotifications = async () => {
         setIsRequesting(true);
         try {
-            const token = await requestAndGetFCMToken();
+          const { permission, token } = await requestAndGetFCMToken();
 
-            if (token) {
-                await fetch("/api/device", {
+          if (permission === "granted" && token) {
+            const res = await fetch("/api/device", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -37,7 +37,10 @@ export function NotificationPermissionDialog() {
                         fcm_token: token,
                     }),
                 });
-            }
+              if (!res.ok) {
+                  throw new Error("Failed to register device");
+              }
+          }
 
             setIsOpen(false);
         } catch (err) {
