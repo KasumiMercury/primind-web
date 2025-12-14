@@ -5,6 +5,7 @@ import { Outlet, useOutletContext, useSubmit } from "react-router";
 import { Header } from "~/components/header/header";
 import { LoginDialog } from "~/features/auth/components/login-dialog";
 import { getUserSession } from "~/features/auth/server/session.server";
+import { NotificationPermissionDialog } from "~/features/device/components/notification-permission-dialog";
 import { useDeviceRegistration } from "~/features/device/hooks/use-device-registration";
 import { type AuthState, authStateAtom } from "~/store/auth";
 import type { Route } from "./+types/app-layout";
@@ -76,6 +77,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
                     open={showLoginDialog}
                     onOpenChange={setShowLoginDialog}
                 />
+                <NotificationPermissionDialog />
             </AuthHydrator>
         </Provider>
     );

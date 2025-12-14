@@ -31,41 +31,20 @@ export async function initializeFirebase(): Promise<Messaging | null> {
     return messaging;
 }
 
-export async function requestNotificationPermission(): Promise<NotificationPermission> {
-    if (typeof window === "undefined" || !("Notification" in window)) {
-        return "denied";
-    }
-
-    if (Notification.permission === "granted") {
-        return "granted";
-    }
-
-    if (Notification.permission === "denied") {
-        return "denied";
-    }
-
-    return Notification.requestPermission();
-}
-
-async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
     if (!("serviceWorker" in navigator)) {
         console.warn("Service workers not supported");
         return null;
     }
 
     try {
-        const registration = await navigator.serviceWorker.register(
-            "/firebase-messaging-sw.js",
-        );
+        const isProduction = import.meta.env.MODE === "production";
+        const swPath = isProduction ? "/sw.js" : "/dev-sw.js?dev-sw";
+        const registration = await navigator.serviceWorker.register(swPath, {
+            type: isProduction ? "classic" : "module",
+        });
 
         await navigator.serviceWorker.ready;
-
-        if (registration.active) {
-            registration.active.postMessage({
-                type: "FIREBASE_CONFIG",
-                config: firebaseConfig,
-            });
-        }
 
         return registration;
     } catch (err) {
@@ -77,12 +56,6 @@ async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null
 export async function getFCMToken(): Promise<string | null> {
     const messagingInstance = await initializeFirebase();
     if (!messagingInstance) {
-        return null;
-    }
-
-    const permission = await requestNotificationPermission();
-    if (permission !== "granted") {
-        console.log("Notification permission not granted");
         return null;
     }
 

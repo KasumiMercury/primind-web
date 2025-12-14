@@ -1,5 +1,14 @@
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef } from "react";
-import { getFCMToken } from "../lib/fcm-client";
+import { isAuthenticatedAtom } from "~/store/auth";
+import {
+    checkAndGetFCMToken,
+    checkNotificationPermission,
+} from "../lib/notification";
+import {
+    notificationDismissedAtom,
+    notificationModalOpenAtom,
+} from "../store/notification";
 
 interface DeviceInfo {
     timezone: string;
@@ -31,6 +40,9 @@ async function registerDevice(
 
 export function useDeviceRegistration() {
     const hasRegistered = useRef(false);
+    const isAuthenticated = useAtomValue(isAuthenticatedAtom);
+    const dismissed = useAtomValue(notificationDismissedAtom);
+    const setModalOpen = useSetAtom(notificationModalOpenAtom);
 
     useEffect(() => {
         if (hasRegistered.current) {
@@ -39,7 +51,13 @@ export function useDeviceRegistration() {
 
         async function register() {
             try {
-                const fcmToken = await getFCMToken();
+                const currentPermission = checkNotificationPermission();
+
+                let fcmToken: string | null = null;
+
+                if (currentPermission === "granted") {
+                    fcmToken = await checkAndGetFCMToken();
+                }
 
                 const deviceInfo: DeviceInfo = {
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -52,6 +70,14 @@ export function useDeviceRegistration() {
 
                 if (result.success) {
                     hasRegistered.current = true;
+
+                    if (
+                        isAuthenticated &&
+                        currentPermission === "default" &&
+                        !dismissed
+                    ) {
+                        setModalOpen(true);
+                    }
                 } else {
                     console.error("Device registration failed:", result.error);
                 }
@@ -61,5 +87,5 @@ export function useDeviceRegistration() {
         }
 
         register();
-    }, []);
+    }, [isAuthenticated, dismissed, setModalOpen]);
 }

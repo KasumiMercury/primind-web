@@ -4,8 +4,8 @@ import {
     Platform,
     RegisterDeviceRequestSchema,
 } from "~/gen/device/v1/device_pb";
-import { createAuthContext } from "~/lib/request-context.server";
 import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
+import { createAuthContext } from "~/lib/request-context.server";
 import { getDeviceClient } from "./device-client.server";
 import { deviceStorage, getDeviceSession } from "./device-cookie.server";
 import { deviceLogger } from "./logger.server";
@@ -96,9 +96,12 @@ export async function registerDeviceAction(request: Request) {
             );
 
             const deviceClient = await getDeviceClient();
-            const response = await deviceClient.registerDevice(registerRequest, {
-                contextValues,
-            });
+            const response = await deviceClient.registerDevice(
+                registerRequest,
+                {
+                    contextValues,
+                },
+            );
 
             deviceLogger.info(
                 {
