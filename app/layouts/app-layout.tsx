@@ -5,8 +5,14 @@ import { Outlet, useOutletContext, useSubmit } from "react-router";
 import { Header } from "~/components/header/header";
 import { LoginDialog } from "~/features/auth/components/login-dialog";
 import { getUserSession } from "~/features/auth/server/session.server";
+import { useDeviceRegistration } from "~/features/device/hooks/use-device-registration";
 import { type AuthState, authStateAtom } from "~/store/auth";
 import type { Route } from "./+types/app-layout";
+
+function DeviceRegistration() {
+    useDeviceRegistration();
+    return null;
+}
 
 export async function loader({ request }: Route.LoaderArgs) {
     const { sessionToken } = await getUserSession(request);
@@ -55,6 +61,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
     return (
         <Provider>
             <AuthHydrator authState={authState}>
+                <DeviceRegistration />
                 <main className="flex items-center justify-center pt-8">
                     <div className="flex min-h-0 flex-1 flex-col items-center gap-4 px-4">
                         <Header
