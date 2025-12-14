@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { isAuthenticatedAtom } from "~/store/auth";
 import {
     checkAndGetFCMToken,
@@ -44,48 +44,46 @@ export function useDeviceRegistration() {
     const dismissed = useAtomValue(notificationDismissedAtom);
     const setModalOpen = useSetAtom(notificationModalOpenAtom);
 
-    useEffect(() => {
-        if (hasRegistered.current) {
-            return;
-        }
+    if (hasRegistered.current) {
+        return;
+    }
 
-        async function register() {
-            try {
-                const currentPermission = checkNotificationPermission();
+    async function register() {
+        try {
+            const currentPermission = checkNotificationPermission();
 
-                let fcmToken: string | null = null;
+            let fcmToken: string | null = null;
 
-                if (currentPermission === "granted") {
-                    fcmToken = await checkAndGetFCMToken();
-                }
-
-                const deviceInfo: DeviceInfo = {
-                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    locale: navigator.language,
-                    platform: "web",
-                    fcm_token: fcmToken || undefined,
-                };
-
-                const result = await registerDevice(deviceInfo);
-
-                if (result.success) {
-                    hasRegistered.current = true;
-
-                    if (
-                        isAuthenticated &&
-                        currentPermission === "default" &&
-                        !dismissed
-                    ) {
-                        setModalOpen(true);
-                    }
-                } else {
-                    console.error("Device registration failed:", result.error);
-                }
-            } catch (err) {
-                console.error("Device registration failed:", err);
+            if (currentPermission === "granted") {
+                fcmToken = await checkAndGetFCMToken();
             }
-        }
 
-        register();
-    }, [isAuthenticated, dismissed, setModalOpen]);
+            const deviceInfo: DeviceInfo = {
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                locale: navigator.language,
+                platform: "web",
+                fcm_token: fcmToken || undefined,
+            };
+
+            const result = await registerDevice(deviceInfo);
+
+            if (result.success) {
+                hasRegistered.current = true;
+
+                if (
+                    isAuthenticated &&
+                    currentPermission === "default" &&
+                    !dismissed
+                ) {
+                    setModalOpen(true);
+                }
+            } else {
+                console.error("Device registration failed:", result.error);
+            }
+        } catch (err) {
+            console.error("Device registration failed:", err);
+        }
+    }
+
+    register();
 }
