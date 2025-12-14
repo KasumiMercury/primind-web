@@ -104,7 +104,7 @@ export function NotificationPermissionDialog() {
                 <Button
                     variant="ghost"
                     type="button"
-                    onClick={handleDontAskAgain}
+                    onPress={handleDontAskAgain}
                     isDisabled={isRequesting}
                     className="mt-2 text-muted-foreground text-xs hover:underline disabled:opacity-50"
                 >
