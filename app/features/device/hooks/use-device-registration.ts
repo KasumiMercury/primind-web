@@ -52,10 +52,6 @@ export function useDeviceRegistration() {
 
                 if (result.success) {
                     hasRegistered.current = true;
-                    console.log("Device registered successfully:", {
-                        deviceId: result.device_id,
-                        isNew: result.is_new,
-                    });
                 } else {
                     console.error("Device registration failed:", result.error);
                 }
