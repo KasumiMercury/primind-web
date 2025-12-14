@@ -52,7 +52,7 @@ export function runWithErrorContext<T>(
 }
 
 export function shouldInjectError(
-    service: "task" | "auth",
+    service: "task" | "auth" | "device",
     method: string,
 ): boolean {
     const errorMode = getCurrentErrorMode();
@@ -87,7 +87,7 @@ export async function injectError(): Promise<never> {
 }
 
 export async function withErrorInjection<T>(
-    service: "task" | "auth",
+    service: "task" | "auth" | "device",
     method: string,
     handler: () => T | Promise<T>,
 ): Promise<T> {
