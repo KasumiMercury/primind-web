@@ -1,8 +1,8 @@
 /// <reference lib="webworker" />
-import { getMessaging } from "firebase/messaging/sw";
+
 import { initializeApp } from "firebase/app";
+import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
 import { firebaseConfig } from "./features/device/lib/firebase-config";
-import { onBackgroundMessage } from "firebase/messaging/sw";
 
 const swSelf = globalThis as unknown as ServiceWorkerGlobalScope;
 

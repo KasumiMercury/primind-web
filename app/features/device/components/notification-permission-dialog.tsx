@@ -76,7 +76,7 @@ export function NotificationPermissionDialog() {
                 </DialogDescription>
             </DialogHeader>
 
-            <DialogFooter className="flex-col gap-2 sm:flex-col mt-4">
+            <DialogFooter className="mt-4 flex-col gap-2 sm:flex-col">
                 <Button
                     onPress={handleEnableNotifications}
                     isDisabled={isRequesting}
@@ -102,11 +102,11 @@ export function NotificationPermissionDialog() {
                 </Button>
 
                 <Button
-                  variant="ghost"
+                    variant="ghost"
                     type="button"
                     onClick={handleDontAskAgain}
                     isDisabled={isRequesting}
-                    className="text-muted-foreground text-xs hover:underline disabled:opacity-50 mt-2"
+                    className="mt-2 text-muted-foreground text-xs hover:underline disabled:opacity-50"
                 >
                     Don't ask again
                 </Button>
