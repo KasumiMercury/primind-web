@@ -102,9 +102,9 @@ export function OperationSwipe({
                 height: `${dimensions.height}px`,
                 touchAction: "none",
             }}
-            onPointerDown={handlePointerDown}
-            onPointerUp={handlePointerUp}
-            onPointerCancel={handlePointerCancel}
+            onPointerDownCapture={handlePointerDown}
+            onPointerUpCapture={handlePointerUp}
+            onPointerCancelCapture={handlePointerCancel}
             onPointerLeave={handlePointerCancel}
             onClickCapture={handleClickCapture}
         >

@@ -2,7 +2,7 @@ import { Check, Loader2, Pencil, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { TextField } from "~/components/ui/text-field";
+import { Label, TextField } from "~/components/ui/text-field";
 import { Textarea } from "~/components/ui/textarea";
 import { formatTimestampAbsolute } from "~/features/task/lib/absolute-time";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
@@ -107,13 +107,12 @@ export function TaskDetailContent({
                 </div>
 
                 <div>
-                    <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                        Title
-                    </h3>
                     {isEditing ? (
                         <TextField isDisabled={isSaving}>
+                            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
+                                Title
+                            </Label>
                             <Input
-                                id="task-title"
                                 type="text"
                                 placeholder="No title"
                                 className={
@@ -125,42 +124,58 @@ export function TaskDetailContent({
                                 onChange={(e) => onTitleChange(e.target.value)}
                             />
                         </TextField>
-                    ) : title.trim() ? (
-                        <p className="font-semibold text-foreground text-lg">
-                            {title}
-                        </p>
                     ) : (
-                        <p className="text-muted-foreground italic">No title</p>
+                        <>
+                            <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                                Title
+                            </h3>
+                            {title.trim() ? (
+                                <p className="font-semibold text-foreground text-lg">
+                                    {title}
+                                </p>
+                            ) : (
+                                <p className="text-muted-foreground italic">
+                                    No title
+                                </p>
+                            )}
+                        </>
                     )}
                 </div>
 
                 <div>
-                    <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                        Description
-                    </h3>
                     {isEditing ? (
-                        <Textarea
-                            id="task-description"
-                            placeholder="No description"
-                            className={
-                                !description.trim()
-                                    ? "placeholder:text-muted-foreground placeholder:italic"
-                                    : ""
-                            }
-                            value={description}
-                            onChange={(e) =>
-                                onDescriptionChange(e.target.value)
-                            }
-                            disabled={isSaving}
-                        />
-                    ) : description.trim() ? (
-                        <p className="whitespace-pre-wrap text-foreground">
-                            {description}
-                        </p>
+                        <TextField isDisabled={isSaving}>
+                            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
+                                Description
+                            </Label>
+                            <Textarea
+                                placeholder="No description"
+                                className={
+                                    !description.trim()
+                                        ? "placeholder:text-muted-foreground placeholder:italic"
+                                        : ""
+                                }
+                                value={description}
+                                onChange={(e) =>
+                                    onDescriptionChange(e.target.value)
+                                }
+                            />
+                        </TextField>
                     ) : (
-                        <p className="text-muted-foreground italic">
-                            No description
-                        </p>
+                        <>
+                            <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                                Description
+                            </h3>
+                            {description.trim() ? (
+                                <p className="whitespace-pre-wrap text-foreground">
+                                    {description}
+                                </p>
+                            ) : (
+                                <p className="text-muted-foreground italic">
+                                    No description
+                                </p>
+                            )}
+                        </>
                     )}
                 </div>
 
