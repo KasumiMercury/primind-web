@@ -111,7 +111,7 @@ export function TaskDetailContent({
                         Title
                     </h3>
                     {isEditing ? (
-                        <TextField isDisabled={isSaving}>
+                        <TextField isDisabled={isSaving} aria-label="Title">
                             <Input
                                 id="task-title"
                                 type="text"

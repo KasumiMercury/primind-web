@@ -72,7 +72,10 @@ export function QuickEditContent({
                         />
                     </div>
                     <div className="flex flex-1 flex-col gap-2">
-                        <TextField isDisabled={isSaving}>
+                        <TextField
+                            isDisabled={isSaving}
+                            aria-label="Task Title"
+                        >
                             <Input
                                 type="text"
                                 placeholder="Task Title"
