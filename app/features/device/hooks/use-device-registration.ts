@@ -97,9 +97,13 @@ export function useDeviceRegistration() {
         let unsubscribe: (() => void) | undefined;
 
         const setupForegroundNotifications = async () => {
-            const messagingInstance = await initializeFirebase();
-            if (messagingInstance) {
-                unsubscribe = setupForegroundMessageHandler(messagingInstance);
+            try {
+                const messagingInstance = await initializeFirebase();
+                if (messagingInstance) {
+                    unsubscribe = setupForegroundMessageHandler(messagingInstance);
+                }
+            } catch (err) {
+                console.error("Failed to setup foreground notifications:", err);
             }
         };
 
