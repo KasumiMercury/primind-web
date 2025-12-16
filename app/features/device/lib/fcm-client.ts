@@ -95,14 +95,24 @@ export function setupForegroundMessageHandler(
         callback?.(payload);
 
         if (Notification.permission === "granted") {
-            const title =
-                payload.notification?.title ?? DEFAULT_NOTIFICATION_TITLE;
-            const options: NotificationOptions = {
-                body: payload.notification?.body ?? "",
-                icon: payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
-                data: payload.data,
-            };
-            new Notification(title, options);
+            try {
+                const title =
+                    payload.notification?.title ?? DEFAULT_NOTIFICATION_TITLE;
+                const options: NotificationOptions = {
+                    body: payload.notification?.body ?? "",
+                    icon: payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
+                    data: payload.data,
+                };
+                const notification = new Notification(title, options);
+                notification.onclick = (event) => {
+                    event.preventDefault();
+                    const url = (payload.data?.url as string | undefined) ?? "/";
+                    window.focus();
+                    window.location.href = url;
+                };
+            } catch (err) {
+                console.error("Failed to display foreground notification:", err);
+            }
         }
     });
 }
