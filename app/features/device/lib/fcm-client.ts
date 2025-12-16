@@ -1,6 +1,16 @@
 import { type FirebaseApp, initializeApp } from "firebase/app";
-import { getMessaging, getToken, type Messaging } from "firebase/messaging";
+import {
+    getMessaging,
+    getToken,
+    type MessagePayload,
+    type Messaging,
+    onMessage,
+    type Unsubscribe,
+} from "firebase/messaging";
 import { firebaseConfig, vapidKey } from "./firebase-config";
+
+const DEFAULT_NOTIFICATION_TITLE = "New Notification";
+const DEFAULT_NOTIFICATION_ICON = "/favicon.ico";
 
 let app: FirebaseApp | null = null;
 let messaging: Messaging | null = null;
@@ -75,4 +85,39 @@ export async function getFCMToken(): Promise<string | null> {
         console.error("Failed to get FCM token:", err);
         return null;
     }
+}
+
+export function setupForegroundMessageHandler(
+    messagingInstance: Messaging,
+    callback?: (payload: MessagePayload) => void,
+): Unsubscribe {
+    return onMessage(messagingInstance, (payload) => {
+        callback?.(payload);
+
+        if (Notification.permission === "granted") {
+            try {
+                const title =
+                    payload.notification?.title ?? DEFAULT_NOTIFICATION_TITLE;
+                const options: NotificationOptions = {
+                    body: payload.notification?.body ?? "",
+                    icon:
+                        payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
+                    data: payload.data,
+                };
+                const notification = new Notification(title, options);
+                notification.onclick = (event) => {
+                    event.preventDefault();
+                    const url =
+                        (payload.data?.url as string | undefined) ?? "/";
+                    window.focus();
+                    window.location.href = url;
+                };
+            } catch (err) {
+                console.error(
+                    "Failed to display foreground notification:",
+                    err,
+                );
+            }
+        }
+    });
 }
