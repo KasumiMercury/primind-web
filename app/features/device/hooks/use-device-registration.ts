@@ -1,6 +1,10 @@
 import { useAtomValue, useSetAtom } from "jotai";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { isAuthenticatedAtom } from "~/store/auth";
+import {
+    initializeFirebase,
+    setupForegroundMessageHandler,
+} from "../lib/fcm-client";
 import {
     checkAndGetFCMToken,
     checkNotificationPermission,
@@ -44,46 +48,65 @@ export function useDeviceRegistration() {
     const dismissed = useAtomValue(notificationDismissedAtom);
     const setModalOpen = useSetAtom(notificationModalOpenAtom);
 
-    if (hasRegistered.current) {
-        return;
-    }
-
-    async function register() {
-        try {
-            const currentPermission = checkNotificationPermission();
-
-            let fcmToken: string | null = null;
-
-            if (currentPermission === "granted") {
-                fcmToken = await checkAndGetFCMToken();
-            }
-
-            const deviceInfo: DeviceInfo = {
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                locale: navigator.language,
-                platform: "web",
-                fcm_token: fcmToken || undefined,
-            };
-
-            const result = await registerDevice(deviceInfo);
-
-            if (result.success) {
-                hasRegistered.current = true;
-
-                if (
-                    isAuthenticated &&
-                    currentPermission === "default" &&
-                    !dismissed
-                ) {
-                    setModalOpen(true);
-                }
-            } else {
-                console.error("Device registration failed:", result.error);
-            }
-        } catch (err) {
-            console.error("Device registration failed:", err);
+    useEffect(() => {
+        if (hasRegistered.current) {
+            return;
         }
-    }
 
-    register();
+        async function register() {
+            try {
+                const currentPermission = checkNotificationPermission();
+
+                let fcmToken: string | null = null;
+
+                if (currentPermission === "granted") {
+                    fcmToken = await checkAndGetFCMToken();
+                }
+
+                const deviceInfo: DeviceInfo = {
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    locale: navigator.language,
+                    platform: "web",
+                    fcm_token: fcmToken || undefined,
+                };
+
+                const result = await registerDevice(deviceInfo);
+
+                if (result.success) {
+                    hasRegistered.current = true;
+
+                    if (
+                        isAuthenticated &&
+                        currentPermission === "default" &&
+                        !dismissed
+                    ) {
+                        setModalOpen(true);
+                    }
+                } else {
+                    console.error("Device registration failed:", result.error);
+                }
+            } catch (err) {
+                console.error("Device registration failed:", err);
+            }
+        }
+
+        register();
+    }, [isAuthenticated, dismissed, setModalOpen]);
+
+    useEffect(() => {
+        let unsubscribe: (() => void) | undefined;
+
+        const setupForegroundNotifications = async () => {
+            const messagingInstance = await initializeFirebase();
+            if (messagingInstance) {
+                unsubscribe = setupForegroundMessageHandler(messagingInstance);
+            }
+        };
+
+        setupForegroundNotifications();
+
+        return () => {
+            unsubscribe?.();
+        };
+    }, []);
 }
