@@ -224,7 +224,7 @@ export function OperationArea({
                     />
                 </div>
             ) : null}
-            <div className="pointer-events-none·absolute·bottom-2·left-1/2·z-20·-translate-x-1/2">
+            <div className="-translate-x-1/2 pointer-events-none absolute bottom-2 left-1/2 z-20">
                 <OperationIndicator
                     itemCount={itemsCount}
                     selectedIndex={selectedIndex}

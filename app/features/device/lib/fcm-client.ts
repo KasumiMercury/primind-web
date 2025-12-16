@@ -100,18 +100,23 @@ export function setupForegroundMessageHandler(
                     payload.notification?.title ?? DEFAULT_NOTIFICATION_TITLE;
                 const options: NotificationOptions = {
                     body: payload.notification?.body ?? "",
-                    icon: payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
+                    icon:
+                        payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
                     data: payload.data,
                 };
                 const notification = new Notification(title, options);
                 notification.onclick = (event) => {
                     event.preventDefault();
-                    const url = (payload.data?.url as string | undefined) ?? "/";
+                    const url =
+                        (payload.data?.url as string | undefined) ?? "/";
                     window.focus();
                     window.location.href = url;
                 };
             } catch (err) {
-                console.error("Failed to display foreground notification:", err);
+                console.error(
+                    "Failed to display foreground notification:",
+                    err,
+                );
             }
         }
     });
