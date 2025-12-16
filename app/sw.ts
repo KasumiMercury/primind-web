@@ -1,53 +1,61 @@
 /// <reference lib="webworker" />
 
 import { initializeApp } from "firebase/app";
-import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
+import {
+    getMessaging,
+    type Messaging,
+    onBackgroundMessage,
+} from "firebase/messaging/sw";
 import { firebaseConfig } from "./features/device/lib/firebase-config";
 
-const swSelf = globalThis as unknown as ServiceWorkerGlobalScope;
+declare const self: ServiceWorkerGlobalScope;
 
-swSelf.addEventListener("activate", async () => {
-    try {
-        if (!firebaseConfig.apiKey) {
-            return;
-        }
+const DEFAULT_NOTIFICATION_TITLE = "New Notification";
+const DEFAULT_NOTIFICATION_ICON = "/favicon.ico";
+const DEFAULT_URL = "/";
 
+let messaging: Messaging | null = null;
+
+try {
+    if (firebaseConfig.apiKey) {
         const app = initializeApp(firebaseConfig);
-        const messaging = getMessaging(app);
-
-        onBackgroundMessage(messaging, (payload) => {
-            const title = payload.notification?.title || "New Notification";
-            const options = {
-                body: payload.notification?.body || "",
-                icon: "/favicon.ico",
-                data: payload.data,
-            };
-            (
-                swSelf as unknown as ServiceWorkerGlobalScope
-            ).registration.showNotification(title, options);
-        });
-    } catch (err) {
-        console.error("Failed to initialize Firebase Messaging in SW:", err);
+        messaging = getMessaging(app);
     }
-});
+} catch (err) {
+    console.error("Failed to initialize Firebase Messaging in SW:", err);
+}
 
-swSelf.addEventListener("notificationclick", (event) => {
-    const notificationEvent = event as NotificationEvent;
-    notificationEvent.notification.close();
-    const urlToOpen = notificationEvent.notification.data?.url || "/";
+if (messaging) {
+    onBackgroundMessage(messaging, (payload) => {
+        const title = payload.notification?.title ?? DEFAULT_NOTIFICATION_TITLE;
+        const options: NotificationOptions = {
+            body: payload.notification?.body ?? "",
+            icon: payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
+            data: payload.data,
+        };
+        self.registration.showNotification(title, options);
+    });
+}
 
-    notificationEvent.waitUntil(
-        (swSelf as unknown as ServiceWorkerGlobalScope).clients
+self.addEventListener("notificationclick", (event) => {
+    event.notification.close();
+
+    const urlToOpen =
+        (event.notification.data?.url as string | undefined) ?? DEFAULT_URL;
+
+    event.waitUntil(
+        self.clients
             .matchAll({ type: "window", includeUncontrolled: true })
             .then((windowClients) => {
                 for (const client of windowClients) {
                     if (client.url === urlToOpen && "focus" in client) {
-                        return (client as WindowClient).focus();
+                        return client.focus();
                     }
                 }
-                return (
-                    swSelf as unknown as ServiceWorkerGlobalScope
-                ).clients.openWindow(urlToOpen);
+                return self.clients.openWindow(urlToOpen);
+            })
+            .catch((err) => {
+                console.error("Failed to handle notification click:", err);
             }),
     );
 });
