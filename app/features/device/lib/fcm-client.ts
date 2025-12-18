@@ -1,4 +1,8 @@
-import { type FirebaseApp, initializeApp } from "firebase/app";
+import {
+    type FirebaseApp,
+    type FirebaseOptions,
+    initializeApp,
+} from "firebase/app";
 import {
     getMessaging,
     getToken,
@@ -7,11 +11,19 @@ import {
     onMessage,
     type Unsubscribe,
 } from "firebase/messaging";
-import { firebaseConfig, vapidKey } from "./firebase-config";
+import {
+    firebaseConfig,
+    hasFirebaseConfig,
+    hasVapidKey,
+    vapidKey,
+} from "./firebase-config";
 
 const DEFAULT_NOTIFICATION_TITLE = "New Notification";
 const DEFAULT_NOTIFICATION_ICON = "/favicon.ico";
 
+const SW_ACTIVATION_TIMEOUT_MS = 30000;
+const FCM_TOKEN_RETRY_COUNT = 3;
+const FCM_TOKEN_RETRY_DELAY_MS = 1000;
 let app: FirebaseApp | null = null;
 let messaging: Messaging | null = null;
 
@@ -20,13 +32,13 @@ export async function initializeFirebase(): Promise<Messaging | null> {
         return null;
     }
 
-    if (!firebaseConfig.apiKey) {
+    if (!hasFirebaseConfig) {
         console.warn("Firebase configuration not found");
         return null;
     }
 
     if (!app) {
-        app = initializeApp(firebaseConfig);
+        app = initializeApp(firebaseConfig as FirebaseOptions);
     }
 
     if (!messaging) {
@@ -39,6 +51,60 @@ export async function initializeFirebase(): Promise<Messaging | null> {
     }
 
     return messaging;
+}
+
+function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function waitForServiceWorkerActive(
+    registration: ServiceWorkerRegistration,
+    timeoutMs: number,
+): Promise<ServiceWorkerRegistration> {
+    return new Promise((resolve, reject) => {
+        if (registration.active) {
+            resolve(registration);
+            return;
+        }
+
+        const timeoutId = setTimeout(() => {
+            reject(new Error("Service worker activation timeout"));
+        }, timeoutMs);
+
+        const serviceWorker = registration.installing || registration.waiting;
+
+        if (!serviceWorker) {
+            clearTimeout(timeoutId);
+            reject(new Error("No service worker found in registration"));
+            return;
+        }
+
+        const handleStateChange = () => {
+            if (serviceWorker.state === "activated") {
+                clearTimeout(timeoutId);
+                serviceWorker.removeEventListener(
+                    "statechange",
+                    handleStateChange,
+                );
+                resolve(registration);
+            } else if (serviceWorker.state === "redundant") {
+                clearTimeout(timeoutId);
+                serviceWorker.removeEventListener(
+                    "statechange",
+                    handleStateChange,
+                );
+                reject(new Error("Service worker became redundant"));
+            }
+        };
+
+        serviceWorker.addEventListener("statechange", handleStateChange);
+
+        if (serviceWorker.state === "activated") {
+            clearTimeout(timeoutId);
+            serviceWorker.removeEventListener("statechange", handleStateChange);
+            resolve(registration);
+        }
+    });
 }
 
 export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
@@ -54,7 +120,19 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
             type: isProduction ? "classic" : "module",
         });
 
-        await navigator.serviceWorker.ready;
+        if (!registration.active) {
+            try {
+                await waitForServiceWorkerActive(
+                    registration,
+                    SW_ACTIVATION_TIMEOUT_MS,
+                );
+            } catch (err) {
+                console.warn(
+                    "Service worker activation check failed, continuing:",
+                    err,
+                );
+            }
+        }
 
         return registration;
     } catch (err) {
@@ -69,22 +147,43 @@ export async function getFCMToken(): Promise<string | null> {
         return null;
     }
 
-    try {
-        const registration = await registerServiceWorker();
-        if (!registration) {
-            return null;
-        }
-
-        const token = await getToken(messagingInstance, {
-            vapidKey,
-            serviceWorkerRegistration: registration,
-        });
-
-        return token;
-    } catch (err) {
-        console.error("Failed to get FCM token:", err);
+    if (!hasVapidKey) {
+        console.warn("Firebase VAPID key not found");
         return null;
     }
+
+    const registration = await registerServiceWorker();
+    if (!registration) {
+        return null;
+    }
+
+    for (let attempt = 1; attempt <= FCM_TOKEN_RETRY_COUNT; attempt++) {
+        try {
+            const token = await getToken(messagingInstance, {
+                vapidKey: vapidKey as string,
+                serviceWorkerRegistration: registration,
+            });
+
+            if (token) {
+                return token;
+            }
+
+            console.warn(
+                `FCM token is empty (attempt ${attempt}/${FCM_TOKEN_RETRY_COUNT})`,
+            );
+        } catch (err) {
+            console.error(
+                `Failed to get FCM token (attempt ${attempt}/${FCM_TOKEN_RETRY_COUNT}):`,
+                err,
+            );
+        }
+
+        if (attempt < FCM_TOKEN_RETRY_COUNT) {
+            await delay(FCM_TOKEN_RETRY_DELAY_MS * attempt);
+        }
+    }
+
+    return null;
 }
 
 export function setupForegroundMessageHandler(
@@ -98,17 +197,26 @@ export function setupForegroundMessageHandler(
             try {
                 const title =
                     payload.notification?.title ?? DEFAULT_NOTIFICATION_TITLE;
+                const fcmOptions = (
+                    payload as { fcmOptions?: { link?: string } }
+                ).fcmOptions;
+                const notificationPayload = payload.notification as
+                    | { click_action?: string }
+                    | undefined;
+                const url =
+                    payload.data?.url ??
+                    fcmOptions?.link ??
+                    notificationPayload?.click_action ??
+                    "/";
                 const options: NotificationOptions = {
                     body: payload.notification?.body ?? "",
                     icon:
                         payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
-                    data: payload.data,
+                    data: { ...(payload.data ?? {}), url },
                 };
                 const notification = new Notification(title, options);
                 notification.onclick = (event) => {
                     event.preventDefault();
-                    const url =
-                        (payload.data?.url as string | undefined) ?? "/";
                     window.focus();
                     window.location.href = url;
                 };

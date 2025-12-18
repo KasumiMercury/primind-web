@@ -1,4 +1,5 @@
 import { getFCMToken } from "./fcm-client";
+import { hasFirebaseConfig, hasVapidKey } from "./firebase-config";
 
 export type NotificationPermissionState =
     | "default"
@@ -6,8 +7,20 @@ export type NotificationPermissionState =
     | "denied"
     | "unsupported";
 
+function isMessagingEnabled(): boolean {
+    if (typeof window === "undefined") {
+        return false;
+    }
+
+    return hasFirebaseConfig && hasVapidKey;
+}
+
 export function checkNotificationPermission(): NotificationPermissionState {
     if (typeof window === "undefined" || !("Notification" in window)) {
+        return "unsupported";
+    }
+
+    if (!isMessagingEnabled()) {
         return "unsupported";
     }
     return Notification.permission as NotificationPermissionState;
@@ -15,6 +28,10 @@ export function checkNotificationPermission(): NotificationPermissionState {
 
 export async function requestNotificationPermission(): Promise<NotificationPermission> {
     if (typeof window === "undefined" || !("Notification" in window)) {
+        return "denied";
+    }
+
+    if (!isMessagingEnabled()) {
         return "denied";
     }
 
@@ -55,6 +72,11 @@ export async function requestAndGetFCMToken(): Promise<{
         return { permission, token: null };
     }
 
-    const token = await getFCMToken();
-    return { permission, token };
+    try {
+        const token = await getFCMToken();
+        return { permission, token };
+    } catch (err) {
+        console.error("Failed to get FCM token:", err);
+        return { permission, token: null };
+    }
 }

@@ -49,6 +49,16 @@ export function useDeviceRegistration() {
     const setModalOpen = useSetAtom(notificationModalOpenAtom);
 
     useEffect(() => {
+        if (!isAuthenticated) {
+            hasRegistered.current = false;
+        }
+    }, [isAuthenticated]);
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            return;
+        }
+
         if (hasRegistered.current) {
             return;
         }
@@ -75,11 +85,13 @@ export function useDeviceRegistration() {
                 if (result.success) {
                     hasRegistered.current = true;
 
-                    if (
-                        isAuthenticated &&
-                        currentPermission === "default" &&
-                        !dismissed
-                    ) {
+                    const shouldShowDialog =
+                        !fcmToken &&
+                        currentPermission !== "denied" &&
+                        currentPermission !== "unsupported" &&
+                        !dismissed;
+
+                    if (shouldShowDialog) {
                         setModalOpen(true);
                     }
                 } else {
