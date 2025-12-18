@@ -23,7 +23,7 @@ import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 export const file_device_v1_device: GenFile =
     /*@__PURE__*/
     fileDesc(
-        "ChZkZXZpY2UvdjEvZGV2aWNlLnByb3RvEglkZXZpY2UudjEijAIKFVJlZ2lzdGVyRGV2aWNlUmVxdWVzdBIgCglkZXZpY2VfaWQYASABKAlCCLpIBXIDsAEBSACIAQESGQoIdGltZXpvbmUYAiABKAlCB7pIBHICEAESFwoGbG9jYWxlGAMgASgJQge6SARyAhACEjMKCHBsYXRmb3JtGAQgASgOMhMuZGV2aWNlLnYxLlBsYXRmb3JtQgy6SAmCAQYYARgCGAMSFgoJZmNtX3Rva2VuGAUgASgJSAGIAQESGwoKdXNlcl9hZ2VudBgGIAEoCUIHukgEcgIQARIXCg9hY2NlcHRfbGFuZ3VhZ2UYByABKAlCDAoKX2RldmljZV9pZEIMCgpfZmNtX3Rva2VuIkUKFlJlZ2lzdGVyRGV2aWNlUmVzcG9uc2USGwoJZGV2aWNlX2lkGAEgASgJQgi6SAVyA7ABARIOCgZpc19uZXcYAiABKAgqXgoIUGxhdGZvcm0SGAoUUExBVEZPUk1fVU5TUEVDSUZJRUQQABIQCgxQTEFURk9STV9XRUIQARIUChBQTEFURk9STV9BTkRST0lEEAISEAoMUExBVEZPUk1fSU9TEAMyZgoNRGV2aWNlU2VydmljZRJVCg5SZWdpc3RlckRldmljZRIgLmRldmljZS52MS5SZWdpc3RlckRldmljZVJlcXVlc3QaIS5kZXZpY2UudjEuUmVnaXN0ZXJEZXZpY2VSZXNwb25zZUIYWhZnZW4vZGV2aWNlL3YxO2RldmljZXYxYgZwcm90bzM",
+        "ChZkZXZpY2UvdjEvZGV2aWNlLnByb3RvEglkZXZpY2UudjEijAIKFVJlZ2lzdGVyRGV2aWNlUmVxdWVzdBIgCglkZXZpY2VfaWQYASABKAlCCLpIBXIDsAEBSACIAQESGQoIdGltZXpvbmUYAiABKAlCB7pIBHICEAESFwoGbG9jYWxlGAMgASgJQge6SARyAhACEjMKCHBsYXRmb3JtGAQgASgOMhMuZGV2aWNlLnYxLlBsYXRmb3JtQgy6SAmCAQYYARgCGAMSFgoJZmNtX3Rva2VuGAUgASgJSAGIAQESGwoKdXNlcl9hZ2VudBgGIAEoCUIHukgEcgIQARIXCg9hY2NlcHRfbGFuZ3VhZ2UYByABKAlCDAoKX2RldmljZV9pZEIMCgpfZmNtX3Rva2VuIkUKFlJlZ2lzdGVyRGV2aWNlUmVzcG9uc2USGwoJZGV2aWNlX2lkGAEgASgJQgi6SAVyA7ABARIOCgZpc19uZXcYAiABKAgiFwoVR2V0VXNlckRldmljZXNSZXF1ZXN0Ik8KCkRldmljZUluZm8SGwoJZGV2aWNlX2lkGAEgASgJQgi6SAVyA7ABARIWCglmY21fdG9rZW4YAiABKAlIAIgBAUIMCgpfZmNtX3Rva2VuIkAKFkdldFVzZXJEZXZpY2VzUmVzcG9uc2USJgoHZGV2aWNlcxgBIAMoCzIVLmRldmljZS52MS5EZXZpY2VJbmZvKl4KCFBsYXRmb3JtEhgKFFBMQVRGT1JNX1VOU1BFQ0lGSUVEEAASEAoMUExBVEZPUk1fV0VCEAESFAoQUExBVEZPUk1fQU5EUk9JRBACEhAKDFBMQVRGT1JNX0lPUxADMr0BCg1EZXZpY2VTZXJ2aWNlElUKDlJlZ2lzdGVyRGV2aWNlEiAuZGV2aWNlLnYxLlJlZ2lzdGVyRGV2aWNlUmVxdWVzdBohLmRldmljZS52MS5SZWdpc3RlckRldmljZVJlc3BvbnNlElUKDkdldFVzZXJEZXZpY2VzEiAuZGV2aWNlLnYxLkdldFVzZXJEZXZpY2VzUmVxdWVzdBohLmRldmljZS52MS5HZXRVc2VyRGV2aWNlc1Jlc3BvbnNlQhhaFmdlbi9kZXZpY2UvdjE7ZGV2aWNldjFiBnByb3RvMw",
         [file_buf_validate_validate],
     );
 
@@ -101,6 +101,62 @@ export const RegisterDeviceResponseSchema: GenMessage<RegisterDeviceResponse> =
     messageDesc(file_device_v1_device, 1);
 
 /**
+ * @generated from message device.v1.GetUserDevicesRequest
+ */
+export type GetUserDevicesRequest =
+    Message<"device.v1.GetUserDevicesRequest"> & {};
+
+/**
+ * Describes the message device.v1.GetUserDevicesRequest.
+ * Use `create(GetUserDevicesRequestSchema)` to create a new message.
+ */
+export const GetUserDevicesRequestSchema: GenMessage<GetUserDevicesRequest> =
+    /*@__PURE__*/
+    messageDesc(file_device_v1_device, 2);
+
+/**
+ * @generated from message device.v1.DeviceInfo
+ */
+export type DeviceInfo = Message<"device.v1.DeviceInfo"> & {
+    /**
+     * @generated from field: string device_id = 1;
+     */
+    deviceId: string;
+
+    /**
+     * @generated from field: optional string fcm_token = 2;
+     */
+    fcmToken?: string;
+};
+
+/**
+ * Describes the message device.v1.DeviceInfo.
+ * Use `create(DeviceInfoSchema)` to create a new message.
+ */
+export const DeviceInfoSchema: GenMessage<DeviceInfo> =
+    /*@__PURE__*/
+    messageDesc(file_device_v1_device, 3);
+
+/**
+ * @generated from message device.v1.GetUserDevicesResponse
+ */
+export type GetUserDevicesResponse =
+    Message<"device.v1.GetUserDevicesResponse"> & {
+        /**
+         * @generated from field: repeated device.v1.DeviceInfo devices = 1;
+         */
+        devices: DeviceInfo[];
+    };
+
+/**
+ * Describes the message device.v1.GetUserDevicesResponse.
+ * Use `create(GetUserDevicesResponseSchema)` to create a new message.
+ */
+export const GetUserDevicesResponseSchema: GenMessage<GetUserDevicesResponse> =
+    /*@__PURE__*/
+    messageDesc(file_device_v1_device, 4);
+
+/**
  * @generated from enum device.v1.Platform
  */
 export enum Platform {
@@ -143,5 +199,13 @@ export const DeviceService: GenService<{
         methodKind: "unary";
         input: typeof RegisterDeviceRequestSchema;
         output: typeof RegisterDeviceResponseSchema;
+    };
+    /**
+     * @generated from rpc device.v1.DeviceService.GetUserDevices
+     */
+    getUserDevices: {
+        methodKind: "unary";
+        input: typeof GetUserDevicesRequestSchema;
+        output: typeof GetUserDevicesResponseSchema;
     };
 }> = /*@__PURE__*/ serviceDesc(file_device_v1_device, 0);
