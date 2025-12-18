@@ -72,6 +72,11 @@ export async function requestAndGetFCMToken(): Promise<{
         return { permission, token: null };
     }
 
-    const token = await getFCMToken();
-    return { permission, token };
+    try {
+        const token = await getFCMToken();
+        return { permission, token };
+    } catch (err) {
+        console.error("Failed to get FCM token:", err);
+        return { permission, token: null };
+    }
 }
