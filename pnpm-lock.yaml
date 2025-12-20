@@ -13,19 +13,19 @@ importers:
         version: 1.61.0
       '@bufbuild/protobuf':
         specifier: ^2.10.1
-        version: 2.10.1
+        version: 2.10.2
       '@bufbuild/protoc-gen-es':
         specifier: ^2.10.1
-        version: 2.10.1(@bufbuild/protobuf@2.10.1)
+        version: 2.10.1(@bufbuild/protobuf@2.10.2)
       '@connectrpc/connect':
         specifier: ^2.1.1
-        version: 2.1.1(@bufbuild/protobuf@2.10.1)
+        version: 2.1.1(@bufbuild/protobuf@2.10.2)
       '@connectrpc/connect-node':
         specifier: ^2.1.1
-        version: 2.1.1(@bufbuild/protobuf@2.10.1)(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.1))
+        version: 2.1.1(@bufbuild/protobuf@2.10.2)(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.2))
       '@connectrpc/validate':
         specifier: ^0.2.0
-        version: 0.2.0(@bufbuild/protobuf@2.10.1)(@bufbuild/protovalidate@1.0.0(@bufbuild/protobuf@2.10.1))(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.1))
+        version: 0.2.0(@bufbuild/protobuf@2.10.2)(@bufbuild/protovalidate@1.0.0(@bufbuild/protobuf@2.10.2))(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.2))
       '@playwright/test':
         specifier: ^1.57.0
         version: 1.57.0
@@ -813,6 +813,9 @@ packages:
 
   '@bufbuild/protobuf@2.10.1':
     resolution: {integrity: sha512-ckS3+vyJb5qGpEYv/s1OebUHDi/xSNtfgw1wqKZo7MR9F2z+qXr0q5XagafAG/9O0QPVIUfST0smluYSTpYFkg==}
+
+  '@bufbuild/protobuf@2.10.2':
+    resolution: {integrity: sha512-uFsRXwIGyu+r6AMdz+XijIIZJYpoWeYzILt5yZ2d3mCjQrWUTVpVD9WL/jZAbvp+Ed04rOhrsk7FiTcEDseB5A==}
 
   '@bufbuild/protoc-gen-es@2.10.1':
     resolution: {integrity: sha512-vsfbWs1X93oX+sMMJ7910/OwIizAYH5IOAArsxnSTifiop1fVgLFPAvJBLiHZoNMI8B/lbqji2SFwvjK0AWO1Q==}
@@ -5514,22 +5517,24 @@ snapshots:
       '@bufbuild/buf-win32-arm64': 1.61.0
       '@bufbuild/buf-win32-x64': 1.61.0
 
-  '@bufbuild/cel-spec@0.3.0(@bufbuild/protobuf@2.10.1)':
+  '@bufbuild/cel-spec@0.3.0(@bufbuild/protobuf@2.10.2)':
     dependencies:
-      '@bufbuild/protobuf': 2.10.1
+      '@bufbuild/protobuf': 2.10.2
 
-  '@bufbuild/cel@0.3.0(@bufbuild/protobuf@2.10.1)':
+  '@bufbuild/cel@0.3.0(@bufbuild/protobuf@2.10.2)':
     dependencies:
-      '@bufbuild/cel-spec': 0.3.0(@bufbuild/protobuf@2.10.1)
-      '@bufbuild/protobuf': 2.10.1
+      '@bufbuild/cel-spec': 0.3.0(@bufbuild/protobuf@2.10.2)
+      '@bufbuild/protobuf': 2.10.2
 
   '@bufbuild/protobuf@2.10.1': {}
 
-  '@bufbuild/protoc-gen-es@2.10.1(@bufbuild/protobuf@2.10.1)':
+  '@bufbuild/protobuf@2.10.2': {}
+
+  '@bufbuild/protoc-gen-es@2.10.1(@bufbuild/protobuf@2.10.2)':
     dependencies:
       '@bufbuild/protoplugin': 2.10.1
     optionalDependencies:
-      '@bufbuild/protobuf': 2.10.1
+      '@bufbuild/protobuf': 2.10.2
     transitivePeerDependencies:
       - supports-color
 
@@ -5541,10 +5546,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@bufbuild/protovalidate@1.0.0(@bufbuild/protobuf@2.10.1)':
+  '@bufbuild/protovalidate@1.0.0(@bufbuild/protobuf@2.10.2)':
     dependencies:
-      '@bufbuild/cel': 0.3.0(@bufbuild/protobuf@2.10.1)
-      '@bufbuild/protobuf': 2.10.1
+      '@bufbuild/cel': 0.3.0(@bufbuild/protobuf@2.10.2)
+      '@bufbuild/protobuf': 2.10.2
 
   '@chromatic-com/storybook@4.1.3(storybook@10.1.8(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
     dependencies:
@@ -5558,20 +5563,20 @@ snapshots:
       - '@chromatic-com/cypress'
       - '@chromatic-com/playwright'
 
-  '@connectrpc/connect-node@2.1.1(@bufbuild/protobuf@2.10.1)(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.1))':
+  '@connectrpc/connect-node@2.1.1(@bufbuild/protobuf@2.10.2)(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.2))':
     dependencies:
-      '@bufbuild/protobuf': 2.10.1
-      '@connectrpc/connect': 2.1.1(@bufbuild/protobuf@2.10.1)
+      '@bufbuild/protobuf': 2.10.2
+      '@connectrpc/connect': 2.1.1(@bufbuild/protobuf@2.10.2)
 
-  '@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.1)':
+  '@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.2)':
     dependencies:
-      '@bufbuild/protobuf': 2.10.1
+      '@bufbuild/protobuf': 2.10.2
 
-  '@connectrpc/validate@0.2.0(@bufbuild/protobuf@2.10.1)(@bufbuild/protovalidate@1.0.0(@bufbuild/protobuf@2.10.1))(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.1))':
+  '@connectrpc/validate@0.2.0(@bufbuild/protobuf@2.10.2)(@bufbuild/protovalidate@1.0.0(@bufbuild/protobuf@2.10.2))(@connectrpc/connect@2.1.1(@bufbuild/protobuf@2.10.2))':
     dependencies:
-      '@bufbuild/protobuf': 2.10.1
-      '@bufbuild/protovalidate': 1.0.0(@bufbuild/protobuf@2.10.1)
-      '@connectrpc/connect': 2.1.1(@bufbuild/protobuf@2.10.1)
+      '@bufbuild/protobuf': 2.10.2
+      '@bufbuild/protovalidate': 1.0.0(@bufbuild/protobuf@2.10.2)
+      '@connectrpc/connect': 2.1.1(@bufbuild/protobuf@2.10.2)
 
   '@esbuild/aix-ppc64@0.25.12':
     optional: true
