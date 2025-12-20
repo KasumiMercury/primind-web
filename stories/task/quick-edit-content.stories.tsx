@@ -70,7 +70,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {
         className: "w-full max-w-md",
-        taskTypeKey: TASK_TYPE_KEYS.NORMAL,
+        taskTypeKey: TASK_TYPE_KEYS.NEAR,
         title: "",
         description: "",
         isSaving: false,
@@ -83,7 +83,7 @@ export const Default: Story = {
 export const WithContent: Story = {
     args: {
         className: "w-full max-w-md",
-        taskTypeKey: TASK_TYPE_KEYS.URGENT,
+        taskTypeKey: TASK_TYPE_KEYS.SHORT,
         title: "Complete project documentation",
         description:
             "Write comprehensive documentation for the new API endpoints including examples and error handling.",
@@ -97,7 +97,7 @@ export const WithContent: Story = {
 export const Saving: Story = {
     args: {
         className: "w-full max-w-md",
-        taskTypeKey: TASK_TYPE_KEYS.NORMAL,
+        taskTypeKey: TASK_TYPE_KEYS.NEAR,
         title: "Task being saved",
         description: "This task is currently being saved to the server.",
         isSaving: true,
@@ -110,7 +110,7 @@ export const Saving: Story = {
 export const SaveSuccess: Story = {
     args: {
         className: "w-full max-w-md",
-        taskTypeKey: TASK_TYPE_KEYS.NORMAL,
+        taskTypeKey: TASK_TYPE_KEYS.NEAR,
         title: "Successfully saved task",
         description: "This task was successfully saved.",
         isSaving: false,
@@ -123,7 +123,7 @@ export const SaveSuccess: Story = {
 export const DeleteConfirmDialog: Story = {
     args: {
         className: "w-full max-w-md",
-        taskTypeKey: TASK_TYPE_KEYS.LOW,
+        taskTypeKey: TASK_TYPE_KEYS.RELAXED,
         title: "Task to delete",
         description: "This task will be deleted after confirmation.",
         isSaving: false,
@@ -136,7 +136,7 @@ export const DeleteConfirmDialog: Story = {
 export const Deleting: Story = {
     args: {
         className: "w-full max-w-md",
-        taskTypeKey: TASK_TYPE_KEYS.LOW,
+        taskTypeKey: TASK_TYPE_KEYS.RELAXED,
         title: "Task being deleted",
         description: "This task is currently being deleted.",
         isSaving: false,
@@ -162,7 +162,7 @@ export const Scheduled: Story = {
 export const SaveError: Story = {
     args: {
         className: "w-full max-w-md",
-        taskTypeKey: TASK_TYPE_KEYS.NORMAL,
+        taskTypeKey: TASK_TYPE_KEYS.NEAR,
         title: "Failed to save task",
         description: "This task failed to save.",
         isSaving: false,
@@ -176,7 +176,7 @@ export const SaveError: Story = {
 export const DeleteError: Story = {
     args: {
         className: "w-full max-w-md",
-        taskTypeKey: TASK_TYPE_KEYS.LOW,
+        taskTypeKey: TASK_TYPE_KEYS.RELAXED,
         title: "Task failed to delete",
         description: "This task could not be deleted.",
         isSaving: false,

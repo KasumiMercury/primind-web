@@ -65,9 +65,9 @@ export async function createTaskAction(request: Request) {
 
             if (
                 ![
-                    TaskType.URGENT,
-                    TaskType.NORMAL,
-                    TaskType.LOW,
+                    TaskType.SHORT,
+                    TaskType.NEAR,
+                    TaskType.RELAXED,
                     TaskType.SCHEDULED,
                 ].includes(taskType)
             ) {
