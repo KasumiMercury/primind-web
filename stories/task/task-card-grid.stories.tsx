@@ -29,19 +29,19 @@ function createMockTask(
 const sampleTasks: SerializableTask[] = [
     createMockTask(
         "019afbaa-0001-70d9-9cd1-cd544220afb3",
-        TaskType.URGENT,
+        TaskType.SHORT,
         "Fix critical bug in production",
         2,
     ),
     createMockTask(
         "019afbaa-0002-70d9-9cd1-cd544220afb3",
-        TaskType.NORMAL,
+        TaskType.NEAR,
         "Review pull request",
         5,
     ),
     createMockTask(
         "019afbaa-0003-70d9-9cd1-cd544220afb3",
-        TaskType.LOW,
+        TaskType.RELAXED,
         "Update documentation",
         24,
     ),
@@ -53,13 +53,13 @@ const sampleTasks: SerializableTask[] = [
     ),
     createMockTask(
         "019afbaa-0005-70d9-9cd1-cd544220afb3",
-        TaskType.NORMAL,
+        TaskType.NEAR,
         "Implement new feature for user dashboard",
         72,
     ),
     createMockTask(
         "019afbaa-0006-70d9-9cd1-cd544220afb3",
-        TaskType.URGENT,
+        TaskType.SHORT,
         "Deploy hotfix",
         1,
     ),
@@ -69,13 +69,13 @@ const manyTasks: SerializableTask[] = [
     ...sampleTasks,
     createMockTask(
         "019afbaa-0007-70d9-9cd1-cd544220afb3",
-        TaskType.LOW,
+        TaskType.RELAXED,
         "Refactor legacy code",
         96,
     ),
     createMockTask(
         "019afbaa-0008-70d9-9cd1-cd544220afb3",
-        TaskType.NORMAL,
+        TaskType.NEAR,
         "Write unit tests",
         120,
     ),
@@ -87,7 +87,7 @@ const manyTasks: SerializableTask[] = [
     ),
     createMockTask(
         "019afbaa-0010-70d9-9cd1-cd544220afb3",
-        TaskType.URGENT,
+        TaskType.SHORT,
         "",
         3,
     ),
@@ -149,19 +149,19 @@ export const AllTaskTypes: Story = {
         tasks: [
             createMockTask(
                 "019afbaa-type-0001-9cd1-cd544220afb3",
-                TaskType.URGENT,
+                TaskType.SHORT,
                 "Urgent Task",
                 1,
             ),
             createMockTask(
                 "019afbaa-type-0002-9cd1-cd544220afb3",
-                TaskType.NORMAL,
+                TaskType.NEAR,
                 "Normal Task",
                 2,
             ),
             createMockTask(
                 "019afbaa-type-0003-9cd1-cd544220afb3",
-                TaskType.LOW,
+                TaskType.RELAXED,
                 "Low Priority Task",
                 3,
             ),
@@ -180,19 +180,19 @@ export const WithEmptyTitles: Story = {
         tasks: [
             createMockTask(
                 "019afbaa-empty-0001-9cd1-cd544220afb3",
-                TaskType.URGENT,
+                TaskType.SHORT,
                 "",
                 1,
             ),
             createMockTask(
                 "019afbaa-empty-0002-9cd1-cd544220afb3",
-                TaskType.NORMAL,
+                TaskType.NEAR,
                 "Has a title",
                 2,
             ),
             createMockTask(
                 "019afbaa-empty-0003-9cd1-cd544220afb3",
-                TaskType.LOW,
+                TaskType.RELAXED,
                 "",
                 3,
             ),
@@ -211,19 +211,19 @@ export const WithLongTitles: Story = {
         tasks: [
             createMockTask(
                 "019afbaa-long-0001-9cd1-cd544220afb3",
-                TaskType.URGENT,
+                TaskType.SHORT,
                 "This is an extremely long task title that should definitely be truncated when displayed in the card",
                 1,
             ),
             createMockTask(
                 "019afbaa-long-0002-9cd1-cd544220afb3",
-                TaskType.NORMAL,
+                TaskType.NEAR,
                 "Another very long title for testing truncation behavior in the task card component",
                 2,
             ),
             createMockTask(
                 "019afbaa-long-0003-9cd1-cd544220afb3",
-                TaskType.LOW,
+                TaskType.RELAXED,
                 "Short",
                 3,
             ),

@@ -13,10 +13,10 @@ export type IconComponent = ComponentType<{
 }>;
 
 export const TASK_TYPE_KEYS = {
-    URGENT: "urgent",
-    NORMAL: "normal",
-    LOW: "low",
-    SCHEDULED: "duetime",
+    SHORT: "short",
+    NEAR: "near",
+    RELAXED: "relaxed",
+    SCHEDULED: "scheduled",
 } as const;
 
 export type TaskTypeKey = (typeof TASK_TYPE_KEYS)[keyof typeof TASK_TYPE_KEYS];
@@ -29,27 +29,27 @@ interface ItemConfig {
 }
 
 export const ITEMS = {
-    [TASK_TYPE_KEYS.URGENT]: {
+    [TASK_TYPE_KEYS.SHORT]: {
         icon: StarBurstIcon,
-        label: "Urgent",
+        label: "Soon",
         className: "stroke-red-500",
-        taskType: TaskType.URGENT,
+        taskType: TaskType.SHORT,
     },
-    [TASK_TYPE_KEYS.NORMAL]: {
+    [TASK_TYPE_KEYS.NEAR]: {
         icon: CircleIcon,
-        label: "Normal",
+        label: "Later",
         className: "stroke-blue-500",
-        taskType: TaskType.NORMAL,
+        taskType: TaskType.NEAR,
     },
-    [TASK_TYPE_KEYS.LOW]: {
+    [TASK_TYPE_KEYS.RELAXED]: {
         icon: PillIcon,
-        label: "Low",
+        label: "No rush",
         className: "stroke-green-500",
-        taskType: TaskType.LOW,
+        taskType: TaskType.RELAXED,
     },
     [TASK_TYPE_KEYS.SCHEDULED]: {
         icon: RectangleIcon,
-        label: "Due Time",
+        label: "Schedule",
         className: "stroke-yellow-500",
         taskType: TaskType.SCHEDULED,
     },

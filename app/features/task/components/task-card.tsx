@@ -18,15 +18,15 @@ interface TaskCardProps {
 function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
     switch (taskType) {
         case 1:
-            return TASK_TYPE_KEYS.URGENT;
+            return TASK_TYPE_KEYS.SHORT;
         case 2:
-            return TASK_TYPE_KEYS.NORMAL;
+            return TASK_TYPE_KEYS.NEAR;
         case 3:
-            return TASK_TYPE_KEYS.LOW;
+            return TASK_TYPE_KEYS.RELAXED;
         case 4:
             return TASK_TYPE_KEYS.SCHEDULED;
         default:
-            return TASK_TYPE_KEYS.NORMAL;
+            return TASK_TYPE_KEYS.NEAR;
     }
 }
 

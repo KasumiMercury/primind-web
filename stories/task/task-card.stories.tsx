@@ -10,7 +10,7 @@ function createMockTask(
     const now = Math.floor(Date.now() / 1000);
     return {
         taskId: "019afbaa-64e4-70d9-9cd1-cd544220afb3",
-        taskType: TaskType.NORMAL,
+        taskType: TaskType.NEAR,
         taskStatus: TaskStatus.ACTIVE,
         title: "Sample Task",
         description: "This is a sample task description.",
@@ -59,7 +59,7 @@ export const Default: Story = {
 export const Urgent: Story = {
     args: {
         task: createMockTask({
-            taskType: TaskType.URGENT,
+            taskType: TaskType.SHORT,
             title: "Urgent Task",
         }),
     },
@@ -68,7 +68,7 @@ export const Urgent: Story = {
 export const Normal: Story = {
     args: {
         task: createMockTask({
-            taskType: TaskType.NORMAL,
+            taskType: TaskType.NEAR,
             title: "Normal Priority Task",
         }),
     },
@@ -77,7 +77,7 @@ export const Normal: Story = {
 export const Low: Story = {
     args: {
         task: createMockTask({
-            taskType: TaskType.LOW,
+            taskType: TaskType.RELAXED,
             title: "Low Priority Task",
         }),
     },
