@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
-import { QuickEdit } from "~/features/task/components/quick-edit";
+import { QuickEditModal } from "~/features/task/components/quick-edit-modal";
 import { TaskCardGrid } from "~/features/task/components/task-card-grid";
 import {
     TaskRegistration,
     type TaskRegistrationEvent,
 } from "~/features/task/components/task-registration";
+import { TASK_TYPE_KEYS } from "~/features/task/lib/task-type-items";
 import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
 import { useAppLayoutContext } from "~/layouts/app-layout";
 
@@ -72,19 +73,14 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
                 </Alert>
             )}
 
-            {latestTask && (
-                <div className="w-full max-w-md rounded-lg border-2 border-secondary px-3 py-3">
-                    <QuickEdit
-                        key={latestTask.taskId}
-                        className="w-full"
-                        taskId={latestTask.taskId}
-                        taskTypeKey={latestTask.taskTypeKey}
-                        color={latestTask.color}
-                        onDeleted={handleDeleted}
-                        onClosed={handleClosed}
-                    />
-                </div>
-            )}
+            <QuickEditModal
+                isOpen={latestTask !== null}
+                taskId={latestTask?.taskId ?? ""}
+                taskTypeKey={latestTask?.taskTypeKey ?? TASK_TYPE_KEYS.NEAR}
+                color={latestTask?.color ?? ""}
+                onDeleted={handleDeleted}
+                onClosed={handleClosed}
+            />
 
             <section className="w-full max-w-4xl">
                 <TaskCardGrid tasks={tasks} onTaskClick={handleTaskClick} />
