@@ -102,6 +102,8 @@ export function QuickEditModal({
             if (pendingSaveValues.current) {
                 setLastSavedTitle(pendingSaveValues.current.title);
                 setLastSavedDescription(pendingSaveValues.current.description);
+                setTitle(pendingSaveValues.current.title);
+                setDescription(pendingSaveValues.current.description);
                 pendingSaveValues.current = null;
             }
 
@@ -120,6 +122,8 @@ export function QuickEditModal({
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
             pendingSaveValues.current = null;
+            setTitle(lastSavedTitle);
+            setDescription(lastSavedDescription);
             setSaveError(true);
             if (errorResetTimer.current) {
                 clearTimeout(errorResetTimer.current);
@@ -128,7 +132,12 @@ export function QuickEditModal({
                 setSaveError(false);
             }, ERROR_DISPLAY_DURATION_MS);
         }
-    }, [saveFetcher.state, saveFetcher.data]);
+    }, [
+        saveFetcher.state,
+        saveFetcher.data,
+        lastSavedTitle,
+        lastSavedDescription,
+    ]);
 
     // Handle delete success and error
     useEffect(() => {
