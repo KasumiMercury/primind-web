@@ -21,11 +21,20 @@ const meta = {
         },
         title: {
             control: "text",
-            description: "Current title value.",
+            description: "Saved title value.",
         },
         description: {
             control: "text",
-            description: "Current description value.",
+            description: "Saved description value.",
+        },
+        editingField: {
+            control: "select",
+            options: ["none", "title", "description"],
+            description: "Which field is currently being edited.",
+        },
+        editingValue: {
+            control: "text",
+            description: "Current value of the field being edited.",
         },
         isSaving: {
             control: "boolean",
@@ -60,8 +69,10 @@ const meta = {
         },
     },
     args: {
-        onTitleChange: fn(),
-        onDescriptionChange: fn(),
+        onStartEditTitle: fn(),
+        onStartEditDescription: fn(),
+        onEditingValueChange: fn(),
+        onCancelEdit: fn(),
         onSave: fn(),
         onDelete: fn(),
         onDeleteConfirm: fn(),
@@ -79,12 +90,15 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// Default view (plus buttons)
 export const Default: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.NEAR,
         color: "#3B82F6",
         title: "",
         description: "",
+        editingField: "none",
+        editingValue: "",
         isSaving: false,
         saveSuccess: false,
         saveError: false,
@@ -95,12 +109,72 @@ export const Default: Story = {
     },
 };
 
-export const WithContent: Story = {
+// With saved title (shows edit button)
+export const WithSavedTitle: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.NEAR,
         color: "#3B82F6",
-        title: "New Task Title",
-        description: "This is a description for my new task.",
+        title: "My Task Title",
+        description: "",
+        editingField: "none",
+        editingValue: "",
+        isSaving: false,
+        saveSuccess: false,
+        saveError: false,
+        isDeleting: false,
+        isDirty: false,
+        showDeleteConfirm: false,
+        deleteError: false,
+    },
+};
+
+// With saved description (shows edit button)
+export const WithSavedDescription: Story = {
+    args: {
+        taskTypeKey: TASK_TYPE_KEYS.NEAR,
+        color: "#3B82F6",
+        title: "",
+        description: "This is my task description.",
+        editingField: "none",
+        editingValue: "",
+        isSaving: false,
+        saveSuccess: false,
+        saveError: false,
+        isDeleting: false,
+        isDirty: false,
+        showDeleteConfirm: false,
+        deleteError: false,
+    },
+};
+
+// With both saved (shows edit buttons)
+export const WithBothSaved: Story = {
+    args: {
+        taskTypeKey: TASK_TYPE_KEYS.NEAR,
+        color: "#3B82F6",
+        title: "My Task Title",
+        description: "This is my task description.",
+        editingField: "none",
+        editingValue: "",
+        isSaving: false,
+        saveSuccess: false,
+        saveError: false,
+        isDeleting: false,
+        isDirty: false,
+        showDeleteConfirm: false,
+        deleteError: false,
+    },
+};
+
+// Editing title
+export const EditingTitle: Story = {
+    args: {
+        taskTypeKey: TASK_TYPE_KEYS.NEAR,
+        color: "#3B82F6",
+        title: "",
+        description: "",
+        editingField: "title",
+        editingValue: "New Task Title",
         isSaving: false,
         saveSuccess: false,
         saveError: false,
@@ -111,12 +185,34 @@ export const WithContent: Story = {
     },
 };
 
-export const Saving: Story = {
+// Editing description
+export const EditingDescription: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.NEAR,
         color: "#3B82F6",
-        title: "Task being saved",
-        description: "This task is currently being saved.",
+        title: "",
+        description: "",
+        editingField: "description",
+        editingValue: "This is a description for my new task.",
+        isSaving: false,
+        saveSuccess: false,
+        saveError: false,
+        isDeleting: false,
+        isDirty: true,
+        showDeleteConfirm: false,
+        deleteError: false,
+    },
+};
+
+// Saving title
+export const SavingTitle: Story = {
+    args: {
+        taskTypeKey: TASK_TYPE_KEYS.NEAR,
+        color: "#3B82F6",
+        title: "",
+        description: "",
+        editingField: "title",
+        editingValue: "Task being saved",
         isSaving: true,
         saveSuccess: false,
         saveError: false,
@@ -127,12 +223,15 @@ export const Saving: Story = {
     },
 };
 
+// Save success
 export const SaveSuccess: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.NEAR,
         color: "#3B82F6",
         title: "Successfully saved",
-        description: "This task was saved.",
+        description: "",
+        editingField: "title",
+        editingValue: "Successfully saved",
         isSaving: false,
         saveSuccess: true,
         saveError: false,
@@ -143,12 +242,15 @@ export const SaveSuccess: Story = {
     },
 };
 
+// Save error
 export const SaveError: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.NEAR,
         color: "#3B82F6",
-        title: "Failed to save",
-        description: "This task failed to save.",
+        title: "",
+        description: "",
+        editingField: "title",
+        editingValue: "Failed to save",
         isSaving: false,
         saveSuccess: false,
         saveError: true,
@@ -159,12 +261,15 @@ export const SaveError: Story = {
     },
 };
 
+// Short task (default view)
 export const ShortTask: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.SHORT,
         color: "#EF4444",
         title: "",
         description: "",
+        editingField: "none",
+        editingValue: "",
         isSaving: false,
         saveSuccess: false,
         saveError: false,
@@ -175,12 +280,15 @@ export const ShortTask: Story = {
     },
 };
 
+// Relaxed task (default view)
 export const RelaxedTask: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.RELAXED,
         color: "#22C55E",
         title: "",
         description: "",
+        editingField: "none",
+        editingValue: "",
         isSaving: false,
         saveSuccess: false,
         saveError: false,
@@ -191,12 +299,15 @@ export const RelaxedTask: Story = {
     },
 };
 
+// Scheduled task (default view)
 export const ScheduledTask: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.SCHEDULED,
         color: "#EAB308",
         title: "",
         description: "",
+        editingField: "none",
+        editingValue: "",
         isSaving: false,
         saveSuccess: false,
         saveError: false,
@@ -207,12 +318,15 @@ export const ScheduledTask: Story = {
     },
 };
 
+// Delete confirmation dialog
 export const DeleteConfirm: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.NEAR,
         color: "#3B82F6",
-        title: "Task to delete",
-        description: "About to be deleted.",
+        title: "",
+        description: "",
+        editingField: "none",
+        editingValue: "",
         isSaving: false,
         saveSuccess: false,
         saveError: false,
@@ -223,12 +337,15 @@ export const DeleteConfirm: Story = {
     },
 };
 
+// Delete error
 export const DeleteError: Story = {
     args: {
         taskTypeKey: TASK_TYPE_KEYS.NEAR,
         color: "#3B82F6",
-        title: "Failed to delete",
-        description: "Could not delete.",
+        title: "",
+        description: "",
+        editingField: "none",
+        editingValue: "",
         isSaving: false,
         saveSuccess: false,
         saveError: false,
