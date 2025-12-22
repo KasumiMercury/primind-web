@@ -74,6 +74,7 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
             )}
 
             <QuickEditModal
+                key={latestTask?.taskId}
                 isOpen={latestTask !== null}
                 taskId={latestTask?.taskId ?? ""}
                 taskTypeKey={latestTask?.taskTypeKey ?? TASK_TYPE_KEYS.NEAR}
