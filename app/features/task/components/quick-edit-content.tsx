@@ -1,155 +1,232 @@
-import { Check, ChevronUp, Loader2, Trash, X } from "lucide-react";
+import { Check, Loader2, Trash, X } from "lucide-react";
 import type { FormEvent } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { TextField } from "~/components/ui/text-field";
+import { Label, TextField } from "~/components/ui/text-field";
 import { Textarea } from "~/components/ui/textarea";
-import {
-    type IconComponent,
-    ITEMS,
-    type TaskTypeKey,
-} from "../lib/task-type-items";
+import { ITEMS, type TaskTypeKey } from "../lib/task-type-items";
 import { DeleteTaskDialog } from "./delete-task-dialog";
+import { FieldAddButton } from "./field-add-button";
+import { FieldDisplay } from "./field-display";
 
-export interface QuickEditContentProps {
-    className?: string;
+export type EditingField = "none" | "title" | "description";
+
+interface QuickEditContentProps {
     taskTypeKey: TaskTypeKey;
     color: string;
+
     title: string;
     description: string;
-    onTitleChange: (value: string) => void;
-    onDescriptionChange: (value: string) => void;
+
+    editingField: EditingField;
+    editingValue: string;
+    onStartEditTitle: () => void;
+    onStartEditDescription: () => void;
+    onEditingValueChange: (value: string) => void;
+    onCancelEdit: () => void;
+
     onSave: () => void;
     onDelete: () => void;
-    onClose?: () => void;
+    onDeleteConfirm: () => void;
+    onDeleteCancel: () => void;
+
     isSaving?: boolean;
     saveSuccess?: boolean;
     saveError?: boolean;
     isDeleting?: boolean;
+    isDirty?: boolean;
     showDeleteConfirm?: boolean;
     deleteError?: boolean;
-    onDeleteConfirm?: () => void;
-    onDeleteCancel?: () => void;
 }
 
 export function QuickEditContent({
-    className,
     taskTypeKey,
-    title,
     color,
+    title,
     description,
-    onTitleChange,
-    onDescriptionChange,
+    editingField,
+    editingValue,
+    onStartEditTitle,
+    onStartEditDescription,
+    onEditingValueChange,
+    onCancelEdit,
     onSave,
     onDelete,
-    onClose,
+    onDeleteConfirm,
+    onDeleteCancel,
     isSaving = false,
     saveSuccess = false,
     saveError = false,
     isDeleting = false,
+    isDirty = false,
     showDeleteConfirm = false,
     deleteError = false,
-    onDeleteConfirm,
-    onDeleteCancel,
 }: QuickEditContentProps) {
-    const taskType = ITEMS[taskTypeKey];
-    const TaskTypeIcon: IconComponent = taskType.icon;
+    const config = ITEMS[taskTypeKey];
+    const Icon = config.icon;
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        onSave();
+        if (isDirty && !isSaving) {
+            onSave();
+        }
     };
 
-    return (
-        <>
-            <form className={className} onSubmit={handleSubmit}>
-                <div className="flex items-start gap-3">
-                    <div className="size-16 shrink-0">
-                        <TaskTypeIcon
-                            className={""}
-                            label={taskType.label}
-                            fillColor={color}
+    if (editingField === "none") {
+        return (
+            <>
+                <div className="flex flex-col gap-6">
+                    <div className="flex justify-center">
+                        <Icon
+                            className="size-24"
+                            label=""
+                            fillColor={color || undefined}
                         />
                     </div>
-                    <div className="flex flex-1 flex-col gap-2">
-                        <TextField
-                            isDisabled={isSaving}
-                            aria-label="Task Title"
-                        >
-                            <Input
-                                type="text"
-                                placeholder="Task Title"
-                                className="h-8 px-2 py-1 text-sm"
+
+                    <div className="flex flex-col gap-4">
+                        {title ? (
+                            <FieldDisplay
+                                label="Title"
                                 value={title}
-                                onChange={(e) => onTitleChange(e.target.value)}
+                                onEdit={onStartEditTitle}
+                                maxHeightClass="max-h-12"
                             />
-                        </TextField>
-                        <Textarea
-                            placeholder="Task Description"
-                            className="px-2 py-1 text-sm"
-                            value={description}
-                            onChange={(e) =>
-                                onDescriptionChange(e.target.value)
-                            }
-                            disabled={isSaving}
-                        />
+                        ) : (
+                            <FieldAddButton
+                                label="Title"
+                                optionalLabel="(Optional)"
+                                onPress={onStartEditTitle}
+                            />
+                        )}
+                        {description ? (
+                            <FieldDisplay
+                                label="Description"
+                                value={description}
+                                onEdit={onStartEditDescription}
+                                maxHeightClass="max-h-32"
+                            />
+                        ) : (
+                            <FieldAddButton
+                                label="Description"
+                                optionalLabel="(Optional)"
+                                onPress={onStartEditDescription}
+                            />
+                        )}
+                    </div>
+
+                    <div className="flex justify-start border-t pt-4">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            type="button"
+                            onPress={onDelete}
+                            isDisabled={isDeleting}
+                            className="text-destructive data-hovered:bg-destructive/10"
+                            aria-label="Delete Task"
+                        >
+                            <Trash className="size-4" />
+                        </Button>
                     </div>
                 </div>
 
-                {/* reverse flex direction to place delete button's focus order after save button */}
-                <div className="mt-2 flex flex-row-reverse justify-between">
+                <DeleteTaskDialog
+                    open={showDeleteConfirm}
+                    onOpenChange={(open) => !open && onDeleteCancel()}
+                    onConfirm={onDeleteConfirm}
+                    onCancel={onDeleteCancel}
+                    error={deleteError}
+                    isDeleting={isDeleting}
+                />
+            </>
+        );
+    }
+
+    const isEditingTitle = editingField === "title";
+    const fieldLabel = isEditingTitle ? "Title" : "Description";
+
+    return (
+        <>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                <div className="flex justify-center">
+                    <Icon
+                        className="size-24"
+                        label=""
+                        fillColor={color || undefined}
+                    />
+                </div>
+
+                <TextField isDisabled={isSaving}>
+                    <Label className="text-muted-foreground text-xs uppercase tracking-wide">
+                        {fieldLabel}{" "}
+                        <span className="normal-case">(Optional)</span>
+                    </Label>
+                    {isEditingTitle ? (
+                        <Input
+                            type="text"
+                            placeholder="Enter title..."
+                            value={editingValue}
+                            onChange={(e) =>
+                                onEditingValueChange(e.target.value)
+                            }
+                            autoFocus
+                        />
+                    ) : (
+                        <Textarea
+                            placeholder="Enter description..."
+                            value={editingValue}
+                            onChange={(e) =>
+                                onEditingValueChange(e.target.value)
+                            }
+                            autoFocus
+                        />
+                    )}
+                </TextField>
+
+                <div className="flex justify-end gap-2 border-t pt-4">
                     {saveError ? (
-                        <div className="flex h-8 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
+                        <div className="flex h-9 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
                             <X className="size-4" />
                             <span>Failed</span>
                         </div>
                     ) : saveSuccess ? (
-                        <div className="flex h-8 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
+                        <div className="flex h-9 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
                             <Check className="size-4" />
                             <span>Saved</span>
                         </div>
                     ) : (
-                        <Button type="submit" size="sm" isDisabled={isSaving}>
-                            {isSaving ? (
-                                <>
-                                    <Loader2 className="size-4 animate-spin" />
-                                    <span>Saving...</span>
-                                </>
-                            ) : (
-                                "Save"
-                            )}
-                        </Button>
+                        <>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onPress={onCancelEdit}
+                                isDisabled={isSaving}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                isDisabled={!isDirty || isSaving}
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <Loader2 className="size-4 animate-spin" />
+                                        <span>Saving...</span>
+                                    </>
+                                ) : (
+                                    "Save"
+                                )}
+                            </Button>
+                        </>
                     )}
-                    <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        type="button"
-                        onPress={onDelete}
-                        isDisabled={isDeleting || isSaving}
-                        className="text-destructive data-hovered:bg-destructive/10"
-                        aria-label="Delete Task"
-                    >
-                        <Trash className="size-4" />
-                    </Button>
                 </div>
-
-                <Button
-                    type="button"
-                    variant="ghost"
-                    onPress={onClose}
-                    className="mt-3 flex w-full items-center justify-center rounded-md bg-background py-1 text-muted-foreground"
-                    isDisabled={isSaving || isDeleting}
-                    aria-label="Close Quick Edit"
-                >
-                    <ChevronUp className="size-5" />
-                </Button>
             </form>
 
             <DeleteTaskDialog
                 open={showDeleteConfirm}
-                onOpenChange={(open) => !open && onDeleteCancel?.()}
-                onConfirm={() => onDeleteConfirm?.()}
-                onCancel={() => onDeleteCancel?.()}
+                onOpenChange={(open) => !open && onDeleteCancel()}
+                onConfirm={onDeleteConfirm}
+                onCancel={onDeleteCancel}
                 error={deleteError}
                 isDeleting={isDeleting}
             />
