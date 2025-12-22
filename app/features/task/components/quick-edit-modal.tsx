@@ -60,8 +60,6 @@ export function QuickEditModal({
         return false;
     }, [editingField, editingValue, lastSavedTitle, lastSavedDescription]);
 
-    const isDirty = isEditingDirty;
-
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -164,7 +162,7 @@ export function QuickEditModal({
     };
 
     const handleSave = () => {
-        if (!isDirty || isSaving) {
+        if (!isEditingDirty || isSaving) {
             return;
         }
 
@@ -265,7 +263,7 @@ export function QuickEditModal({
                 saveSuccess={saveSuccess}
                 saveError={saveError}
                 isDeleting={isDeleting}
-                isDirty={isDirty}
+                isDirty={isEditingDirty}
                 showDeleteConfirm={showDeleteConfirm}
                 deleteError={deleteError}
             />
