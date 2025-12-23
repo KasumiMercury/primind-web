@@ -90,11 +90,18 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
             {/* space for OperationArea */}
             <div className="h-70 w-full shrink-0" aria-hidden="true" />
 
-            <div className="fixed inset-x-0 bottom-0 flex items-center justify-center p-4">
-                <TaskRegistration
-                    className="w-full max-w-xl"
-                    onTaskRegistered={setLatestTask}
+            <div className="fixed inset-x-0 bottom-0">
+                {/* overlay for narrow screens only */}
+                <div
+                    className="pointer-events-none absolute inset-0 bg-linear-to-b from-transparent to-black/30 md:hidden"
+                    aria-hidden="true"
                 />
+                <div className="flex items-center justify-center p-4">
+                    <TaskRegistration
+                        className="w-full max-w-xl drop-shadow-primary/20 drop-shadow-xl"
+                        onTaskRegistered={setLatestTask}
+                    />
+                </div>
             </div>
         </>
     );
