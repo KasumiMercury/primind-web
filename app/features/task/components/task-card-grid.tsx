@@ -24,7 +24,7 @@ export function TaskCardGrid({
     return (
         <div
             className={cn(
-                "grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4",
+                "grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4",
                 className,
             )}
         >

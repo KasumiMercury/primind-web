@@ -44,9 +44,9 @@ export function TaskCard({ task, className, onPress }: TaskCardProps) {
             type="button"
             onPress={onPress}
             className={cn(
-                "flex h-auto w-full items-start gap-3 rounded-lg border border-border bg-card p-4",
-                "text-left transition-colors",
-                "cursor-pointer",
+                "flex h-auto w-full flex-col items-center gap-2",
+                "rounded-lg border border-border bg-card p-3 sm:p-4",
+                "cursor-pointer text-center transition-colors",
                 "data-hovered:bg-accent",
                 "data-focus-visible:outline-none data-focus-visible:ring-2 data-focus-visible:ring-ring data-focus-visible:ring-offset-2",
                 className,
@@ -55,32 +55,30 @@ export function TaskCard({ task, className, onPress }: TaskCardProps) {
                 displayTitle ? `Task: ${displayTitle}` : `${config.label} task`
             }
         >
-            <div className="shrink-0">
+            <div className="shrink-0" aria-hidden="true">
                 <Icon
-                    className={"size-12"}
-                    label={""}
+                    className="size-12 md:size-14"
+                    label=""
                     fillColor={task.color || undefined}
                 />
             </div>
 
-            <div className="flex min-h-12 min-w-0 flex-1 flex-col justify-between">
-                {displayTitle ? (
+            {(displayTitle || relativeTime) && (
+                <div className="flex w-full min-w-0 flex-col items-center gap-0.5">
                     <p
-                        className="truncate font-medium text-foreground text-sm"
-                        title={displayTitle}
+                        className="min-h-5 w-full truncate text-center font-medium text-foreground text-sm"
+                        title={displayTitle || undefined}
                     >
                         {displayTitle}
                     </p>
-                ) : (
-                    <span />
-                )}
 
-                {relativeTime && (
-                    <p className="text-muted-foreground text-xs">
-                        {relativeTime}
-                    </p>
-                )}
-            </div>
+                    {relativeTime && (
+                        <p className="text-center text-muted-foreground text-xs">
+                            {relativeTime}
+                        </p>
+                    )}
+                </div>
+            )}
         </Button>
     );
 }
