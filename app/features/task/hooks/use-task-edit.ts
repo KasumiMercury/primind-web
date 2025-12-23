@@ -54,6 +54,11 @@ export function useTaskEdit({
         description: string;
     } | null>(null);
 
+    const submittedValues = useRef<{
+        title: string;
+        description: string;
+    } | null>(null);
+
     // Cleanup timers on unmount
     useEffect(() => {
         return () => {
@@ -76,13 +81,37 @@ export function useTaskEdit({
         }
 
         if (saveFetcher.data?.success) {
-            hasStartedSaving.current = false;
-            setSaveSuccess(true);
-            if (pendingSaveValues.current) {
-                setLastSavedTitle(pendingSaveValues.current.title);
-                setLastSavedDescription(pendingSaveValues.current.description);
-                pendingSaveValues.current = null;
+            if (submittedValues.current) {
+                setLastSavedTitle(submittedValues.current.title);
+                setLastSavedDescription(submittedValues.current.description);
             }
+
+            const hasPendingChanges =
+                pendingSaveValues.current &&
+                submittedValues.current &&
+                (pendingSaveValues.current.title !==
+                    submittedValues.current.title ||
+                    pendingSaveValues.current.description !==
+                        submittedValues.current.description);
+
+            if (hasPendingChanges && pendingSaveValues.current) {
+                submittedValues.current = pendingSaveValues.current;
+                const formData = createUpdateTaskFormData(
+                    taskId,
+                    pendingSaveValues.current.title,
+                    pendingSaveValues.current.description,
+                );
+                saveFetcher.submit(formData, {
+                    method: "post",
+                    action: "/api/task/update",
+                });
+                return;
+            }
+
+            hasStartedSaving.current = false;
+            pendingSaveValues.current = null;
+            submittedValues.current = null;
+            setSaveSuccess(true);
 
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
@@ -96,6 +125,7 @@ export function useTaskEdit({
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
             pendingSaveValues.current = null;
+            submittedValues.current = null;
             setSaveError(true);
             if (errorResetTimer.current) {
                 clearTimeout(errorResetTimer.current);
@@ -104,20 +134,23 @@ export function useTaskEdit({
                 setSaveError(false);
             }, ERROR_DISPLAY_DURATION_MS);
         }
-    }, [saveFetcher.state, saveFetcher.data]);
+    }, [saveFetcher.state, saveFetcher.data, taskId, saveFetcher]);
 
     const handleSave = useCallback(
         (values: EditedValues) => {
-            if (isSaving) {
-                return;
-            }
-
             hasStartedSaving.current = true;
             pendingSaveValues.current = values;
+
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
             }
             setSaveSuccess(false);
+
+            if (isSaving) {
+                return;
+            }
+
+            submittedValues.current = values;
             const formData = createUpdateTaskFormData(
                 taskId,
                 values.title,
@@ -141,6 +174,7 @@ export function useTaskEdit({
             setSaveSuccess(false);
             hasStartedSaving.current = false;
             pendingSaveValues.current = null;
+            submittedValues.current = null;
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
                 saveResetTimer.current = null;
