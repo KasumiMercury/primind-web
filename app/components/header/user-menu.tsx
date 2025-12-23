@@ -45,7 +45,9 @@ export function UserMenu({ onLogout }: UserMenuProps) {
                         <DropdownMenuItem onSelect={() => setTheme("system")}>
                             <Monitor />
                             System
-                            {theme === "system" && <Check className="ml-auto" />}
+                            {theme === "system" && (
+                                <Check className="ml-auto" />
+                            )}
                         </DropdownMenuItem>
                     </DropdownSubmenu>
                 </DropdownMenuSubmenuTrigger>

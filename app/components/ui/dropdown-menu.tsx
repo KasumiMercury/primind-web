@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import type * as React from "react";
 import {
     MenuItem as AriaMenuItem,
@@ -12,7 +13,6 @@ import {
     Separator,
     SubmenuTrigger,
 } from "react-aria-components";
-import { ChevronRight } from "lucide-react";
 
 import { cn } from "~/lib/utils";
 
