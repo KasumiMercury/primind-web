@@ -29,9 +29,14 @@ const meta = {
         layout: "centered",
     },
     argTypes: {
-        isEditing: {
-            control: "boolean",
-            description: "Whether the component is in edit mode.",
+        defaultEditingField: {
+            control: "select",
+            options: ["none", "title", "description"],
+            description: "Initial editing field state (for Storybook).",
+        },
+        defaultEditingValue: {
+            control: "text",
+            description: "Initial editing value (for Storybook).",
         },
         isSaving: {
             control: "boolean",
@@ -51,10 +56,6 @@ const meta = {
             control: "boolean",
             description: "Whether a delete operation is in progress.",
         },
-        isDirty: {
-            control: "boolean",
-            description: "Whether there are unsaved changes.",
-        },
         showDeleteConfirm: {
             control: "boolean",
             description: "Whether to show the delete confirmation dialog.",
@@ -64,20 +65,17 @@ const meta = {
             description:
                 "Whether to show error message in the delete confirmation dialog.",
         },
-        title: {
+        initialTitle: {
             control: "text",
-            description: "Current title value.",
+            description: "Saved title value.",
         },
-        description: {
+        initialDescription: {
             control: "text",
-            description: "Current description value.",
+            description: "Saved description value.",
         },
     },
     args: {
-        onTitleChange: fn(),
-        onDescriptionChange: fn(),
-        onEditClick: fn(),
-        onEditCancel: fn(),
+        onDirtyChange: fn(),
         onSave: fn(),
         onDelete: fn(),
         onDeleteConfirm: fn(),
@@ -98,13 +96,12 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {
         task: createMockTask(),
-        title: "Sample Task Title",
-        description: "This is a sample task description for testing purposes.",
-        isEditing: false,
+        initialTitle: "Sample Task Title",
+        initialDescription:
+            "This is a sample task description for testing purposes.",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -116,13 +113,11 @@ export const Urgent: Story = {
             title: "Urgent Task",
             color: "#EF4444",
         }),
-        title: "Urgent Task",
-        description: "This requires immediate attention.",
-        isEditing: false,
+        initialTitle: "Urgent Task",
+        initialDescription: "This requires immediate attention.",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -134,13 +129,11 @@ export const Normal: Story = {
             title: "Normal Priority Task",
             color: "#3B82F6",
         }),
-        title: "Normal Priority Task",
-        description: "Standard priority task with moderate deadline.",
-        isEditing: false,
+        initialTitle: "Normal Priority Task",
+        initialDescription: "Standard priority task with moderate deadline.",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -152,13 +145,11 @@ export const Low: Story = {
             title: "Low Priority Task",
             color: "#22C55E",
         }),
-        title: "Low Priority Task",
-        description: "Can be done when time permits.",
-        isEditing: false,
+        initialTitle: "Low Priority Task",
+        initialDescription: "Can be done when time permits.",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -173,13 +164,11 @@ export const Scheduled: Story = {
                 seconds: (Math.floor(Date.now() / 1000) + 86400).toString(),
             },
         }),
-        title: "Scheduled Task",
-        description: "Task with a specific due time.",
-        isEditing: false,
+        initialTitle: "Scheduled Task",
+        initialDescription: "Task with a specific due time.",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -187,13 +176,11 @@ export const Scheduled: Story = {
 export const EmptyTitle: Story = {
     args: {
         task: createMockTask({ title: "" }),
-        title: "",
-        description: "Task without a title.",
-        isEditing: false,
+        initialTitle: "",
+        initialDescription: "Task without a title.",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -201,13 +188,11 @@ export const EmptyTitle: Story = {
 export const EmptyDescription: Story = {
     args: {
         task: createMockTask({ description: "" }),
-        title: "Task Without Description",
-        description: "",
-        isEditing: false,
+        initialTitle: "Task Without Description",
+        initialDescription: "",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -217,56 +202,104 @@ export const LongContent: Story = {
         task: createMockTask({
             title: "This is an extremely long task title that might need to wrap or be truncated depending on the layout",
         }),
-        title: "This is an extremely long task title that might need to wrap or be truncated depending on the layout",
-        description:
+        initialTitle:
+            "This is an extremely long task title that might need to wrap or be truncated depending on the layout",
+        initialDescription:
             "This is a very detailed description that spans multiple lines. It contains lots of information about what needs to be done, why it needs to be done, and how it should be accomplished. The description goes on and on to test how the component handles long text content.",
-        isEditing: false,
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
 
-export const Editing: Story = {
+export const EditingTitle: Story = {
     args: {
         task: createMockTask(),
-        title: "Sample Task Title",
-        description: "This is a sample task description for testing purposes.",
-        isEditing: true,
+        initialTitle: "Sample Task Title",
+        initialDescription:
+            "This is a sample task description for testing purposes.",
+        defaultEditingField: "title",
+        defaultEditingValue: "Sample Task Title",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
 
-export const EditingWithChanges: Story = {
+export const EditingTitleWithChanges: Story = {
     args: {
         task: createMockTask(),
-        title: "Modified Title",
-        description: "Modified description with unsaved changes.",
-        isEditing: true,
+        initialTitle: "Sample Task Title",
+        initialDescription:
+            "This is a sample task description for testing purposes.",
+        defaultEditingField: "title",
+        defaultEditingValue: "Modified Title",
         isSaving: false,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: true,
         showDeleteConfirm: false,
     },
 };
 
-export const Saving: Story = {
+export const EditingDescription: Story = {
     args: {
         task: createMockTask(),
-        title: "Task being saved",
-        description: "This task is currently being saved to the server.",
-        isEditing: true,
+        initialTitle: "Sample Task Title",
+        initialDescription:
+            "This is a sample task description for testing purposes.",
+        defaultEditingField: "description",
+        defaultEditingValue:
+            "This is a sample task description for testing purposes.",
+        isSaving: false,
+        saveSuccess: false,
+        isDeleting: false,
+        showDeleteConfirm: false,
+    },
+};
+
+export const EditingDescriptionWithChanges: Story = {
+    args: {
+        task: createMockTask(),
+        initialTitle: "Sample Task Title",
+        initialDescription:
+            "This is a sample task description for testing purposes.",
+        defaultEditingField: "description",
+        defaultEditingValue: "Modified description with unsaved changes.",
+        isSaving: false,
+        saveSuccess: false,
+        isDeleting: false,
+        showDeleteConfirm: false,
+    },
+};
+
+export const SavingTitle: Story = {
+    args: {
+        task: createMockTask(),
+        initialTitle: "Sample Task Title",
+        initialDescription:
+            "This is a sample task description for testing purposes.",
+        defaultEditingField: "title",
+        defaultEditingValue: "Modified Title",
         isSaving: true,
         saveSuccess: false,
         isDeleting: false,
-        isDirty: true,
+        showDeleteConfirm: false,
+    },
+};
+
+export const SavingDescription: Story = {
+    args: {
+        task: createMockTask(),
+        initialTitle: "Sample Task Title",
+        initialDescription:
+            "This is a sample task description for testing purposes.",
+        defaultEditingField: "description",
+        defaultEditingValue: "Modified description being saved.",
+        isSaving: true,
+        saveSuccess: false,
+        isDeleting: false,
         showDeleteConfirm: false,
     },
 };
@@ -274,13 +307,13 @@ export const Saving: Story = {
 export const SaveSuccess: Story = {
     args: {
         task: createMockTask(),
-        title: "Successfully saved task",
-        description: "This task was successfully saved.",
-        isEditing: false,
+        initialTitle: "Successfully saved task",
+        initialDescription: "This task was successfully saved.",
+        defaultEditingField: "title",
+        defaultEditingValue: "Successfully saved task",
         isSaving: false,
         saveSuccess: true,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -288,14 +321,14 @@ export const SaveSuccess: Story = {
 export const SaveError: Story = {
     args: {
         task: createMockTask(),
-        title: "Failed to save task",
-        description: "This task failed to save to the server.",
-        isEditing: false,
+        initialTitle: "Failed to save task",
+        initialDescription: "This task failed to save to the server.",
+        defaultEditingField: "title",
+        defaultEditingValue: "Failed to save task",
         isSaving: false,
         saveSuccess: false,
         saveError: true,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: false,
     },
 };
@@ -303,14 +336,12 @@ export const SaveError: Story = {
 export const DeleteError: Story = {
     args: {
         task: createMockTask(),
-        title: "Task failed to delete",
-        description: "This task could not be deleted.",
-        isEditing: false,
+        initialTitle: "Task failed to delete",
+        initialDescription: "This task could not be deleted.",
         isSaving: false,
         saveSuccess: false,
         saveError: false,
         isDeleting: false,
-        isDirty: false,
         showDeleteConfirm: true,
         deleteError: true,
     },
