@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFetcher, useNavigate } from "react-router";
 import {
     DialogContent,
@@ -6,20 +6,14 @@ import {
     DialogHeader,
     DialogTitle,
 } from "~/components/ui/dialog";
-import {
-    createDeleteTaskFormData,
-    createUpdateTaskFormData,
-} from "../lib/quick-edit-form-data";
+import { useTaskEdit } from "../hooks/use-task-edit";
+import { createDeleteTaskFormData } from "../lib/quick-edit-form-data";
 import type { SerializableTask } from "../server/list-active-tasks.server";
-import type { EditedValues } from "./quick-edit-content";
 import { TaskDetailContent } from "./task-detail-content";
 
 interface TaskDetailModalProps {
     task: SerializableTask;
 }
-
-const SAVE_SUCCESS_DURATION_MS = 2500;
-const ERROR_DISPLAY_DURATION_MS = 2500;
 
 export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const {
@@ -28,82 +22,39 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         description: initialDescription,
     } = task;
     const navigate = useNavigate();
-    const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
 
-    const [lastSavedTitle, setLastSavedTitle] = useState(initialTitle);
-    const [lastSavedDescription, setLastSavedDescription] =
-        useState(initialDescription);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [saveSuccess, setSaveSuccess] = useState(false);
-    const [saveError, setSaveError] = useState(false);
-    const [deleteError, setDeleteError] = useState(false);
-    const [isDirty, setIsDirty] = useState(false);
+    const {
+        lastSavedTitle,
+        lastSavedDescription,
+        isSaving,
+        saveSuccess,
+        saveError,
+        isDirty,
+        setIsDirty,
+        handleSave,
+        syncWithExternalData,
+    } = useTaskEdit({
+        taskId,
+        initialTitle,
+        initialDescription,
+    });
 
-    const isSaving = saveFetcher.state !== "idle";
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+
     const isDeleting = deleteFetcher.state === "submitting";
 
-    // Track if save operation was initiated
-    const hasStartedSaving = useRef(false);
-    const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-    // Capture values at save time to avoid stale closure issues
-    const pendingSaveValues = useRef<{
-        title: string;
-        description: string;
-    } | null>(null);
-
+    // Sync with external data when task changes
     useEffect(() => {
-        return () => {
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            if (errorResetTimer.current) {
-                clearTimeout(errorResetTimer.current);
-            }
-        };
-    }, []);
-
-    // Handle save success feedback - only when save was explicitly initiated
-    useEffect(() => {
-        if (!hasStartedSaving.current) {
+        if (!taskId) {
             return;
         }
-
-        if (saveFetcher.state !== "idle") {
-            return;
-        }
-
-        if (saveFetcher.data?.success) {
-            hasStartedSaving.current = false;
-            setSaveSuccess(true);
-            if (pendingSaveValues.current) {
-                setLastSavedTitle(pendingSaveValues.current.title);
-                setLastSavedDescription(pendingSaveValues.current.description);
-                pendingSaveValues.current = null;
-            }
-
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            saveResetTimer.current = setTimeout(() => {
-                setSaveSuccess(false);
-            }, SAVE_SUCCESS_DURATION_MS);
-            return;
-        }
-
-        if (saveFetcher.data?.error) {
-            hasStartedSaving.current = false;
-            pendingSaveValues.current = null;
-            setSaveError(true);
-            if (errorResetTimer.current) {
-                clearTimeout(errorResetTimer.current);
-            }
-            errorResetTimer.current = setTimeout(() => {
-                setSaveError(false);
-            }, ERROR_DISPLAY_DURATION_MS);
-        }
-    }, [saveFetcher.state, saveFetcher.data]);
+        syncWithExternalData({
+            title: task.title,
+            description: task.description,
+        });
+    }, [taskId, task.title, task.description, syncWithExternalData]);
 
     // Handle delete success and error
     useEffect(() => {
@@ -122,56 +73,11 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         }
     }, [deleteFetcher.state, deleteFetcher.data]);
 
-    useEffect(() => {
-        if (!taskId) {
-            return;
-        }
-
-        if (isDirty) {
-            return;
-        }
-
-        setLastSavedTitle(task.title);
-        setLastSavedDescription(task.description);
-        setSaveSuccess(false);
-        hasStartedSaving.current = false;
-        pendingSaveValues.current = null;
-        if (saveResetTimer.current) {
-            clearTimeout(saveResetTimer.current);
-            saveResetTimer.current = null;
-        }
-    }, [taskId, task.title, task.description, isDirty]);
-
     const handleOpenChange = (open: boolean) => {
         if (!open) {
             navigate("/", { replace: true, preventScrollReset: true });
         }
     };
-
-    const handleSave = useCallback(
-        (values: EditedValues) => {
-            if (isSaving) {
-                return;
-            }
-
-            hasStartedSaving.current = true;
-            pendingSaveValues.current = values;
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            setSaveSuccess(false);
-            const formData = createUpdateTaskFormData(
-                taskId,
-                values.title,
-                values.description,
-            );
-            saveFetcher.submit(formData, {
-                method: "post",
-                action: "/api/task/update",
-            });
-        },
-        [taskId, isSaving, saveFetcher],
-    );
 
     const handleDelete = () => {
         setShowDeleteConfirm(true);

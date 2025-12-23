@@ -1,5 +1,5 @@
 import { CheckCircle } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/ui/button";
 import {
@@ -8,12 +8,10 @@ import {
     DialogHeader,
     DialogTitle,
 } from "~/components/ui/dialog";
-import {
-    createDeleteTaskFormData,
-    createUpdateTaskFormData,
-} from "../lib/quick-edit-form-data";
+import { useTaskEdit } from "../hooks/use-task-edit";
+import { createDeleteTaskFormData } from "../lib/quick-edit-form-data";
 import type { TaskTypeKey } from "../lib/task-type-items";
-import { type EditedValues, QuickEditContent } from "./quick-edit-content";
+import { QuickEditContent } from "./quick-edit-content";
 
 interface QuickEditModalProps {
     isOpen: boolean;
@@ -24,9 +22,6 @@ interface QuickEditModalProps {
     onClosed?: () => void;
 }
 
-const SAVE_SUCCESS_DURATION_MS = 2500;
-const ERROR_DISPLAY_DURATION_MS = 2500;
-
 export function QuickEditModal({
     isOpen,
     taskId,
@@ -35,84 +30,28 @@ export function QuickEditModal({
     onDeleted,
     onClosed,
 }: QuickEditModalProps) {
-    const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
 
-    const [lastSavedTitle, setLastSavedTitle] = useState("");
-    const [lastSavedDescription, setLastSavedDescription] = useState("");
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [saveSuccess, setSaveSuccess] = useState(false);
-    const [saveError, setSaveError] = useState(false);
-    const [deleteError, setDeleteError] = useState(false);
-    const [isDirty, setIsDirty] = useState(false);
+    const {
+        lastSavedTitle,
+        lastSavedDescription,
+        isSaving,
+        saveSuccess,
+        saveError,
+        isDirty,
+        setIsDirty,
+        handleSave,
+    } = useTaskEdit({ taskId });
 
-    const isSaving = saveFetcher.state !== "idle";
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+
     const isDeleting = deleteFetcher.state === "submitting";
 
-    const hasStartedSaving = useRef(false);
-    const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const pendingSaveValues = useRef<{
-        title: string;
-        description: string;
-    } | null>(null);
     const onDeletedRef = useRef(onDeleted);
-
     useEffect(() => {
         onDeletedRef.current = onDeleted;
     }, [onDeleted]);
-
-    useEffect(() => {
-        return () => {
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            if (errorResetTimer.current) {
-                clearTimeout(errorResetTimer.current);
-            }
-        };
-    }, []);
-
-    // Handle save success feedback
-    useEffect(() => {
-        if (!hasStartedSaving.current) {
-            return;
-        }
-
-        if (saveFetcher.state !== "idle") {
-            return;
-        }
-
-        if (saveFetcher.data?.success) {
-            hasStartedSaving.current = false;
-            setSaveSuccess(true);
-            if (pendingSaveValues.current) {
-                setLastSavedTitle(pendingSaveValues.current.title);
-                setLastSavedDescription(pendingSaveValues.current.description);
-                pendingSaveValues.current = null;
-            }
-
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            saveResetTimer.current = setTimeout(() => {
-                setSaveSuccess(false);
-            }, SAVE_SUCCESS_DURATION_MS);
-            return;
-        }
-
-        if (saveFetcher.data?.error) {
-            hasStartedSaving.current = false;
-            pendingSaveValues.current = null;
-            setSaveError(true);
-            if (errorResetTimer.current) {
-                clearTimeout(errorResetTimer.current);
-            }
-            errorResetTimer.current = setTimeout(() => {
-                setSaveError(false);
-            }, ERROR_DISPLAY_DURATION_MS);
-        }
-    }, [saveFetcher.state, saveFetcher.data]);
 
     // Handle delete success and error
     useEffect(() => {
@@ -137,31 +76,6 @@ export function QuickEditModal({
             onClosed?.();
         }
     };
-
-    const handleSave = useCallback(
-        (values: EditedValues) => {
-            if (isSaving) {
-                return;
-            }
-
-            hasStartedSaving.current = true;
-            pendingSaveValues.current = values;
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            setSaveSuccess(false);
-            const formData = createUpdateTaskFormData(
-                taskId,
-                values.title,
-                values.description,
-            );
-            saveFetcher.submit(formData, {
-                method: "post",
-                action: "/api/task/update",
-            });
-        },
-        [taskId, isSaving, saveFetcher],
-    );
 
     const handleDelete = () => {
         setShowDeleteConfirm(true);
