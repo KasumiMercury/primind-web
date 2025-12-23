@@ -7,6 +7,7 @@ export interface FieldDisplayProps {
     value: string;
     onEdit: () => void;
     maxHeightClass?: string;
+    emptyText?: string;
 }
 
 export function FieldDisplay({
@@ -14,7 +15,11 @@ export function FieldDisplay({
     value,
     onEdit,
     maxHeightClass = "max-h-24",
+    emptyText,
 }: FieldDisplayProps) {
+    const isEmpty = !value.trim();
+    const displayValue = isEmpty && emptyText ? emptyText : value;
+
     return (
         <div className="flex w-full flex-col gap-2 rounded-md border p-3">
             <div className="flex items-center justify-between">
@@ -33,11 +38,14 @@ export function FieldDisplay({
             </div>
             <p
                 className={cn(
-                    "overflow-y-auto whitespace-pre-wrap text-foreground text-sm",
+                    "overflow-y-auto whitespace-pre-wrap text-sm",
                     maxHeightClass,
+                    isEmpty && emptyText
+                        ? "text-muted-foreground italic"
+                        : "text-foreground",
                 )}
             >
-                {value}
+                {displayValue}
             </p>
         </div>
     );

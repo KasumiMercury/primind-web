@@ -1,5 +1,5 @@
-import { Check, Loader2, Pencil, Trash, X } from "lucide-react";
-import type { FormEvent } from "react";
+import { Check, Loader2, Trash, X } from "lucide-react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label, TextField } from "~/components/ui/text-field";
@@ -14,27 +14,32 @@ import {
 } from "../lib/task-type-items";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { DeleteTaskDialog } from "./delete-task-dialog";
+import { FieldDisplay } from "./field-display";
+import type { EditedValues, EditingField } from "./quick-edit-content";
 
 interface TaskDetailContentProps {
     task: SerializableTask;
-    title: string;
-    description: string;
-    isEditing: boolean;
-    onTitleChange: (value: string) => void;
-    onDescriptionChange: (value: string) => void;
-    onEditClick: () => void;
-    onEditCancel: () => void;
-    onSave: () => void;
+
+    initialTitle: string;
+    initialDescription: string;
+
+    onDirtyChange: (isDirty: boolean) => void;
+
+    onSave: (values: EditedValues) => void;
+
     onDelete: () => void;
+    onDeleteConfirm?: () => void;
+    onDeleteCancel?: () => void;
+
     isSaving?: boolean;
     saveSuccess?: boolean;
     saveError?: boolean;
     isDeleting?: boolean;
-    isDirty?: boolean;
     showDeleteConfirm?: boolean;
     deleteError?: boolean;
-    onDeleteConfirm?: () => void;
-    onDeleteCancel?: () => void;
+
+    defaultEditingField?: EditingField;
+    defaultEditingValue?: string;
 }
 
 function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
@@ -65,35 +70,187 @@ function getStatusLabel(status: TaskStatus): string {
 
 export function TaskDetailContent({
     task,
-    title,
-    description,
-    isEditing,
-    onTitleChange,
-    onDescriptionChange,
-    onEditClick,
-    onEditCancel,
+    initialTitle,
+    initialDescription,
+    onDirtyChange,
     onSave,
     onDelete,
+    onDeleteConfirm,
+    onDeleteCancel,
     isSaving = false,
     saveSuccess = false,
     saveError = false,
     isDeleting = false,
-    isDirty = false,
     showDeleteConfirm = false,
     deleteError = false,
-    onDeleteConfirm,
-    onDeleteCancel,
+    defaultEditingField,
+    defaultEditingValue,
 }: TaskDetailContentProps) {
     const taskTypeKey = getTaskTypeKey(task.taskType);
     const config = ITEMS[taskTypeKey];
     const Icon = config.icon;
 
+    const [editingField, setEditingField] = useState<EditingField>(
+        defaultEditingField ?? "none",
+    );
+    const [editingValue, setEditingValue] = useState(defaultEditingValue ?? "");
+
+    const isDirty = useMemo(() => {
+        if (editingField === "none") return false;
+        if (editingField === "title") return editingValue !== initialTitle;
+        if (editingField === "description")
+            return editingValue !== initialDescription;
+        return false;
+    }, [editingField, editingValue, initialTitle, initialDescription]);
+
+    useEffect(() => {
+        onDirtyChange(isDirty);
+    }, [isDirty, onDirtyChange]);
+
+    useEffect(() => {
+        if (saveSuccess) {
+            setEditingField("none");
+            setEditingValue("");
+        }
+    }, [saveSuccess]);
+
+    useEffect(() => {
+        if (saveError) {
+            setEditingField("none");
+            setEditingValue("");
+        }
+    }, [saveError]);
+
+    const handleStartEditTitle = () => {
+        setEditingValue(initialTitle);
+        setEditingField("title");
+    };
+
+    const handleStartEditDescription = () => {
+        setEditingValue(initialDescription);
+        setEditingField("description");
+    };
+
+    const handleCancelEdit = () => {
+        setEditingField("none");
+        setEditingValue("");
+    };
+
+    const handleSave = () => {
+        if (!isDirty || isSaving) return;
+        onSave({
+            title: editingField === "title" ? editingValue : initialTitle,
+            description:
+                editingField === "description"
+                    ? editingValue
+                    : initialDescription,
+        });
+    };
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (isEditing && isDirty && !isSaving) {
-            onSave();
-        }
+        handleSave();
     };
+
+    // Display mode: editingField === "none"
+    if (editingField === "none") {
+        return (
+            <>
+                <div className="flex flex-col gap-6">
+                    <div className="flex justify-center">
+                        <Icon
+                            className="size-24"
+                            label=""
+                            fillColor={task.color || undefined}
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-4">
+                        <FieldDisplay
+                            label="Title"
+                            value={initialTitle}
+                            onEdit={handleStartEditTitle}
+                            maxHeightClass="max-h-12"
+                            emptyText="No title"
+                        />
+                        <FieldDisplay
+                            label="Description"
+                            value={initialDescription}
+                            onEdit={handleStartEditDescription}
+                            maxHeightClass="max-h-32"
+                            emptyText="No description"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                                Status
+                            </h3>
+                            <p className="text-foreground">
+                                {getStatusLabel(task.taskStatus)}
+                            </p>
+                        </div>
+
+                        {task.createdAt && (
+                            <div>
+                                <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                                    Created
+                                </h3>
+                                <p className="text-foreground">
+                                    {formatTimestampAbsolute(task.createdAt)}
+                                </p>
+                                <p className="text-muted-foreground text-sm">
+                                    {formatTimestampRelative(task.createdAt)}
+                                </p>
+                            </div>
+                        )}
+
+                        {task.targetAt && (
+                            <div>
+                                <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                                    Target Time
+                                </h3>
+                                <p className="text-foreground">
+                                    {formatTimestampAbsolute(task.targetAt)}
+                                </p>
+                                <p className="text-muted-foreground text-sm">
+                                    {formatTimestampRelative(task.targetAt)}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex justify-start border-t pt-4">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            type="button"
+                            onPress={onDelete}
+                            isDisabled={isDeleting || isSaving}
+                            className="text-destructive data-hovered:bg-destructive/10"
+                            aria-label="Delete Task"
+                        >
+                            <Trash className="size-4" />
+                        </Button>
+                    </div>
+                </div>
+
+                <DeleteTaskDialog
+                    open={showDeleteConfirm}
+                    onOpenChange={(open) => !open && onDeleteCancel?.()}
+                    onConfirm={() => onDeleteConfirm?.()}
+                    onCancel={() => onDeleteCancel?.()}
+                    error={deleteError}
+                    isDeleting={isDeleting}
+                />
+            </>
+        );
+    }
+
+    // Edit mode: editingField === "title" or "description"
+    const isEditingTitle = editingField === "title";
+    const fieldLabel = isEditingTitle ? "Title" : "Description";
 
     return (
         <>
@@ -106,117 +263,29 @@ export function TaskDetailContent({
                     />
                 </div>
 
-                <div>
-                    {isEditing ? (
-                        <TextField isDisabled={isSaving}>
-                            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
-                                Title
-                            </Label>
-                            <Input
-                                type="text"
-                                placeholder="No title"
-                                className={
-                                    !title.trim()
-                                        ? "placeholder:text-muted-foreground placeholder:italic"
-                                        : ""
-                                }
-                                value={title}
-                                onChange={(e) => onTitleChange(e.target.value)}
-                            />
-                        </TextField>
+                <TextField isDisabled={isSaving}>
+                    <Label className="text-muted-foreground text-xs uppercase tracking-wide">
+                        {fieldLabel}
+                    </Label>
+                    {isEditingTitle ? (
+                        <Input
+                            type="text"
+                            placeholder="Enter title..."
+                            value={editingValue}
+                            onChange={(e) => setEditingValue(e.target.value)}
+                            autoFocus
+                        />
                     ) : (
-                        <>
-                            <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                                Title
-                            </h3>
-                            {title.trim() ? (
-                                <p className="font-semibold text-foreground text-lg">
-                                    {title}
-                                </p>
-                            ) : (
-                                <p className="text-muted-foreground italic">
-                                    No title
-                                </p>
-                            )}
-                        </>
+                        <Textarea
+                            placeholder="Enter description..."
+                            value={editingValue}
+                            onChange={(e) => setEditingValue(e.target.value)}
+                            autoFocus
+                        />
                     )}
-                </div>
+                </TextField>
 
-                <div>
-                    {isEditing ? (
-                        <TextField isDisabled={isSaving}>
-                            <Label className="text-muted-foreground text-xs uppercase tracking-wide">
-                                Description
-                            </Label>
-                            <Textarea
-                                placeholder="No description"
-                                className={
-                                    !description.trim()
-                                        ? "placeholder:text-muted-foreground placeholder:italic"
-                                        : ""
-                                }
-                                value={description}
-                                onChange={(e) =>
-                                    onDescriptionChange(e.target.value)
-                                }
-                            />
-                        </TextField>
-                    ) : (
-                        <>
-                            <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                                Description
-                            </h3>
-                            {description.trim() ? (
-                                <p className="whitespace-pre-wrap text-foreground">
-                                    {description}
-                                </p>
-                            ) : (
-                                <p className="text-muted-foreground italic">
-                                    No description
-                                </p>
-                            )}
-                        </>
-                    )}
-                </div>
-
-                <div>
-                    <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                        Status
-                    </h3>
-                    <p className="text-foreground">
-                        {getStatusLabel(task.taskStatus)}
-                    </p>
-                </div>
-
-                {task.createdAt && (
-                    <div>
-                        <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                            Created
-                        </h3>
-                        <p className="text-foreground">
-                            {formatTimestampAbsolute(task.createdAt)}
-                        </p>
-                        <p className="text-muted-foreground text-sm">
-                            {formatTimestampRelative(task.createdAt)}
-                        </p>
-                    </div>
-                )}
-
-                {task.targetAt && (
-                    <div>
-                        <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                            Target Time
-                        </h3>
-                        <p className="text-foreground">
-                            {formatTimestampAbsolute(task.targetAt)}
-                        </p>
-                        <p className="text-muted-foreground text-sm">
-                            {formatTimestampRelative(task.targetAt)}
-                        </p>
-                    </div>
-                )}
-
-                <div className="flex flex-row-reverse items-center justify-between gap-2 border-t pt-4">
+                <div className="flex justify-end gap-2 border-t pt-4">
                     {saveError ? (
                         <div className="flex h-9 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
                             <X className="size-4" />
@@ -227,8 +296,16 @@ export function TaskDetailContent({
                             <Check className="size-4" />
                             <span>Saved</span>
                         </div>
-                    ) : isEditing ? (
-                        <div className="flex items-center gap-2">
+                    ) : (
+                        <>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onPress={handleCancelEdit}
+                                isDisabled={isSaving}
+                            >
+                                Cancel
+                            </Button>
                             <Button
                                 type="submit"
                                 isDisabled={!isDirty || isSaving}
@@ -242,38 +319,8 @@ export function TaskDetailContent({
                                     "Save"
                                 )}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                onPress={onEditCancel}
-                                isDisabled={isSaving}
-                            >
-                                <X className="size-4" />
-                                Cancel
-                            </Button>
-                        </div>
-                    ) : (
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onPress={onEditClick}
-                            isDisabled={isSaving}
-                        >
-                            <Pencil className="size-4" />
-                            Edit
-                        </Button>
+                        </>
                     )}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        type="button"
-                        onPress={onDelete}
-                        isDisabled={isDeleting || isSaving}
-                        className="text-destructive data-hovered:bg-destructive/10"
-                        aria-label="Delete Task"
-                    >
-                        <Trash className="size-4" />
-                    </Button>
                 </div>
             </form>
 

@@ -1,5 +1,5 @@
 import { Check, Loader2, Trash, X } from "lucide-react";
-import type { FormEvent } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label, TextField } from "~/components/ui/text-field";
@@ -11,21 +11,22 @@ import { FieldDisplay } from "./field-display";
 
 export type EditingField = "none" | "title" | "description";
 
+export interface EditedValues {
+    title: string;
+    description: string;
+}
+
 interface QuickEditContentProps {
     taskTypeKey: TaskTypeKey;
     color: string;
 
-    title: string;
-    description: string;
+    initialTitle: string;
+    initialDescription: string;
 
-    editingField: EditingField;
-    editingValue: string;
-    onStartEditTitle: () => void;
-    onStartEditDescription: () => void;
-    onEditingValueChange: (value: string) => void;
-    onCancelEdit: () => void;
+    onDirtyChange: (isDirty: boolean) => void;
 
-    onSave: () => void;
+    onSave: (values: EditedValues) => void;
+
     onDelete: () => void;
     onDeleteConfirm: () => void;
     onDeleteCancel: () => void;
@@ -34,22 +35,19 @@ interface QuickEditContentProps {
     saveSuccess?: boolean;
     saveError?: boolean;
     isDeleting?: boolean;
-    isDirty?: boolean;
     showDeleteConfirm?: boolean;
     deleteError?: boolean;
+
+    defaultEditingField?: EditingField;
+    defaultEditingValue?: string;
 }
 
 export function QuickEditContent({
     taskTypeKey,
     color,
-    title,
-    description,
-    editingField,
-    editingValue,
-    onStartEditTitle,
-    onStartEditDescription,
-    onEditingValueChange,
-    onCancelEdit,
+    initialTitle,
+    initialDescription,
+    onDirtyChange,
     onSave,
     onDelete,
     onDeleteConfirm,
@@ -58,18 +56,74 @@ export function QuickEditContent({
     saveSuccess = false,
     saveError = false,
     isDeleting = false,
-    isDirty = false,
     showDeleteConfirm = false,
     deleteError = false,
+    defaultEditingField,
+    defaultEditingValue,
 }: QuickEditContentProps) {
     const config = ITEMS[taskTypeKey];
     const Icon = config.icon;
 
+    const [editingField, setEditingField] = useState<EditingField>(
+        defaultEditingField ?? "none",
+    );
+    const [editingValue, setEditingValue] = useState(defaultEditingValue ?? "");
+
+    const isDirty = useMemo(() => {
+        if (editingField === "none") return false;
+        if (editingField === "title") return editingValue !== initialTitle;
+        if (editingField === "description")
+            return editingValue !== initialDescription;
+        return false;
+    }, [editingField, editingValue, initialTitle, initialDescription]);
+
+    useEffect(() => {
+        onDirtyChange(isDirty);
+    }, [isDirty, onDirtyChange]);
+
+    useEffect(() => {
+        if (saveSuccess) {
+            setEditingField("none");
+            setEditingValue("");
+        }
+    }, [saveSuccess]);
+
+    useEffect(() => {
+        if (saveError) {
+            setEditingField("none");
+            setEditingValue("");
+        }
+    }, [saveError]);
+
+    const handleStartEditTitle = () => {
+        setEditingValue(initialTitle);
+        setEditingField("title");
+    };
+
+    const handleStartEditDescription = () => {
+        setEditingValue(initialDescription);
+        setEditingField("description");
+    };
+
+    const handleCancelEdit = () => {
+        setEditingField("none");
+        setEditingValue("");
+    };
+
+    const handleSave = () => {
+        if (!isDirty || isSaving) return;
+        onSave({
+            title: editingField === "title" ? editingValue : initialTitle,
+            description:
+                editingField === "description"
+                    ? editingValue
+                    : initialDescription,
+        });
+    };
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (isDirty && !isSaving) {
-            onSave();
-        }
+        handleSave();
     };
 
     if (editingField === "none") {
@@ -85,32 +139,32 @@ export function QuickEditContent({
                     </div>
 
                     <div className="flex flex-col gap-4">
-                        {title ? (
+                        {initialTitle ? (
                             <FieldDisplay
                                 label="Title"
-                                value={title}
-                                onEdit={onStartEditTitle}
+                                value={initialTitle}
+                                onEdit={handleStartEditTitle}
                                 maxHeightClass="max-h-12"
                             />
                         ) : (
                             <FieldAddButton
                                 label="Title"
                                 optionalLabel="(Optional)"
-                                onPress={onStartEditTitle}
+                                onPress={handleStartEditTitle}
                             />
                         )}
-                        {description ? (
+                        {initialDescription ? (
                             <FieldDisplay
                                 label="Description"
-                                value={description}
-                                onEdit={onStartEditDescription}
+                                value={initialDescription}
+                                onEdit={handleStartEditDescription}
                                 maxHeightClass="max-h-32"
                             />
                         ) : (
                             <FieldAddButton
                                 label="Description"
                                 optionalLabel="(Optional)"
-                                onPress={onStartEditDescription}
+                                onPress={handleStartEditDescription}
                             />
                         )}
                     </div>
@@ -166,18 +220,14 @@ export function QuickEditContent({
                             type="text"
                             placeholder="Enter title..."
                             value={editingValue}
-                            onChange={(e) =>
-                                onEditingValueChange(e.target.value)
-                            }
+                            onChange={(e) => setEditingValue(e.target.value)}
                             autoFocus
                         />
                     ) : (
                         <Textarea
                             placeholder="Enter description..."
                             value={editingValue}
-                            onChange={(e) =>
-                                onEditingValueChange(e.target.value)
-                            }
+                            onChange={(e) => setEditingValue(e.target.value)}
                             autoFocus
                         />
                     )}
@@ -199,7 +249,7 @@ export function QuickEditContent({
                             <Button
                                 type="button"
                                 variant="ghost"
-                                onPress={onCancelEdit}
+                                onPress={handleCancelEdit}
                                 isDisabled={isSaving}
                             >
                                 Cancel

@@ -1,7 +1,8 @@
 import { ArrowLeft } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { LinkButton } from "~/components/ui/link-button";
+import type { EditedValues } from "../components/quick-edit-content";
 import { TaskDetailContent } from "../components/task-detail-content";
 import {
     createDeleteTaskFormData,
@@ -25,26 +26,27 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
 
-    const [title, setTitle] = useState(initialTitle);
-    const [description, setDescription] = useState(initialDescription);
     const [lastSavedTitle, setLastSavedTitle] = useState(initialTitle);
     const [lastSavedDescription, setLastSavedDescription] =
         useState(initialDescription);
-    const [isEditing, setIsEditing] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [saveError, setSaveError] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
     const isDeleting = deleteFetcher.state !== "idle";
-    const isDirty =
-        title !== lastSavedTitle || description !== lastSavedDescription;
 
     // Track if save operation was initiated
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Capture values at save time to avoid stale closure issues
+    const pendingSaveValues = useRef<{
+        title: string;
+        description: string;
+    } | null>(null);
 
     useEffect(() => {
         return () => {
@@ -70,9 +72,11 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         if (saveFetcher.data?.success) {
             hasStartedSaving.current = false;
             setSaveSuccess(true);
-            setLastSavedTitle(title);
-            setLastSavedDescription(description);
-            setIsEditing(false);
+            if (pendingSaveValues.current) {
+                setLastSavedTitle(pendingSaveValues.current.title);
+                setLastSavedDescription(pendingSaveValues.current.description);
+                pendingSaveValues.current = null;
+            }
 
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
@@ -85,6 +89,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
+            pendingSaveValues.current = null;
             setSaveError(true);
             if (errorResetTimer.current) {
                 clearTimeout(errorResetTimer.current);
@@ -93,7 +98,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                 setSaveError(false);
             }, ERROR_DISPLAY_DURATION_MS);
         }
-    }, [saveFetcher.state, saveFetcher.data, title, description]);
+    }, [saveFetcher.state, saveFetcher.data]);
 
     // Handle delete error
     useEffect(() => {
@@ -114,35 +119,47 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         if (!taskId) {
             return;
         }
-        setTitle(task.title);
-        setDescription(task.description);
+
+        if (isDirty) {
+            return;
+        }
+
         setLastSavedTitle(task.title);
         setLastSavedDescription(task.description);
-        setIsEditing(false);
         setSaveSuccess(false);
         hasStartedSaving.current = false;
+        pendingSaveValues.current = null;
         if (saveResetTimer.current) {
             clearTimeout(saveResetTimer.current);
             saveResetTimer.current = null;
         }
-    }, [taskId, task.title, task.description]);
+    }, [taskId, task.title, task.description, isDirty]);
 
-    const handleSave = () => {
-        if (!isEditing || !isDirty || isSaving) {
-            return;
-        }
-        hasStartedSaving.current = true;
-        if (saveResetTimer.current) {
-            clearTimeout(saveResetTimer.current);
-        }
-        setSaveError(false);
-        setSaveSuccess(false);
-        const formData = createUpdateTaskFormData(taskId, title, description);
-        saveFetcher.submit(formData, {
-            method: "post",
-            action: "/api/task/update",
-        });
-    };
+    const handleSave = useCallback(
+        (values: EditedValues) => {
+            if (isSaving) {
+                return;
+            }
+
+            hasStartedSaving.current = true;
+            pendingSaveValues.current = values;
+            if (saveResetTimer.current) {
+                clearTimeout(saveResetTimer.current);
+            }
+            setSaveError(false);
+            setSaveSuccess(false);
+            const formData = createUpdateTaskFormData(
+                taskId,
+                values.title,
+                values.description,
+            );
+            saveFetcher.submit(formData, {
+                method: "post",
+                action: "/api/task/update",
+            });
+        },
+        [taskId, isSaving, saveFetcher],
+    );
 
     const handleDelete = () => {
         setShowDeleteConfirm(true);
@@ -162,16 +179,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         setDeleteError(false);
     };
 
-    const handleEditClick = () => {
-        setIsEditing(true);
-    };
-
-    const handleEditCancel = () => {
-        setTitle(lastSavedTitle);
-        setDescription(lastSavedDescription);
-        setIsEditing(false);
-    };
-
     return (
         <div className="w-full max-w-lg">
             <div className="mb-6">
@@ -183,24 +190,19 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
             <div className="rounded-lg border bg-card p-6">
                 <TaskDetailContent
                     task={task}
-                    title={title}
-                    description={description}
-                    isEditing={isEditing}
-                    onTitleChange={setTitle}
-                    onDescriptionChange={setDescription}
-                    onEditClick={handleEditClick}
-                    onEditCancel={handleEditCancel}
+                    initialTitle={lastSavedTitle}
+                    initialDescription={lastSavedDescription}
+                    onDirtyChange={setIsDirty}
                     onSave={handleSave}
                     onDelete={handleDelete}
+                    onDeleteConfirm={handleDeleteConfirm}
+                    onDeleteCancel={handleDeleteCancel}
                     isSaving={isSaving}
                     saveSuccess={saveSuccess}
                     saveError={saveError}
                     isDeleting={isDeleting}
-                    isDirty={isDirty}
                     showDeleteConfirm={showDeleteConfirm}
                     deleteError={deleteError}
-                    onDeleteConfirm={handleDeleteConfirm}
-                    onDeleteCancel={handleDeleteCancel}
                 />
             </div>
         </div>
