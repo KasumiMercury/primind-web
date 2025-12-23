@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFetcher, useNavigate } from "react-router";
 import {
     DialogContent,
@@ -11,7 +11,7 @@ import {
     createUpdateTaskFormData,
 } from "../lib/quick-edit-form-data";
 import type { SerializableTask } from "../server/list-active-tasks.server";
-import type { EditingField } from "./quick-edit-content";
+import type { EditedValues } from "./quick-edit-content";
 import { TaskDetailContent } from "./task-detail-content";
 
 interface TaskDetailModalProps {
@@ -31,28 +31,17 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
 
-    const [title, setTitle] = useState(initialTitle);
-    const [description, setDescription] = useState(initialDescription);
     const [lastSavedTitle, setLastSavedTitle] = useState(initialTitle);
     const [lastSavedDescription, setLastSavedDescription] =
         useState(initialDescription);
-    const [editingField, setEditingField] = useState<EditingField>("none");
-    const [editingValue, setEditingValue] = useState("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [saveError, setSaveError] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
     const isDeleting = deleteFetcher.state === "submitting";
-
-    const isEditingDirty = useMemo(() => {
-        if (editingField === "none") return false;
-        if (editingField === "title") return editingValue !== lastSavedTitle;
-        if (editingField === "description")
-            return editingValue !== lastSavedDescription;
-        return false;
-    }, [editingField, editingValue, lastSavedTitle, lastSavedDescription]);
 
     // Track if save operation was initiated
     const hasStartedSaving = useRef(false);
@@ -91,12 +80,8 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
             if (pendingSaveValues.current) {
                 setLastSavedTitle(pendingSaveValues.current.title);
                 setLastSavedDescription(pendingSaveValues.current.description);
-                setTitle(pendingSaveValues.current.title);
-                setDescription(pendingSaveValues.current.description);
                 pendingSaveValues.current = null;
             }
-            setEditingField("none");
-            setEditingValue("");
 
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
@@ -110,8 +95,6 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
             pendingSaveValues.current = null;
-            setTitle(lastSavedTitle);
-            setDescription(lastSavedDescription);
             setSaveError(true);
             if (errorResetTimer.current) {
                 clearTimeout(errorResetTimer.current);
@@ -120,12 +103,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
                 setSaveError(false);
             }, ERROR_DISPLAY_DURATION_MS);
         }
-    }, [
-        saveFetcher.state,
-        saveFetcher.data,
-        lastSavedTitle,
-        lastSavedDescription,
-    ]);
+    }, [saveFetcher.state, saveFetcher.data]);
 
     // Handle delete success and error
     useEffect(() => {
@@ -149,16 +127,12 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
             return;
         }
 
-        if (editingField !== "none") {
+        if (isDirty) {
             return;
         }
 
-        setTitle(task.title);
-        setDescription(task.description);
         setLastSavedTitle(task.title);
         setLastSavedDescription(task.description);
-        setEditingField("none");
-        setEditingValue("");
         setSaveSuccess(false);
         hasStartedSaving.current = false;
         pendingSaveValues.current = null;
@@ -166,7 +140,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
             clearTimeout(saveResetTimer.current);
             saveResetTimer.current = null;
         }
-    }, [taskId, task.title, task.description, editingField]);
+    }, [taskId, task.title, task.description, isDirty]);
 
     const handleOpenChange = (open: boolean) => {
         if (!open) {
@@ -174,56 +148,30 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         }
     };
 
-    const handleStartEditTitle = () => {
-        setEditingValue(title);
-        setEditingField("title");
-    };
+    const handleSave = useCallback(
+        (values: EditedValues) => {
+            if (isSaving) {
+                return;
+            }
 
-    const handleStartEditDescription = () => {
-        setEditingValue(description);
-        setEditingField("description");
-    };
-
-    const handleCancelEdit = () => {
-        setEditingField("none");
-        setEditingValue("");
-    };
-
-    const handleSave = () => {
-        if (!isEditingDirty || isSaving) {
-            return;
-        }
-
-        let newTitle = title;
-        let newDescription = description;
-
-        if (editingField === "title") {
-            newTitle = editingValue;
-            setTitle(editingValue);
-        } else if (editingField === "description") {
-            newDescription = editingValue;
-            setDescription(editingValue);
-        }
-
-        hasStartedSaving.current = true;
-        pendingSaveValues.current = {
-            title: newTitle,
-            description: newDescription,
-        };
-        if (saveResetTimer.current) {
-            clearTimeout(saveResetTimer.current);
-        }
-        setSaveSuccess(false);
-        const formData = createUpdateTaskFormData(
-            taskId,
-            newTitle,
-            newDescription,
-        );
-        saveFetcher.submit(formData, {
-            method: "post",
-            action: "/api/task/update",
-        });
-    };
+            hasStartedSaving.current = true;
+            pendingSaveValues.current = values;
+            if (saveResetTimer.current) {
+                clearTimeout(saveResetTimer.current);
+            }
+            setSaveSuccess(false);
+            const formData = createUpdateTaskFormData(
+                taskId,
+                values.title,
+                values.description,
+            );
+            saveFetcher.submit(formData, {
+                method: "post",
+                action: "/api/task/update",
+            });
+        },
+        [taskId, isSaving, saveFetcher],
+    );
 
     const handleDelete = () => {
         setShowDeleteConfirm(true);
@@ -248,7 +196,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         <DialogContent
             isOpen={true}
             onOpenChange={handleOpenChange}
-            isDismissable={!isEditingDirty}
+            isDismissable={!isDirty}
             className="max-h-[85vh] overflow-y-auto sm:max-w-lg"
         >
             <DialogHeader>
@@ -259,25 +207,19 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
             </DialogDescription>
             <TaskDetailContent
                 task={task}
-                title={title}
-                description={description}
-                editingField={editingField}
-                editingValue={editingValue}
-                onStartEditTitle={handleStartEditTitle}
-                onStartEditDescription={handleStartEditDescription}
-                onEditingValueChange={setEditingValue}
-                onCancelEdit={handleCancelEdit}
+                initialTitle={lastSavedTitle}
+                initialDescription={lastSavedDescription}
+                onDirtyChange={setIsDirty}
                 onSave={handleSave}
                 onDelete={handleDelete}
+                onDeleteConfirm={handleDeleteConfirm}
+                onDeleteCancel={handleDeleteCancel}
                 isSaving={isSaving}
                 saveSuccess={saveSuccess}
                 saveError={saveError}
                 isDeleting={isDeleting}
-                isDirty={isEditingDirty}
                 showDeleteConfirm={showDeleteConfirm}
                 deleteError={deleteError}
-                onDeleteConfirm={handleDeleteConfirm}
-                onDeleteCancel={handleDeleteCancel}
             />
         </DialogContent>
     );

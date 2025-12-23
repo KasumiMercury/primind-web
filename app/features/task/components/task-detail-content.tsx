@@ -1,5 +1,5 @@
 import { Check, Loader2, Trash, X } from "lucide-react";
-import type { FormEvent } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label, TextField } from "~/components/ui/text-field";
@@ -15,31 +15,31 @@ import {
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { DeleteTaskDialog } from "./delete-task-dialog";
 import { FieldDisplay } from "./field-display";
-import type { EditingField } from "./quick-edit-content";
+import type { EditedValues, EditingField } from "./quick-edit-content";
 
 interface TaskDetailContentProps {
     task: SerializableTask;
-    title: string;
-    description: string;
 
-    editingField: EditingField;
-    editingValue: string;
-    onStartEditTitle: () => void;
-    onStartEditDescription: () => void;
-    onEditingValueChange: (value: string) => void;
-    onCancelEdit: () => void;
+    initialTitle: string;
+    initialDescription: string;
 
-    onSave: () => void;
+    onDirtyChange: (isDirty: boolean) => void;
+
+    onSave: (values: EditedValues) => void;
+
     onDelete: () => void;
+    onDeleteConfirm?: () => void;
+    onDeleteCancel?: () => void;
+
     isSaving?: boolean;
     saveSuccess?: boolean;
     saveError?: boolean;
     isDeleting?: boolean;
-    isDirty?: boolean;
     showDeleteConfirm?: boolean;
     deleteError?: boolean;
-    onDeleteConfirm?: () => void;
-    onDeleteCancel?: () => void;
+
+    defaultEditingField?: EditingField;
+    defaultEditingValue?: string;
 }
 
 function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
@@ -70,35 +70,86 @@ function getStatusLabel(status: TaskStatus): string {
 
 export function TaskDetailContent({
     task,
-    title,
-    description,
-    editingField,
-    editingValue,
-    onStartEditTitle,
-    onStartEditDescription,
-    onEditingValueChange,
-    onCancelEdit,
+    initialTitle,
+    initialDescription,
+    onDirtyChange,
     onSave,
     onDelete,
+    onDeleteConfirm,
+    onDeleteCancel,
     isSaving = false,
     saveSuccess = false,
     saveError = false,
     isDeleting = false,
-    isDirty = false,
     showDeleteConfirm = false,
     deleteError = false,
-    onDeleteConfirm,
-    onDeleteCancel,
+    defaultEditingField,
+    defaultEditingValue,
 }: TaskDetailContentProps) {
     const taskTypeKey = getTaskTypeKey(task.taskType);
     const config = ITEMS[taskTypeKey];
     const Icon = config.icon;
 
+    const [editingField, setEditingField] = useState<EditingField>(
+        defaultEditingField ?? "none",
+    );
+    const [editingValue, setEditingValue] = useState(defaultEditingValue ?? "");
+
+    const isDirty = useMemo(() => {
+        if (editingField === "none") return false;
+        if (editingField === "title") return editingValue !== initialTitle;
+        if (editingField === "description")
+            return editingValue !== initialDescription;
+        return false;
+    }, [editingField, editingValue, initialTitle, initialDescription]);
+
+    useEffect(() => {
+        onDirtyChange(isDirty);
+    }, [isDirty, onDirtyChange]);
+
+    useEffect(() => {
+        if (saveSuccess) {
+            setEditingField("none");
+            setEditingValue("");
+        }
+    }, [saveSuccess]);
+
+    useEffect(() => {
+        if (saveError) {
+            setEditingField("none");
+            setEditingValue("");
+        }
+    }, [saveError]);
+
+    const handleStartEditTitle = () => {
+        setEditingValue(initialTitle);
+        setEditingField("title");
+    };
+
+    const handleStartEditDescription = () => {
+        setEditingValue(initialDescription);
+        setEditingField("description");
+    };
+
+    const handleCancelEdit = () => {
+        setEditingField("none");
+        setEditingValue("");
+    };
+
+    const handleSave = () => {
+        if (!isDirty || isSaving) return;
+        onSave({
+            title: editingField === "title" ? editingValue : initialTitle,
+            description:
+                editingField === "description"
+                    ? editingValue
+                    : initialDescription,
+        });
+    };
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (isDirty && !isSaving) {
-            onSave();
-        }
+        handleSave();
     };
 
     // Display mode: editingField === "none"
@@ -117,15 +168,15 @@ export function TaskDetailContent({
                     <div className="flex flex-col gap-4">
                         <FieldDisplay
                             label="Title"
-                            value={title}
-                            onEdit={onStartEditTitle}
+                            value={initialTitle}
+                            onEdit={handleStartEditTitle}
                             maxHeightClass="max-h-12"
                             emptyText="No title"
                         />
                         <FieldDisplay
                             label="Description"
-                            value={description}
-                            onEdit={onStartEditDescription}
+                            value={initialDescription}
+                            onEdit={handleStartEditDescription}
                             maxHeightClass="max-h-32"
                             emptyText="No description"
                         />
@@ -221,18 +272,14 @@ export function TaskDetailContent({
                             type="text"
                             placeholder="Enter title..."
                             value={editingValue}
-                            onChange={(e) =>
-                                onEditingValueChange(e.target.value)
-                            }
+                            onChange={(e) => setEditingValue(e.target.value)}
                             autoFocus
                         />
                     ) : (
                         <Textarea
                             placeholder="Enter description..."
                             value={editingValue}
-                            onChange={(e) =>
-                                onEditingValueChange(e.target.value)
-                            }
+                            onChange={(e) => setEditingValue(e.target.value)}
                             autoFocus
                         />
                     )}
@@ -254,7 +301,7 @@ export function TaskDetailContent({
                             <Button
                                 type="button"
                                 variant="ghost"
-                                onPress={onCancelEdit}
+                                onPress={handleCancelEdit}
                                 isDisabled={isSaving}
                             >
                                 Cancel

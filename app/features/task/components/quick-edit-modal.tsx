@@ -1,5 +1,5 @@
 import { CheckCircle } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { Button } from "~/components/ui/button";
 import {
@@ -13,7 +13,7 @@ import {
     createUpdateTaskFormData,
 } from "../lib/quick-edit-form-data";
 import type { TaskTypeKey } from "../lib/task-type-items";
-import { type EditingField, QuickEditContent } from "./quick-edit-content";
+import { type EditedValues, QuickEditContent } from "./quick-edit-content";
 
 interface QuickEditModalProps {
     isOpen: boolean;
@@ -38,27 +38,16 @@ export function QuickEditModal({
     const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
 
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
     const [lastSavedTitle, setLastSavedTitle] = useState("");
     const [lastSavedDescription, setLastSavedDescription] = useState("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [saveError, setSaveError] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
-    const [editingField, setEditingField] = useState<EditingField>("none");
-    const [editingValue, setEditingValue] = useState("");
+    const [isDirty, setIsDirty] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
     const isDeleting = deleteFetcher.state === "submitting";
-
-    const isEditingDirty = useMemo(() => {
-        if (editingField === "none") return false;
-        if (editingField === "title") return editingValue !== lastSavedTitle;
-        if (editingField === "description")
-            return editingValue !== lastSavedDescription;
-        return false;
-    }, [editingField, editingValue, lastSavedTitle, lastSavedDescription]);
 
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -100,13 +89,8 @@ export function QuickEditModal({
             if (pendingSaveValues.current) {
                 setLastSavedTitle(pendingSaveValues.current.title);
                 setLastSavedDescription(pendingSaveValues.current.description);
-                setTitle(pendingSaveValues.current.title);
-                setDescription(pendingSaveValues.current.description);
                 pendingSaveValues.current = null;
             }
-
-            setEditingField("none");
-            setEditingValue("");
 
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
@@ -120,8 +104,6 @@ export function QuickEditModal({
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
             pendingSaveValues.current = null;
-            setTitle(lastSavedTitle);
-            setDescription(lastSavedDescription);
             setSaveError(true);
             if (errorResetTimer.current) {
                 clearTimeout(errorResetTimer.current);
@@ -130,12 +112,7 @@ export function QuickEditModal({
                 setSaveError(false);
             }, ERROR_DISPLAY_DURATION_MS);
         }
-    }, [
-        saveFetcher.state,
-        saveFetcher.data,
-        lastSavedTitle,
-        lastSavedDescription,
-    ]);
+    }, [saveFetcher.state, saveFetcher.data]);
 
     // Handle delete success and error
     useEffect(() => {
@@ -161,41 +138,30 @@ export function QuickEditModal({
         }
     };
 
-    const handleSave = () => {
-        if (!isEditingDirty || isSaving) {
-            return;
-        }
+    const handleSave = useCallback(
+        (values: EditedValues) => {
+            if (isSaving) {
+                return;
+            }
 
-        let newTitle = title;
-        let newDescription = description;
-
-        if (editingField === "title") {
-            newTitle = editingValue;
-            setTitle(editingValue);
-        } else if (editingField === "description") {
-            newDescription = editingValue;
-            setDescription(editingValue);
-        }
-
-        hasStartedSaving.current = true;
-        pendingSaveValues.current = {
-            title: newTitle,
-            description: newDescription,
-        };
-        if (saveResetTimer.current) {
-            clearTimeout(saveResetTimer.current);
-        }
-        setSaveSuccess(false);
-        const formData = createUpdateTaskFormData(
-            taskId,
-            newTitle,
-            newDescription,
-        );
-        saveFetcher.submit(formData, {
-            method: "post",
-            action: "/api/task/update",
-        });
-    };
+            hasStartedSaving.current = true;
+            pendingSaveValues.current = values;
+            if (saveResetTimer.current) {
+                clearTimeout(saveResetTimer.current);
+            }
+            setSaveSuccess(false);
+            const formData = createUpdateTaskFormData(
+                taskId,
+                values.title,
+                values.description,
+            );
+            saveFetcher.submit(formData, {
+                method: "post",
+                action: "/api/task/update",
+            });
+        },
+        [taskId, isSaving, saveFetcher],
+    );
 
     const handleDelete = () => {
         setShowDeleteConfirm(true);
@@ -214,26 +180,11 @@ export function QuickEditModal({
         setDeleteError(false);
     };
 
-    const handleStartEditTitle = () => {
-        setEditingValue(title);
-        setEditingField("title");
-    };
-
-    const handleStartEditDescription = () => {
-        setEditingValue(description);
-        setEditingField("description");
-    };
-
-    const handleCancelEdit = () => {
-        setEditingField("none");
-        setEditingValue("");
-    };
-
     return (
         <DialogContent
             isOpen={isOpen}
             onOpenChange={handleOpenChange}
-            isDismissable={!isEditingDirty}
+            isDismissable={!isDirty}
             className="max-h-[85vh] overflow-y-auto"
         >
             <DialogHeader className="mb-2 border-b pb-4">
@@ -248,14 +199,9 @@ export function QuickEditModal({
             <QuickEditContent
                 taskTypeKey={taskTypeKey}
                 color={color}
-                title={title}
-                description={description}
-                editingField={editingField}
-                editingValue={editingValue}
-                onStartEditTitle={handleStartEditTitle}
-                onStartEditDescription={handleStartEditDescription}
-                onEditingValueChange={setEditingValue}
-                onCancelEdit={handleCancelEdit}
+                initialTitle={lastSavedTitle}
+                initialDescription={lastSavedDescription}
+                onDirtyChange={setIsDirty}
                 onSave={handleSave}
                 onDelete={handleDelete}
                 onDeleteConfirm={handleDeleteConfirm}
@@ -264,11 +210,10 @@ export function QuickEditModal({
                 saveSuccess={saveSuccess}
                 saveError={saveError}
                 isDeleting={isDeleting}
-                isDirty={isEditingDirty}
                 showDeleteConfirm={showDeleteConfirm}
                 deleteError={deleteError}
             />
-            {!isEditingDirty && (
+            {!isDirty && (
                 <Button className="mt-4 w-full" onPress={() => onClosed?.()}>
                     OK
                 </Button>
