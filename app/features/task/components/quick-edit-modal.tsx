@@ -234,6 +234,7 @@ export function QuickEditModal({
             isOpen={isOpen}
             onOpenChange={handleOpenChange}
             isDismissable={!isEditingDirty}
+            className="max-h-[85vh] overflow-y-auto"
         >
             <DialogHeader className="mb-2 border-b pb-4">
                 <div className="flex items-center gap-2 text-green-600">

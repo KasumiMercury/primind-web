@@ -1,7 +1,8 @@
 import { ArrowLeft } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { LinkButton } from "~/components/ui/link-button";
+import type { EditingField } from "../components/quick-edit-content";
 import { TaskDetailContent } from "../components/task-detail-content";
 import {
     createDeleteTaskFormData,
@@ -30,7 +31,8 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const [lastSavedTitle, setLastSavedTitle] = useState(initialTitle);
     const [lastSavedDescription, setLastSavedDescription] =
         useState(initialDescription);
-    const [isEditing, setIsEditing] = useState(false);
+    const [editingField, setEditingField] = useState<EditingField>("none");
+    const [editingValue, setEditingValue] = useState("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [saveError, setSaveError] = useState(false);
@@ -38,13 +40,24 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
     const isSaving = saveFetcher.state !== "idle";
     const isDeleting = deleteFetcher.state !== "idle";
-    const isDirty =
-        title !== lastSavedTitle || description !== lastSavedDescription;
+
+    const isEditingDirty = useMemo(() => {
+        if (editingField === "none") return false;
+        if (editingField === "title") return editingValue !== lastSavedTitle;
+        if (editingField === "description")
+            return editingValue !== lastSavedDescription;
+        return false;
+    }, [editingField, editingValue, lastSavedTitle, lastSavedDescription]);
 
     // Track if save operation was initiated
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Capture values at save time to avoid stale closure issues
+    const pendingSaveValues = useRef<{
+        title: string;
+        description: string;
+    } | null>(null);
 
     useEffect(() => {
         return () => {
@@ -70,9 +83,15 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         if (saveFetcher.data?.success) {
             hasStartedSaving.current = false;
             setSaveSuccess(true);
-            setLastSavedTitle(title);
-            setLastSavedDescription(description);
-            setIsEditing(false);
+            if (pendingSaveValues.current) {
+                setLastSavedTitle(pendingSaveValues.current.title);
+                setLastSavedDescription(pendingSaveValues.current.description);
+                setTitle(pendingSaveValues.current.title);
+                setDescription(pendingSaveValues.current.description);
+                pendingSaveValues.current = null;
+            }
+            setEditingField("none");
+            setEditingValue("");
 
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
@@ -85,6 +104,9 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
         if (saveFetcher.data?.error) {
             hasStartedSaving.current = false;
+            pendingSaveValues.current = null;
+            setTitle(lastSavedTitle);
+            setDescription(lastSavedDescription);
             setSaveError(true);
             if (errorResetTimer.current) {
                 clearTimeout(errorResetTimer.current);
@@ -93,7 +115,12 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                 setSaveError(false);
             }, ERROR_DISPLAY_DURATION_MS);
         }
-    }, [saveFetcher.state, saveFetcher.data, title, description]);
+    }, [
+        saveFetcher.state,
+        saveFetcher.data,
+        lastSavedTitle,
+        lastSavedDescription,
+    ]);
 
     // Handle delete error
     useEffect(() => {
@@ -118,26 +145,63 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         setDescription(task.description);
         setLastSavedTitle(task.title);
         setLastSavedDescription(task.description);
-        setIsEditing(false);
+        setEditingField("none");
+        setEditingValue("");
         setSaveSuccess(false);
         hasStartedSaving.current = false;
+        pendingSaveValues.current = null;
         if (saveResetTimer.current) {
             clearTimeout(saveResetTimer.current);
             saveResetTimer.current = null;
         }
     }, [taskId, task.title, task.description]);
 
+    const handleStartEditTitle = () => {
+        setEditingValue(title);
+        setEditingField("title");
+    };
+
+    const handleStartEditDescription = () => {
+        setEditingValue(description);
+        setEditingField("description");
+    };
+
+    const handleCancelEdit = () => {
+        setEditingField("none");
+        setEditingValue("");
+    };
+
     const handleSave = () => {
-        if (!isEditing || !isDirty || isSaving) {
+        if (!isEditingDirty || isSaving) {
             return;
         }
+
+        let newTitle = title;
+        let newDescription = description;
+
+        if (editingField === "title") {
+            newTitle = editingValue;
+            setTitle(editingValue);
+        } else if (editingField === "description") {
+            newDescription = editingValue;
+            setDescription(editingValue);
+        }
+
         hasStartedSaving.current = true;
+        pendingSaveValues.current = {
+            title: newTitle,
+            description: newDescription,
+        };
         if (saveResetTimer.current) {
             clearTimeout(saveResetTimer.current);
         }
         setSaveError(false);
         setSaveSuccess(false);
-        const formData = createUpdateTaskFormData(taskId, title, description);
+        const formData = createUpdateTaskFormData(
+            taskId,
+            newTitle,
+            newDescription,
+        );
         saveFetcher.submit(formData, {
             method: "post",
             action: "/api/task/update",
@@ -162,16 +226,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         setDeleteError(false);
     };
 
-    const handleEditClick = () => {
-        setIsEditing(true);
-    };
-
-    const handleEditCancel = () => {
-        setTitle(lastSavedTitle);
-        setDescription(lastSavedDescription);
-        setIsEditing(false);
-    };
-
     return (
         <div className="w-full max-w-lg">
             <div className="mb-6">
@@ -185,18 +239,19 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     task={task}
                     title={title}
                     description={description}
-                    isEditing={isEditing}
-                    onTitleChange={setTitle}
-                    onDescriptionChange={setDescription}
-                    onEditClick={handleEditClick}
-                    onEditCancel={handleEditCancel}
+                    editingField={editingField}
+                    editingValue={editingValue}
+                    onStartEditTitle={handleStartEditTitle}
+                    onStartEditDescription={handleStartEditDescription}
+                    onEditingValueChange={setEditingValue}
+                    onCancelEdit={handleCancelEdit}
                     onSave={handleSave}
                     onDelete={handleDelete}
                     isSaving={isSaving}
                     saveSuccess={saveSuccess}
                     saveError={saveError}
                     isDeleting={isDeleting}
-                    isDirty={isDirty}
+                    isDirty={isEditingDirty}
                     showDeleteConfirm={showDeleteConfirm}
                     deleteError={deleteError}
                     onDeleteConfirm={handleDeleteConfirm}
