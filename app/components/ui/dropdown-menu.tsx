@@ -9,7 +9,10 @@ import {
     type MenuTriggerProps,
     Popover,
     type PopoverProps,
+    Separator,
+    SubmenuTrigger,
 } from "react-aria-components";
+import { ChevronRight } from "lucide-react";
 
 import { cn } from "~/lib/utils";
 
@@ -110,14 +113,16 @@ function DropdownMenuContent({
     );
 }
 
-interface DropdownMenuItemProps extends AriaMenuItemProps {
+interface DropdownMenuItemProps extends Omit<AriaMenuItemProps, "children"> {
     className?: string;
     onSelect?: () => void;
+    children?: React.ReactNode;
 }
 
 function DropdownMenuItem({
     className,
     onSelect,
+    children,
     ...props
 }: DropdownMenuItemProps) {
     return (
@@ -132,7 +137,50 @@ function DropdownMenuItem({
                 className,
             )}
             {...props}
+        >
+            {({ hasSubmenu }) => (
+                <>
+                    {children}
+                    {hasSubmenu && <ChevronRight className="ml-auto size-4" />}
+                </>
+            )}
+        </AriaMenuItem>
+    );
+}
+
+function DropdownMenuSeparator({ className }: { className?: string }) {
+    return (
+        <Separator
+            data-slot="dropdown-menu-separator"
+            className={cn("-mx-1 my-1 h-px bg-border", className)}
         />
+    );
+}
+
+interface DropdownMenuSubmenuTriggerProps {
+    children: [React.ReactElement, React.ReactElement];
+}
+
+function DropdownMenuSubmenuTrigger({
+    children,
+}: DropdownMenuSubmenuTriggerProps) {
+    const [trigger, menu] = children;
+    return (
+        <SubmenuTrigger>
+            {trigger}
+            <Popover
+                data-slot="dropdown-menu-submenu"
+                offset={-2}
+                crossOffset={-4}
+                className={cn(
+                    "z-50 min-w-32 overflow-y-auto overflow-x-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
+                    "data-entering:fade-in-0 data-entering:zoom-in-95 data-entering:animate-in",
+                    "data-exiting:fade-out-0 data-exiting:zoom-out-95 data-exiting:animate-out",
+                )}
+            >
+                {menu}
+            </Popover>
+        </SubmenuTrigger>
     );
 }
 
@@ -141,4 +189,7 @@ export {
     DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuSubmenuTrigger,
+    Menu as DropdownSubmenu,
 };
