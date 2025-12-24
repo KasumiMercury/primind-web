@@ -221,6 +221,9 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     };
 
     const handleComplete = () => {
+        if (isCompleting) {
+            return;
+        }
         setCompleteError(false);
         setCompleteSuccess(false);
         if (completeResetTimer.current) {
