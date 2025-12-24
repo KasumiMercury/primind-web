@@ -48,7 +48,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const [deleteError, setDeleteError] = useState(false);
 
     const isDeleting = deleteFetcher.state === "submitting";
-    const isCompleting = completeFetcher.state === "submitting";
+    const isCompleting = completeFetcher.state !== "idle";
 
     // Sync with external data when task changes
     useEffect(() => {
