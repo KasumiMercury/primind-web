@@ -4,7 +4,7 @@ import {
     now,
     toCalendarDateTime,
 } from "@internationalized/date";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Label } from "react-aria-components";
 import { Button } from "~/components/ui/button";
 import { DatePicker } from "~/components/ui/date-picker";
@@ -33,6 +33,12 @@ export function ScheduledDateTimeModal({
     const [dateTime, setDateTime] = useState<CalendarDateTime>(() =>
         toCalendarDateTime(now(getLocalTimeZone()).add({ hours: 1 })),
     );
+
+    useEffect(() => {
+        if (isOpen) {
+            setDateTime(toCalendarDateTime(now(getLocalTimeZone()).add({ hours: 1 })));
+        }
+    }, [isOpen]);
 
     const isTooSoon = useMemo(() => {
         const currentTime = now(getLocalTimeZone());
