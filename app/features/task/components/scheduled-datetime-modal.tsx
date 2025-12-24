@@ -15,6 +15,7 @@ import {
     DialogTitle,
 } from "~/components/ui/dialog";
 import { TimeField, TimeInput, TimeSegment } from "~/components/ui/time-field";
+import { MINIMUM_SCHEDULE_LEAD_TIME_MINUTES } from "~/features/task/constants";
 
 interface ScheduledDateTimeModalProps {
     isOpen: boolean;
@@ -33,9 +34,17 @@ export function ScheduledDateTimeModal({
         toCalendarDateTime(now(getLocalTimeZone()).add({ hours: 1 })),
     );
 
-    const isPast = useMemo(() => {
+    const isTooSoon = useMemo(() => {
         const currentTime = now(getLocalTimeZone());
-        return dateTime.compare(currentTime) < 0;
+        const normalizedCurrent = currentTime.set({
+            second: 0,
+            millisecond: 0,
+        });
+        const normalizedDateTime = dateTime.set({ second: 0, millisecond: 0 });
+        const minimumTime = normalizedCurrent.add({
+            minutes: MINIMUM_SCHEDULE_LEAD_TIME_MINUTES,
+        });
+        return normalizedDateTime.compare(minimumTime) < 0;
     }, [dateTime]);
 
     const handleQuickAdd = (
@@ -182,9 +191,10 @@ export function ScheduledDateTimeModal({
                     </div>
                 </div>
 
-                {isPast && (
+                {isTooSoon && (
                     <p className="text-destructive text-sm">
-                        Cannot schedule a task in the past
+                        Schedule time must be at least{" "}
+                        {MINIMUM_SCHEDULE_LEAD_TIME_MINUTES} minutes from now
                     </p>
                 )}
             </div>
@@ -194,7 +204,7 @@ export function ScheduledDateTimeModal({
                     <Button
                         className="order-last"
                         onPress={handleConfirm}
-                        isDisabled={isPast}
+                        isDisabled={isTooSoon}
                     >
                         Confirm
                     </Button>

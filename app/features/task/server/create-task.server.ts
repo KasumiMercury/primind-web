@@ -2,6 +2,7 @@ import { create } from "@bufbuild/protobuf";
 import { timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { data } from "react-router";
 import { validate as uuidValidate, version as uuidVersion } from "uuid";
+import { MINIMUM_SCHEDULE_LEAD_TIME_MINUTES } from "~/features/task/constants";
 import { CreateTaskRequestSchema, TaskType } from "~/gen/task/v1/task_pb";
 import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
 import { createAuthContext } from "~/lib/request-context.server";
@@ -118,12 +119,26 @@ export async function createTaskAction(request: Request) {
 
                 scheduledAt = parsedDate;
 
-                if (scheduledAt < new Date()) {
+                const truncateToMinute = (date: Date) => {
+                    const d = new Date(date);
+                    d.setSeconds(0, 0);
+                    return d;
+                };
+                const normalizedScheduledAt = truncateToMinute(scheduledAt);
+                const minimumTime = truncateToMinute(new Date());
+                minimumTime.setMinutes(
+                    minimumTime.getMinutes() +
+                        MINIMUM_SCHEDULE_LEAD_TIME_MINUTES,
+                );
+
+                if (normalizedScheduledAt < minimumTime) {
                     taskLogger.warn(
-                        { scheduledAt: scheduledAtRaw },
-                        "CreateTask action received scheduled_at in the past",
+                        { scheduledAtRaw },
+                        `CreateTask action received scheduled_at less than ${MINIMUM_SCHEDULE_LEAD_TIME_MINUTES} minutes from now`,
                     );
-                    throw new Error("Cannot schedule a task in the past");
+                    throw new Error(
+                        `Schedule time must be at least ${MINIMUM_SCHEDULE_LEAD_TIME_MINUTES} minutes from now`,
+                    );
                 }
             }
 
