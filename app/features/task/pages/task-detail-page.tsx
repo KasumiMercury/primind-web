@@ -35,6 +35,8 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [saveError, setSaveError] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
+    const [completeSuccess, setCompleteSuccess] = useState(false);
+    const [completeError, setCompleteError] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
 
     const isSaving = saveFetcher.state !== "idle";
@@ -45,6 +47,9 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const completeResetTimer = useRef<ReturnType<typeof setTimeout> | null>(
+        null,
+    );
     // Capture values at save time to avoid stale closure issues
     const pendingSaveValues = useRef<{
         title: string;
@@ -58,6 +63,9 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
             }
             if (errorResetTimer.current) {
                 clearTimeout(errorResetTimer.current);
+            }
+            if (completeResetTimer.current) {
+                clearTimeout(completeResetTimer.current);
             }
         };
     }, []);
@@ -117,6 +125,36 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
             setDeleteError(true);
         }
     }, [deleteFetcher.state, deleteFetcher.data]);
+
+    // Handle complete success/error feedback
+    useEffect(() => {
+        if (completeFetcher.state !== "idle") {
+            return;
+        }
+
+        if (completeFetcher.data?.success) {
+            setCompleteSuccess(true);
+            setCompleteError(false);
+            if (completeResetTimer.current) {
+                clearTimeout(completeResetTimer.current);
+            }
+            completeResetTimer.current = setTimeout(() => {
+                setCompleteSuccess(false);
+            }, SAVE_SUCCESS_DURATION_MS);
+            return;
+        }
+
+        if (completeFetcher.data?.error) {
+            setCompleteError(true);
+            setCompleteSuccess(false);
+            if (completeResetTimer.current) {
+                clearTimeout(completeResetTimer.current);
+            }
+            completeResetTimer.current = setTimeout(() => {
+                setCompleteError(false);
+            }, ERROR_DISPLAY_DURATION_MS);
+        }
+    }, [completeFetcher.state, completeFetcher.data]);
 
     useEffect(() => {
         if (!taskId) {
@@ -183,6 +221,11 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     };
 
     const handleComplete = () => {
+        setCompleteError(false);
+        setCompleteSuccess(false);
+        if (completeResetTimer.current) {
+            clearTimeout(completeResetTimer.current);
+        }
         const formData = createCompleteTaskFormData(taskId);
         completeFetcher.submit(formData, {
             method: "post",
@@ -216,6 +259,8 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     deleteError={deleteError}
                     onComplete={handleComplete}
                     isCompleting={isCompleting}
+                    completeSuccess={completeSuccess}
+                    completeError={completeError}
                 />
             </div>
         </div>

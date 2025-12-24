@@ -40,6 +40,8 @@ interface TaskDetailContentProps {
 
     onComplete?: () => void;
     isCompleting?: boolean;
+    completeSuccess?: boolean;
+    completeError?: boolean;
 
     defaultEditingField?: EditingField;
     defaultEditingValue?: string;
@@ -88,6 +90,8 @@ export function TaskDetailContent({
     deleteError = false,
     onComplete,
     isCompleting = false,
+    completeSuccess = false,
+    completeError = false,
     defaultEditingField,
     defaultEditingValue,
 }: TaskDetailContentProps) {
@@ -197,7 +201,18 @@ export function TaskDetailContent({
                             </p>
                         </div>
                         {task.taskStatus === TaskStatus.ACTIVE &&
-                            onComplete && (
+                            onComplete &&
+                            (completeError ? (
+                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-red-600 text-sm text-white">
+                                    <X className="size-5" />
+                                    <span>Failed to complete</span>
+                                </div>
+                            ) : completeSuccess ? (
+                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-green-600 text-sm text-white">
+                                    <Check className="size-5" />
+                                    <span>Completed</span>
+                                </div>
+                            ) : (
                                 <Button
                                     variant="outline"
                                     size="lg"
@@ -219,7 +234,7 @@ export function TaskDetailContent({
                                         </>
                                     )}
                                 </Button>
-                            )}
+                            ))}
 
                         {task.createdAt && (
                             <div>
