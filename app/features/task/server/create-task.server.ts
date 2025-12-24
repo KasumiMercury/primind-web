@@ -1,4 +1,5 @@
 import { create } from "@bufbuild/protobuf";
+import { timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { data } from "react-router";
 import { validate as uuidValidate, version as uuidVersion } from "uuid";
 import { CreateTaskRequestSchema, TaskType } from "~/gen/task/v1/task_pb";
@@ -21,6 +22,7 @@ export async function createTaskAction(request: Request) {
         const taskId = formData.get("task_id");
         const taskTypeRaw = formData.get("task_type");
         const color = formData.get("color");
+        const scheduledAtRaw = formData.get("scheduled_at");
 
         try {
             taskLogger.debug(
@@ -95,7 +97,29 @@ export async function createTaskAction(request: Request) {
                 throw new Error("Invalid color format");
             }
 
-            taskLogger.debug({ taskType, color }, "Creating task");
+            let scheduledAt: Date | undefined;
+            if (scheduledAtRaw !== null && scheduledAtRaw !== "") {
+                if (typeof scheduledAtRaw !== "string") {
+                    taskLogger.warn(
+                        { scheduledAt: scheduledAtRaw },
+                        "CreateTask action received invalid scheduled_at",
+                    );
+                    throw new Error("Invalid scheduled_at");
+                }
+
+                const parsedDate = new Date(scheduledAtRaw);
+                if (Number.isNaN(parsedDate.getTime())) {
+                    taskLogger.warn(
+                        { scheduledAt: scheduledAtRaw },
+                        "CreateTask action received invalid scheduled_at date format",
+                    );
+                    throw new Error("Invalid scheduled_at date format");
+                }
+
+                scheduledAt = parsedDate;
+            }
+
+            taskLogger.debug({ taskType, color, scheduledAt }, "Creating task");
 
             const createRequest = create(CreateTaskRequestSchema, {
                 taskId: taskId,
@@ -103,6 +127,9 @@ export async function createTaskAction(request: Request) {
                 title: "",
                 description: "",
                 color: color,
+                scheduledAt: scheduledAt
+                    ? timestampFromDate(scheduledAt)
+                    : undefined,
             });
 
             const taskClient = await getTaskClient();
