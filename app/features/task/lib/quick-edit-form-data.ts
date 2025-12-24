@@ -23,3 +23,11 @@ export function createDeleteTaskFormData(
     }
     return formData;
 }
+
+export function createCompleteTaskFormData(taskId: string): FormData {
+    const formData = new FormData();
+    formData.append("task_id", taskId);
+    formData.append("task_status", "2"); // TaskStatus.COMPLETED
+    formData.append("update_mask[]", "task_status");
+    return formData;
+}

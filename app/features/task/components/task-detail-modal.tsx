@@ -7,7 +7,10 @@ import {
     DialogTitle,
 } from "~/components/ui/dialog";
 import { useTaskEdit } from "../hooks/use-task-edit";
-import { createDeleteTaskFormData } from "../lib/quick-edit-form-data";
+import {
+    createCompleteTaskFormData,
+    createDeleteTaskFormData,
+} from "../lib/quick-edit-form-data";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { TaskDetailContent } from "./task-detail-content";
 
@@ -23,6 +26,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     } = task;
     const navigate = useNavigate();
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
+    const completeFetcher = useFetcher({ key: `complete-${taskId}` });
 
     const {
         lastSavedTitle,
@@ -44,6 +48,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const [deleteError, setDeleteError] = useState(false);
 
     const isDeleting = deleteFetcher.state === "submitting";
+    const isCompleting = completeFetcher.state === "submitting";
 
     // Sync with external data when task changes
     useEffect(() => {
@@ -98,6 +103,14 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         setDeleteError(false);
     };
 
+    const handleComplete = () => {
+        const formData = createCompleteTaskFormData(taskId);
+        completeFetcher.submit(formData, {
+            method: "post",
+            action: "/api/task/update",
+        });
+    };
+
     return (
         <DialogContent
             isOpen={true}
@@ -126,6 +139,8 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
                 isDeleting={isDeleting}
                 showDeleteConfirm={showDeleteConfirm}
                 deleteError={deleteError}
+                onComplete={handleComplete}
+                isCompleting={isCompleting}
             />
         </DialogContent>
     );

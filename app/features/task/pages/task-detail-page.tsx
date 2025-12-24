@@ -5,6 +5,7 @@ import { LinkButton } from "~/components/ui/link-button";
 import type { EditedValues } from "../components/quick-edit-content";
 import { TaskDetailContent } from "../components/task-detail-content";
 import {
+    createCompleteTaskFormData,
     createDeleteTaskFormData,
     createUpdateTaskFormData,
 } from "../lib/quick-edit-form-data";
@@ -25,6 +26,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     } = task;
     const saveFetcher = useFetcher({ key: `save-${taskId}` });
     const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
+    const completeFetcher = useFetcher({ key: `complete-${taskId}` });
 
     const [lastSavedTitle, setLastSavedTitle] = useState(initialTitle);
     const [lastSavedDescription, setLastSavedDescription] =
@@ -37,6 +39,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
     const isSaving = saveFetcher.state !== "idle";
     const isDeleting = deleteFetcher.state !== "idle";
+    const isCompleting = completeFetcher.state !== "idle";
 
     // Track if save operation was initiated
     const hasStartedSaving = useRef(false);
@@ -179,6 +182,14 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         setDeleteError(false);
     };
 
+    const handleComplete = () => {
+        const formData = createCompleteTaskFormData(taskId);
+        completeFetcher.submit(formData, {
+            method: "post",
+            action: "/api/task/update",
+        });
+    };
+
     return (
         <div className="w-full max-w-lg">
             <div className="mb-6">
@@ -203,6 +214,8 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     isDeleting={isDeleting}
                     showDeleteConfirm={showDeleteConfirm}
                     deleteError={deleteError}
+                    onComplete={handleComplete}
+                    isCompleting={isCompleting}
                 />
             </div>
         </div>

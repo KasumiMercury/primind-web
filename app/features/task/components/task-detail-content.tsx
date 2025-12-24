@@ -38,6 +38,9 @@ interface TaskDetailContentProps {
     showDeleteConfirm?: boolean;
     deleteError?: boolean;
 
+    onComplete?: () => void;
+    isCompleting?: boolean;
+
     defaultEditingField?: EditingField;
     defaultEditingValue?: string;
 }
@@ -83,6 +86,8 @@ export function TaskDetailContent({
     isDeleting = false,
     showDeleteConfirm = false,
     deleteError = false,
+    onComplete,
+    isCompleting = false,
     defaultEditingField,
     defaultEditingValue,
 }: TaskDetailContentProps) {
@@ -191,6 +196,30 @@ export function TaskDetailContent({
                                 {getStatusLabel(task.taskStatus)}
                             </p>
                         </div>
+                        {task.taskStatus === TaskStatus.ACTIVE &&
+                            onComplete && (
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="w-full"
+                                    onPress={onComplete}
+                                    isDisabled={
+                                        isCompleting || isSaving || isDeleting
+                                    }
+                                >
+                                    {isCompleting ? (
+                                        <>
+                                            <Loader2 className="size-5 animate-spin" />
+                                            <span>Completing...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Check className="size-5" />
+                                            <span>Complete</span>
+                                        </>
+                                    )}
+                                </Button>
+                            )}
 
                         {task.createdAt && (
                             <div>
