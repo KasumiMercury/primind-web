@@ -1,6 +1,8 @@
 import { create } from "@bufbuild/protobuf";
+import { timestampFromDate } from "@bufbuild/protobuf/wkt";
 import { data } from "react-router";
 import { validate as uuidValidate, version as uuidVersion } from "uuid";
+import { MINIMUM_SCHEDULE_LEAD_TIME_MINUTES } from "~/features/task/constants";
 import { CreateTaskRequestSchema, TaskType } from "~/gen/task/v1/task_pb";
 import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
 import { createAuthContext } from "~/lib/request-context.server";
@@ -21,6 +23,7 @@ export async function createTaskAction(request: Request) {
         const taskId = formData.get("task_id");
         const taskTypeRaw = formData.get("task_type");
         const color = formData.get("color");
+        const scheduledAtRaw = formData.get("scheduled_at");
 
         try {
             taskLogger.debug(
@@ -95,7 +98,51 @@ export async function createTaskAction(request: Request) {
                 throw new Error("Invalid color format");
             }
 
-            taskLogger.debug({ taskType, color }, "Creating task");
+            let scheduledAt: Date | undefined;
+            if (scheduledAtRaw !== null && scheduledAtRaw !== "") {
+                if (typeof scheduledAtRaw !== "string") {
+                    taskLogger.warn(
+                        { scheduledAt: scheduledAtRaw },
+                        "CreateTask action received invalid scheduled_at",
+                    );
+                    throw new Error("Invalid scheduled_at");
+                }
+
+                const parsedDate = new Date(scheduledAtRaw);
+                if (Number.isNaN(parsedDate.getTime())) {
+                    taskLogger.warn(
+                        { scheduledAt: scheduledAtRaw },
+                        "CreateTask action received invalid scheduled_at date format",
+                    );
+                    throw new Error("Invalid scheduled_at date format");
+                }
+
+                scheduledAt = parsedDate;
+
+                const truncateToMinute = (date: Date) => {
+                    const d = new Date(date);
+                    d.setSeconds(0, 0);
+                    return d;
+                };
+                const normalizedScheduledAt = truncateToMinute(scheduledAt);
+                const minimumTime = truncateToMinute(new Date());
+                minimumTime.setMinutes(
+                    minimumTime.getMinutes() +
+                        MINIMUM_SCHEDULE_LEAD_TIME_MINUTES,
+                );
+
+                if (normalizedScheduledAt < minimumTime) {
+                    taskLogger.warn(
+                        { scheduledAtRaw },
+                        `CreateTask action received scheduled_at less than ${MINIMUM_SCHEDULE_LEAD_TIME_MINUTES} minutes from now`,
+                    );
+                    throw new Error(
+                        `Schedule time must be at least ${MINIMUM_SCHEDULE_LEAD_TIME_MINUTES} minutes from now`,
+                    );
+                }
+            }
+
+            taskLogger.debug({ taskType, color, scheduledAt }, "Creating task");
 
             const createRequest = create(CreateTaskRequestSchema, {
                 taskId: taskId,
@@ -103,6 +150,9 @@ export async function createTaskAction(request: Request) {
                 title: "",
                 description: "",
                 color: color,
+                scheduledAt: scheduledAt
+                    ? timestampFromDate(scheduledAt)
+                    : undefined,
             });
 
             const taskClient = await getTaskClient();
