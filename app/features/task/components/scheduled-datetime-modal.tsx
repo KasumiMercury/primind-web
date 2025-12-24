@@ -4,7 +4,7 @@ import {
     now,
     toCalendarDateTime,
 } from "@internationalized/date";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Label } from "react-aria-components";
 import { Button } from "~/components/ui/button";
 import { DatePicker } from "~/components/ui/date-picker";
@@ -32,6 +32,11 @@ export function ScheduledDateTimeModal({
     const [dateTime, setDateTime] = useState<CalendarDateTime>(() =>
         toCalendarDateTime(now(getLocalTimeZone()).add({ hours: 1 })),
     );
+
+    const isPast = useMemo(() => {
+        const currentTime = now(getLocalTimeZone());
+        return dateTime.compare(currentTime) < 0;
+    }, [dateTime]);
 
     const handleQuickAdd = (
         duration: Partial<{
@@ -176,11 +181,21 @@ export function ScheduledDateTimeModal({
                         </Button>
                     </div>
                 </div>
+
+                {isPast && (
+                    <p className="text-destructive text-sm">
+                        Cannot schedule a task in the past
+                    </p>
+                )}
             </div>
 
             <DialogFooter>
                 <div className="grid w-full grid-cols-2 gap-4">
-                    <Button className="order-last" onPress={handleConfirm}>
+                    <Button
+                        className="order-last"
+                        onPress={handleConfirm}
+                        isDisabled={isPast}
+                    >
                         Confirm
                     </Button>
                     <Button variant="outline" onPress={handleCancel}>

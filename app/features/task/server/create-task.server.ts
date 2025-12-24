@@ -117,6 +117,14 @@ export async function createTaskAction(request: Request) {
                 }
 
                 scheduledAt = parsedDate;
+
+                if (scheduledAt < new Date()) {
+                    taskLogger.warn(
+                        { scheduledAt: scheduledAtRaw },
+                        "CreateTask action received scheduled_at in the past",
+                    );
+                    throw new Error("Cannot schedule a task in the past");
+                }
             }
 
             taskLogger.debug({ taskType, color, scheduledAt }, "Creating task");
