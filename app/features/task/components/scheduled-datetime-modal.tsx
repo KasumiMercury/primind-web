@@ -36,7 +36,9 @@ export function ScheduledDateTimeModal({
 
     useEffect(() => {
         if (isOpen) {
-            setDateTime(toCalendarDateTime(now(getLocalTimeZone()).add({ hours: 1 })));
+            setDateTime(
+                toCalendarDateTime(now(getLocalTimeZone()).add({ hours: 1 })),
+            );
         }
     }, [isOpen]);
 
