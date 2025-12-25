@@ -45,6 +45,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
+    const [completeError, setCompleteError] = useState(false);
 
     // Keep callback ref updated to avoid stale closure
     const syncWithExternalDataRef = useRef(syncWithExternalData);
@@ -99,15 +100,22 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
 
     const handleComplete = () => {
         startCompleteTransition(async () => {
-            const result = await orpc.task.update({
-                taskId,
-                taskStatus: TaskStatus.COMPLETED,
-                updateMask: ["task_status"],
-            });
+            try {
+                const result = await orpc.task.update({
+                    taskId,
+                    taskStatus: TaskStatus.COMPLETED,
+                    updateMask: ["task_status"],
+                });
 
-            if (result.success) {
-                revalidate();
-                navigate("/", { replace: true, preventScrollReset: true });
+                if (result.success) {
+                    setCompleteError(false);
+                    revalidate();
+                    navigate("/", { replace: true, preventScrollReset: true });
+                } else {
+                    setCompleteError(true);
+                }
+            } catch {
+                setCompleteError(true);
             }
         });
     };
@@ -142,6 +150,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
                 deleteError={deleteError}
                 onComplete={handleComplete}
                 isCompleting={isCompletePending}
+                completeError={completeError}
             />
         </DialogContent>
     );
