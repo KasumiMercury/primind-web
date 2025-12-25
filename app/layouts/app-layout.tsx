@@ -52,7 +52,9 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
             if (result.success) {
                 window.location.href = "/";
             } else {
-                console.error("Logout failed: server returned unsuccessful response");
+                console.error(
+                    "Logout failed: server returned unsuccessful response",
+                );
                 toast.error("Failed to log out. Please try again.");
             }
         } catch (error) {
