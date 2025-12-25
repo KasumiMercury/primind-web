@@ -2,6 +2,7 @@ import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
+import { toast } from "sonner";
 import { Header } from "~/components/header/header";
 import { LoginDialog } from "~/features/auth/components/login-dialog";
 import { getUserSession } from "~/features/auth/server/session.server";
@@ -46,9 +47,17 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
     const [showLoginDialog, setShowLoginDialog] = useState(false);
 
     const handleLogout = async () => {
-        const result = await orpc.auth.logout();
-        if (result.success) {
-            window.location.href = "/";
+        try {
+            const result = await orpc.auth.logout();
+            if (result.success) {
+                window.location.href = "/";
+            } else {
+                console.error("Logout failed: server returned unsuccessful response");
+                toast.error("Failed to log out. Please try again.");
+            }
+        } catch (error) {
+            console.error("Logout error:", error);
+            toast.error("Failed to log out. Please try again.");
         }
     };
 
