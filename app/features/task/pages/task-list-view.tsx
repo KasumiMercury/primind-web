@@ -1,6 +1,6 @@
 import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useRevalidator } from "react-router";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import { QuickEditModal } from "~/features/task/components/quick-edit-modal";
@@ -20,6 +20,7 @@ interface HomeViewProps {
 
 export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
     const navigate = useNavigate();
+    const { revalidate } = useRevalidator();
     const { openLoginDialog } = useAppLayoutContext();
 
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
@@ -34,11 +35,17 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
 
     const handleDeleted = () => {
         setLatestTask(null);
+        revalidate();
     };
 
     const handleClosed = () => {
-        console.log("QuickEdit closed");
         setLatestTask(null);
+        revalidate();
+    };
+
+    const handleTaskRegistered = (event: TaskRegistrationEvent) => {
+        setLatestTask(event);
+        revalidate();
     };
 
     const handleTaskClick = (task: SerializableTask) => {
@@ -99,7 +106,7 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
                 <div className="flex items-center justify-center p-4">
                     <TaskRegistration
                         className="w-full max-w-xl drop-shadow-primary/20 drop-shadow-xl"
-                        onTaskRegistered={setLatestTask}
+                        onTaskRegistered={handleTaskRegistered}
                     />
                 </div>
             </div>

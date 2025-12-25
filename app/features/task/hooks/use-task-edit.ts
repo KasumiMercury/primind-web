@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useFetcher } from "react-router";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { orpc } from "~/orpc/client";
 import type { EditedValues } from "../components/quick-edit-content";
-import { createUpdateTaskFormData } from "../lib/quick-edit-form-data";
 
 const SAVE_SUCCESS_DURATION_MS = 2500;
 const ERROR_DISPLAY_DURATION_MS = 2500;
@@ -34,7 +33,7 @@ export function useTaskEdit({
     initialTitle = "",
     initialDescription = "",
 }: UseTaskEditOptions): UseTaskEditReturn {
-    const saveFetcher = useFetcher({ key: `save-${taskId}` });
+    const [isPending, startTransition] = useTransition();
 
     const [lastSavedTitle, setLastSavedTitle] = useState(initialTitle);
     const [lastSavedDescription, setLastSavedDescription] =
@@ -43,9 +42,6 @@ export function useTaskEdit({
     const [saveError, setSaveError] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
 
-    const isSaving = saveFetcher.state !== "idle";
-
-    const hasStartedSaving = useRef(false);
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -54,10 +50,7 @@ export function useTaskEdit({
         description: string;
     } | null>(null);
 
-    const submittedValues = useRef<{
-        title: string;
-        description: string;
-    } | null>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     // Cleanup timers on unmount
     useEffect(() => {
@@ -71,74 +64,73 @@ export function useTaskEdit({
         };
     }, []);
 
-    useEffect(() => {
-        if (!hasStartedSaving.current) {
-            return;
-        }
+    const processSave = useCallback(
+        async (values: { title: string; description: string }) => {
+            setIsProcessing(true);
 
-        if (saveFetcher.state !== "idle") {
-            return;
-        }
-
-        if (saveFetcher.data?.success) {
-            if (submittedValues.current) {
-                setLastSavedTitle(submittedValues.current.title);
-                setLastSavedDescription(submittedValues.current.description);
-            }
-
-            const hasPendingChanges =
-                pendingSaveValues.current &&
-                submittedValues.current &&
-                (pendingSaveValues.current.title !==
-                    submittedValues.current.title ||
-                    pendingSaveValues.current.description !==
-                        submittedValues.current.description);
-
-            if (hasPendingChanges && pendingSaveValues.current) {
-                submittedValues.current = pendingSaveValues.current;
-                const formData = createUpdateTaskFormData(
+            try {
+                const result = await orpc.task.update({
                     taskId,
-                    pendingSaveValues.current.title,
-                    pendingSaveValues.current.description,
-                );
-                saveFetcher.submit(formData, {
-                    method: "post",
-                    action: "/api/task/update",
+                    title: values.title,
+                    description: values.description,
+                    updateMask: ["title", "description"],
                 });
-                return;
-            }
 
-            hasStartedSaving.current = false;
-            pendingSaveValues.current = null;
-            submittedValues.current = null;
-            setSaveSuccess(true);
+                if (result.success) {
+                    setLastSavedTitle(values.title);
+                    setLastSavedDescription(values.description);
 
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            saveResetTimer.current = setTimeout(() => {
-                setSaveSuccess(false);
-            }, SAVE_SUCCESS_DURATION_MS);
-            return;
-        }
+                    // Check if there are pending changes made during this save
+                    if (
+                        pendingSaveValues.current &&
+                        (pendingSaveValues.current.title !== values.title ||
+                            pendingSaveValues.current.description !==
+                                values.description)
+                    ) {
+                        // Process pending changes
+                        const pendingValues = pendingSaveValues.current;
+                        pendingSaveValues.current = null;
+                        await processSave(pendingValues);
+                        return;
+                    }
 
-        if (saveFetcher.data?.error) {
-            hasStartedSaving.current = false;
-            pendingSaveValues.current = null;
-            submittedValues.current = null;
-            setSaveError(true);
-            if (errorResetTimer.current) {
-                clearTimeout(errorResetTimer.current);
+                    pendingSaveValues.current = null;
+                    setSaveSuccess(true);
+
+                    if (saveResetTimer.current) {
+                        clearTimeout(saveResetTimer.current);
+                    }
+                    saveResetTimer.current = setTimeout(() => {
+                        setSaveSuccess(false);
+                    }, SAVE_SUCCESS_DURATION_MS);
+                } else {
+                    pendingSaveValues.current = null;
+                    setSaveError(true);
+                    if (errorResetTimer.current) {
+                        clearTimeout(errorResetTimer.current);
+                    }
+                    errorResetTimer.current = setTimeout(() => {
+                        setSaveError(false);
+                    }, ERROR_DISPLAY_DURATION_MS);
+                }
+            } catch {
+                pendingSaveValues.current = null;
+                setSaveError(true);
+                if (errorResetTimer.current) {
+                    clearTimeout(errorResetTimer.current);
+                }
+                errorResetTimer.current = setTimeout(() => {
+                    setSaveError(false);
+                }, ERROR_DISPLAY_DURATION_MS);
+            } finally {
+                setIsProcessing(false);
             }
-            errorResetTimer.current = setTimeout(() => {
-                setSaveError(false);
-            }, ERROR_DISPLAY_DURATION_MS);
-        }
-    }, [saveFetcher.state, saveFetcher.data, taskId, saveFetcher]);
+        },
+        [taskId],
+    );
 
     const handleSave = useCallback(
         (values: EditedValues) => {
-            hasStartedSaving.current = true;
             pendingSaveValues.current = values;
 
             if (saveResetTimer.current) {
@@ -146,22 +138,16 @@ export function useTaskEdit({
             }
             setSaveSuccess(false);
 
-            if (isSaving) {
+            if (isPending || isProcessing) {
+                // Save is in progress, pending values will be processed after current save
                 return;
             }
 
-            submittedValues.current = values;
-            const formData = createUpdateTaskFormData(
-                taskId,
-                values.title,
-                values.description,
-            );
-            saveFetcher.submit(formData, {
-                method: "post",
-                action: "/api/task/update",
+            startTransition(async () => {
+                await processSave(values);
             });
         },
-        [taskId, isSaving, saveFetcher],
+        [isPending, isProcessing, processSave],
     );
 
     const syncWithExternalData = useCallback(
@@ -172,9 +158,7 @@ export function useTaskEdit({
             setLastSavedTitle(data.title);
             setLastSavedDescription(data.description);
             setSaveSuccess(false);
-            hasStartedSaving.current = false;
             pendingSaveValues.current = null;
-            submittedValues.current = null;
             if (saveResetTimer.current) {
                 clearTimeout(saveResetTimer.current);
                 saveResetTimer.current = null;
@@ -186,7 +170,7 @@ export function useTaskEdit({
     return {
         lastSavedTitle,
         lastSavedDescription,
-        isSaving,
+        isSaving: isPending || isProcessing,
         saveSuccess,
         saveError,
         isDirty,

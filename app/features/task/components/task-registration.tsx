@@ -1,17 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { useFetcher } from "react-router";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { v7 as uuidv7 } from "uuid";
+import { orpc } from "~/orpc/client";
 import { getRandomTaskColor } from "../lib/task-colors";
-import { createTaskFormData } from "../lib/task-form-data";
-import type { TaskTypeKey } from "../lib/task-type-items";
+import { getTaskTypeFromKey, type TaskTypeKey } from "../lib/task-type-items";
 import { OperationArea } from "./operation-area";
 import { ScheduledDateTimeModal } from "./scheduled-datetime-modal";
-
-interface FetcherData {
-    success?: boolean;
-    error?: string;
-}
 
 export interface TaskRegistrationEvent {
     taskId: string;
@@ -31,9 +25,7 @@ export function TaskRegistration({
     innerClassName,
     onTaskRegistered,
 }: TaskRegistrationProps) {
-    const fetcher = useFetcher();
-    const hasStartedSubmitting = useRef(false);
-    const isSaving = fetcher.state === "submitting";
+    const [isPending, startTransition] = useTransition();
 
     const [showScheduledModal, setShowScheduledModal] = useState(false);
     const [pendingRegistration, setPendingRegistration] = useState<{
@@ -41,24 +33,8 @@ export function TaskRegistration({
         color: string;
     } | null>(null);
 
-    useEffect(() => {
-        if (!hasStartedSubmitting.current) {
-            return;
-        }
-
-        if (fetcher.state !== "idle") {
-            return;
-        }
-
-        hasStartedSubmitting.current = false;
-        const data = fetcher.data as FetcherData | undefined;
-        if (data?.error) {
-            toast.error("failed to create task");
-        }
-    }, [fetcher.state, fetcher.data]);
-
     const handleRegister = (taskTypeKey: TaskTypeKey) => {
-        if (isSaving) {
+        if (isPending) {
             return;
         }
 
@@ -71,15 +47,24 @@ export function TaskRegistration({
             return;
         }
 
-        hasStartedSubmitting.current = true;
-        const formData = createTaskFormData(taskId, taskTypeKey, color);
+        startTransition(async () => {
+            try {
+                const result = await orpc.task.create({
+                    taskId,
+                    taskType: getTaskTypeFromKey(taskTypeKey),
+                    color,
+                });
 
-        fetcher.submit(formData, {
-            method: "post",
-            action: "/api/task",
+                if (!result.success) {
+                    toast.error(result.error || "failed to create task");
+                    return;
+                }
+
+                onTaskRegistered?.({ taskId, taskTypeKey, color });
+            } catch {
+                toast.error("failed to create task");
+            }
         });
-
-        onTaskRegistered?.({ taskId, taskTypeKey, color });
     };
 
     const handleScheduledConfirm = (scheduledAt: Date) => {
@@ -87,25 +72,31 @@ export function TaskRegistration({
             return;
         }
 
-        hasStartedSubmitting.current = true;
         const { taskId, color } = pendingRegistration;
-        const formData = createTaskFormData(
-            taskId,
-            "scheduled",
-            color,
-            scheduledAt,
-        );
 
-        fetcher.submit(formData, {
-            method: "post",
-            action: "/api/task",
-        });
+        startTransition(async () => {
+            try {
+                const result = await orpc.task.create({
+                    taskId,
+                    taskType: getTaskTypeFromKey("scheduled"),
+                    color,
+                    scheduledAt: scheduledAt.toISOString(),
+                });
 
-        onTaskRegistered?.({
-            taskId,
-            taskTypeKey: "scheduled",
-            color,
-            scheduledAt,
+                if (!result.success) {
+                    toast.error(result.error || "failed to create task");
+                    return;
+                }
+
+                onTaskRegistered?.({
+                    taskId,
+                    taskTypeKey: "scheduled",
+                    color,
+                    scheduledAt,
+                });
+            } catch {
+                toast.error("failed to create task");
+            }
         });
 
         setShowScheduledModal(false);
