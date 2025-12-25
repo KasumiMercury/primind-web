@@ -1,6 +1,5 @@
 import { CheckCircle } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { useFetcher } from "react-router";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Button } from "~/components/ui/button";
 import {
     DialogContent,
@@ -8,8 +7,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "~/components/ui/dialog";
+import { orpc } from "~/orpc/client";
 import { useTaskEdit } from "../hooks/use-task-edit";
-import { createDeleteTaskFormData } from "../lib/quick-edit-form-data";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { QuickEditContent } from "./quick-edit-content";
 
@@ -30,7 +29,7 @@ export function QuickEditModal({
     onDeleted,
     onClosed,
 }: QuickEditModalProps) {
-    const deleteFetcher = useFetcher({ key: `delete-${taskId}` });
+    const [isDeletePending, startDeleteTransition] = useTransition();
 
     const {
         lastSavedTitle,
@@ -46,30 +45,10 @@ export function QuickEditModal({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
 
-    const isDeleting = deleteFetcher.state === "submitting";
-
     const onDeletedRef = useRef(onDeleted);
     useEffect(() => {
         onDeletedRef.current = onDeleted;
     }, [onDeleted]);
-
-    // Handle delete success and error
-    useEffect(() => {
-        if (deleteFetcher.state !== "idle") {
-            return;
-        }
-
-        if (deleteFetcher.data?.success) {
-            setDeleteError(false);
-            setShowDeleteConfirm(false);
-            onDeletedRef.current?.();
-            return;
-        }
-
-        if (deleteFetcher.data?.error) {
-            setDeleteError(true);
-        }
-    }, [deleteFetcher.state, deleteFetcher.data]);
 
     const handleOpenChange = (open: boolean) => {
         if (!open) {
@@ -82,10 +61,20 @@ export function QuickEditModal({
     };
 
     const handleDeleteConfirm = () => {
-        const formData = createDeleteTaskFormData(taskId);
-        deleteFetcher.submit(formData, {
-            method: "post",
-            action: "/api/task/delete",
+        startDeleteTransition(async () => {
+            try {
+                const result = await orpc.task.delete({ taskId });
+
+                if (result.success) {
+                    setDeleteError(false);
+                    setShowDeleteConfirm(false);
+                    onDeletedRef.current?.();
+                } else {
+                    setDeleteError(true);
+                }
+            } catch {
+                setDeleteError(true);
+            }
         });
     };
 
@@ -123,7 +112,7 @@ export function QuickEditModal({
                 isSaving={isSaving}
                 saveSuccess={saveSuccess}
                 saveError={saveError}
-                isDeleting={isDeleting}
+                isDeleting={isDeletePending}
                 showDeleteConfirm={showDeleteConfirm}
                 deleteError={deleteError}
             />

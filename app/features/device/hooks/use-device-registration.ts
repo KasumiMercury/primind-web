@@ -1,5 +1,6 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef } from "react";
+import { orpc } from "~/orpc/client";
 import { isAuthenticatedAtom } from "~/store/auth";
 import {
     initializeFirebase,
@@ -13,34 +14,6 @@ import {
     notificationDismissedAtom,
     notificationModalOpenAtom,
 } from "../store/notification";
-
-interface DeviceInfo {
-    timezone: string;
-    locale: string;
-    platform: string;
-    fcm_token?: string;
-}
-
-interface RegisterDeviceResponse {
-    success?: boolean;
-    device_id?: string;
-    is_new?: boolean;
-    error?: string;
-}
-
-async function registerDevice(
-    deviceInfo: DeviceInfo,
-): Promise<RegisterDeviceResponse> {
-    const response = await fetch("/api/device", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(deviceInfo),
-    });
-
-    return response.json();
-}
 
 export function useDeviceRegistration() {
     const hasRegistered = useRef(false);
@@ -73,14 +46,12 @@ export function useDeviceRegistration() {
                     fcmToken = await checkAndGetFCMToken();
                 }
 
-                const deviceInfo: DeviceInfo = {
+                const result = await orpc.device.register({
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     locale: navigator.language,
                     platform: "web",
-                    fcm_token: fcmToken || undefined,
-                };
-
-                const result = await registerDevice(deviceInfo);
+                    fcmToken: fcmToken || undefined,
+                });
 
                 if (result.success) {
                     hasRegistered.current = true;
