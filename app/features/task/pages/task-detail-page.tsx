@@ -43,7 +43,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const completeResetTimer = useRef<ReturnType<typeof setTimeout> | null>(
         null,
     );
-    const isProcessing = useRef(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const pendingSaveValues = useRef<{
         title: string;
         description: string;
@@ -84,7 +84,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
     const processSave = useCallback(
         async (values: { title: string; description: string }) => {
-            isProcessing.current = true;
+            setIsProcessing(true);
 
             try {
                 const result = await orpc.task.update({
@@ -141,7 +141,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     setSaveError(false);
                 }, ERROR_DISPLAY_DURATION_MS);
             } finally {
-                isProcessing.current = false;
+                setIsProcessing(false);
             }
         },
         [taskId],
@@ -157,7 +157,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
             setSaveError(false);
             setSaveSuccess(false);
 
-            if (isSavePending || isProcessing.current) {
+            if (isSavePending || isProcessing) {
                 // Save is in progress, pending values will be processed after current save
                 return;
             }
@@ -166,7 +166,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                 await processSave(values);
             });
         },
-        [isSavePending, processSave],
+        [isSavePending, isProcessing, processSave],
     );
 
     const handleDelete = () => {
@@ -242,7 +242,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         });
     };
 
-    const isSaving = isSavePending || isProcessing.current;
+    const isSaving = isSavePending || isProcessing;
 
     return (
         <div className="w-full max-w-lg">

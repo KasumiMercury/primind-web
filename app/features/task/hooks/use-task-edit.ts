@@ -50,7 +50,7 @@ export function useTaskEdit({
         description: string;
     } | null>(null);
 
-    const isProcessing = useRef(false);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     // Cleanup timers on unmount
     useEffect(() => {
@@ -66,7 +66,7 @@ export function useTaskEdit({
 
     const processSave = useCallback(
         async (values: { title: string; description: string }) => {
-            isProcessing.current = true;
+            setIsProcessing(true);
 
             try {
                 const result = await orpc.task.update({
@@ -123,7 +123,7 @@ export function useTaskEdit({
                     setSaveError(false);
                 }, ERROR_DISPLAY_DURATION_MS);
             } finally {
-                isProcessing.current = false;
+                setIsProcessing(false);
             }
         },
         [taskId],
@@ -138,7 +138,7 @@ export function useTaskEdit({
             }
             setSaveSuccess(false);
 
-            if (isPending || isProcessing.current) {
+            if (isPending || isProcessing) {
                 // Save is in progress, pending values will be processed after current save
                 return;
             }
@@ -147,7 +147,7 @@ export function useTaskEdit({
                 await processSave(values);
             });
         },
-        [isPending, processSave],
+        [isPending, isProcessing, processSave],
     );
 
     const syncWithExternalData = useCallback(
@@ -170,7 +170,7 @@ export function useTaskEdit({
     return {
         lastSavedTitle,
         lastSavedDescription,
-        isSaving: isPending || isProcessing.current,
+        isSaving: isPending || isProcessing,
         saveSuccess,
         saveError,
         isDirty,
