@@ -15,9 +15,7 @@ export default [
 
     route("/login", "features/auth/components/login.tsx"),
     route("/callback/google", "features/auth/oidc/callback.google.tsx"),
-    route("/api/task", "routes/api/task.tsx"),
-    route("/api/task/update", "routes/api/task.update.tsx"),
-    route("/api/task/delete", "routes/api/task.delete.tsx"),
-    route("/api/logout", "routes/api/logout.tsx"),
-    route("/api/device", "routes/api/device.tsx"),
+
+    route("/api/rpc/*", "routes/api/rpc.$.tsx"),
+    route("/api/*", "routes/api/openapi.$.tsx"),
 ] satisfies RouteConfig;
