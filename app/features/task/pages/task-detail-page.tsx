@@ -1,18 +1,17 @@
 import { ArrowLeft } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useNavigate, useRevalidator } from "react-router";
 import { LinkButton } from "~/components/ui/link-button";
 import { TaskStatus } from "~/gen/task/v1/task_pb";
 import { orpc } from "~/orpc/client";
-import type { EditedValues } from "../components/quick-edit-content";
 import { TaskDetailContent } from "../components/task-detail-content";
+import { useTaskEdit } from "../hooks/use-task-edit";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 
 interface TaskDetailPageProps {
     task: SerializableTask;
 }
 
-const SAVE_SUCCESS_DURATION_MS = 2500;
 const ERROR_DISPLAY_DURATION_MS = 2500;
 
 export function TaskDetailPage({ task }: TaskDetailPageProps) {
@@ -23,151 +22,57 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     } = task;
     const navigate = useNavigate();
     const { revalidate } = useRevalidator();
-    const [isSavePending, startSaveTransition] = useTransition();
     const [isDeletePending, startDeleteTransition] = useTransition();
     const [isCompletePending, startCompleteTransition] = useTransition();
 
-    const [lastSavedTitle, setLastSavedTitle] = useState(initialTitle);
-    const [lastSavedDescription, setLastSavedDescription] =
-        useState(initialDescription);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [saveSuccess, setSaveSuccess] = useState(false);
-    const [saveError, setSaveError] = useState(false);
-    const [deleteError, setDeleteError] = useState(false);
-    const [completeSuccess, setCompleteSuccess] = useState(false);
-    const [completeError, setCompleteError] = useState(false);
-    const [isDirty, setIsDirty] = useState(false);
+    const {
+        lastSavedTitle,
+        lastSavedDescription,
+        isSaving,
+        saveSuccess,
+        saveError,
+        setIsDirty,
+        handleSave,
+        syncWithExternalData,
+    } = useTaskEdit({
+        taskId,
+        initialTitle,
+        initialDescription,
+    });
 
-    const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+    const [completeError, setCompleteError] = useState(false);
+
     const completeResetTimer = useRef<ReturnType<typeof setTimeout> | null>(
         null,
     );
-    const [isProcessing, setIsProcessing] = useState(false);
-    const pendingSaveValues = useRef<{
-        title: string;
-        description: string;
-    } | null>(null);
 
+    // Keep callback ref updated to avoid stale closure
+    const syncWithExternalDataRef = useRef(syncWithExternalData);
+    useEffect(() => {
+        syncWithExternalDataRef.current = syncWithExternalData;
+    }, [syncWithExternalData]);
+
+    // Sync with external data when task changes
+    useEffect(() => {
+        if (!taskId) {
+            return;
+        }
+        syncWithExternalDataRef.current({
+            title: task.title,
+            description: task.description,
+        });
+    }, [taskId, task.title, task.description]);
+
+    // Cleanup completeResetTimer on unmount
     useEffect(() => {
         return () => {
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            if (errorResetTimer.current) {
-                clearTimeout(errorResetTimer.current);
-            }
             if (completeResetTimer.current) {
                 clearTimeout(completeResetTimer.current);
             }
         };
     }, []);
-
-    useEffect(() => {
-        if (!taskId) {
-            return;
-        }
-
-        if (isDirty) {
-            return;
-        }
-
-        setLastSavedTitle(task.title);
-        setLastSavedDescription(task.description);
-        setSaveSuccess(false);
-        pendingSaveValues.current = null;
-        if (saveResetTimer.current) {
-            clearTimeout(saveResetTimer.current);
-            saveResetTimer.current = null;
-        }
-    }, [taskId, task.title, task.description, isDirty]);
-
-    const processSave = useCallback(
-        async (values: { title: string; description: string }) => {
-            setIsProcessing(true);
-
-            try {
-                const result = await orpc.task.update({
-                    taskId,
-                    title: values.title,
-                    description: values.description,
-                    updateMask: ["title", "description"],
-                });
-
-                if (result.success) {
-                    setLastSavedTitle(values.title);
-                    setLastSavedDescription(values.description);
-
-                    // Check if there are pending changes made during this save
-                    if (
-                        pendingSaveValues.current &&
-                        (pendingSaveValues.current.title !== values.title ||
-                            pendingSaveValues.current.description !==
-                                values.description)
-                    ) {
-                        // Process pending changes
-                        const pendingValues = pendingSaveValues.current;
-                        pendingSaveValues.current = null;
-                        await processSave(pendingValues);
-                        return;
-                    }
-
-                    pendingSaveValues.current = null;
-                    setSaveSuccess(true);
-
-                    if (saveResetTimer.current) {
-                        clearTimeout(saveResetTimer.current);
-                    }
-                    saveResetTimer.current = setTimeout(() => {
-                        setSaveSuccess(false);
-                    }, SAVE_SUCCESS_DURATION_MS);
-                } else {
-                    pendingSaveValues.current = null;
-                    setSaveError(true);
-                    if (errorResetTimer.current) {
-                        clearTimeout(errorResetTimer.current);
-                    }
-                    errorResetTimer.current = setTimeout(() => {
-                        setSaveError(false);
-                    }, ERROR_DISPLAY_DURATION_MS);
-                }
-            } catch {
-                pendingSaveValues.current = null;
-                setSaveError(true);
-                if (errorResetTimer.current) {
-                    clearTimeout(errorResetTimer.current);
-                }
-                errorResetTimer.current = setTimeout(() => {
-                    setSaveError(false);
-                }, ERROR_DISPLAY_DURATION_MS);
-            } finally {
-                setIsProcessing(false);
-            }
-        },
-        [taskId],
-    );
-
-    const handleSave = useCallback(
-        (values: EditedValues) => {
-            pendingSaveValues.current = values;
-
-            if (saveResetTimer.current) {
-                clearTimeout(saveResetTimer.current);
-            }
-            setSaveError(false);
-            setSaveSuccess(false);
-
-            if (isSavePending || isProcessing) {
-                // Save is in progress, pending values will be processed after current save
-                return;
-            }
-
-            startSaveTransition(async () => {
-                await processSave(values);
-            });
-        },
-        [isSavePending, isProcessing, processSave],
-    );
 
     const handleDelete = () => {
         setShowDeleteConfirm(true);
@@ -203,7 +108,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
             return;
         }
         setCompleteError(false);
-        setCompleteSuccess(false);
         if (completeResetTimer.current) {
             clearTimeout(completeResetTimer.current);
         }
@@ -221,7 +125,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     navigate("/", { replace: true });
                 } else {
                     setCompleteError(true);
-                    setCompleteSuccess(false);
                     if (completeResetTimer.current) {
                         clearTimeout(completeResetTimer.current);
                     }
@@ -231,7 +134,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                 }
             } catch {
                 setCompleteError(true);
-                setCompleteSuccess(false);
                 if (completeResetTimer.current) {
                     clearTimeout(completeResetTimer.current);
                 }
@@ -241,8 +143,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
             }
         });
     };
-
-    const isSaving = isSavePending || isProcessing;
 
     return (
         <div className="w-full max-w-lg">
@@ -270,7 +170,6 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     deleteError={deleteError}
                     onComplete={handleComplete}
                     isCompleting={isCompletePending}
-                    completeSuccess={completeSuccess}
                     completeError={completeError}
                 />
             </div>
