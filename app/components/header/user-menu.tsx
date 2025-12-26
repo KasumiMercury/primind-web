@@ -9,6 +9,7 @@ import {
     DropdownMenuTrigger,
     DropdownSubmenu,
 } from "~/components/ui/dropdown-menu";
+import { useLanguage } from "~/hooks/use-language";
 
 interface UserMenuProps {
     onLogout: () => void;
@@ -16,6 +17,7 @@ interface UserMenuProps {
 
 export function UserMenu({ onLogout }: UserMenuProps) {
     const { theme, setTheme } = useTheme();
+    const { language, setLanguage } = useLanguage();
 
     return (
         <DropdownMenu>
@@ -26,6 +28,22 @@ export function UserMenu({ onLogout }: UserMenuProps) {
                 <User className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuSubmenuTrigger>
+                    <DropdownMenuItem>
+                        <Globe />
+                        {t("language.title")}
+                    </DropdownMenuItem>
+                    <DropdownSubmenu className="outline-none">
+                        <DropdownMenuItem onSelect={() => setLanguage("en")}>
+                            English
+                            {language === "en" && <Check className="ml-auto" />}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setLanguage("ja")}>
+                            日本語
+                            {language === "ja" && <Check className="ml-auto" />}
+                        </DropdownMenuItem>
+                    </DropdownSubmenu>
+                </DropdownMenuSubmenuTrigger>
                 <DropdownMenuSubmenuTrigger>
                     <DropdownMenuItem>
                         <Palette />
