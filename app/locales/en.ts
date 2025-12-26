@@ -33,6 +33,7 @@ export default {
 
     // Common actions
     common: {
+        edit: "Edit",
         confirm: "Confirm",
         cancel: "Cancel",
         delete: "Delete",

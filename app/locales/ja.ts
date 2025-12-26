@@ -33,6 +33,7 @@ export default {
 
     // Common actions
     common: {
+        edit: "Edit",
         confirm: "確認",
         cancel: "キャンセル",
         delete: "削除",
