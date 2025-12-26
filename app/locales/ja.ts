@@ -92,6 +92,12 @@ export default {
         deleteTask: "タスクを削除",
     },
 
+    // Login Required Alert
+    loginRequired: {
+        title: "ログインが必要です",
+        description: "すべての機能にアクセスするにはログインしてください",
+    },
+
     // Error messages
     error: {
         oops: "エラーが発生しました",

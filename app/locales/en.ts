@@ -91,6 +91,12 @@ export default {
         deleteTask: "Delete Task",
     },
 
+    // Login Required Alert
+    loginRequired: {
+        title: "Login Required",
+        description: "Please log in to access all features",
+    },
+
     // Error messages
     error: {
         oops: "Oops!",

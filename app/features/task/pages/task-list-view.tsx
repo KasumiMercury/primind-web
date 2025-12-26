@@ -1,5 +1,6 @@
 import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useRevalidator } from "react-router";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
@@ -19,6 +20,7 @@ interface HomeViewProps {
 }
 
 export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { revalidate } = useRevalidator();
     const { openLoginDialog } = useAppLayoutContext();
@@ -63,9 +65,9 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
                     <Info className="h-4 w-4" />
                     <div className="ml-3 flex flex-row items-center justify-between">
                         <div>
-                            <AlertTitle>Login Required</AlertTitle>
+                            <AlertTitle>{t("loginRequired.title")}</AlertTitle>
                             <AlertDescription>
-                                <p>Please log in to access all features</p>
+                                <p>{t("loginRequired.description")}</p>
                             </AlertDescription>
                         </div>
                         <Button
@@ -74,7 +76,7 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
                             className="mt-2"
                             onClick={openLoginDialog}
                         >
-                            Log in
+                            {t("auth.login")}
                         </Button>
                     </div>
                 </Alert>
