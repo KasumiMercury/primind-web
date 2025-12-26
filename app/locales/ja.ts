@@ -78,6 +78,7 @@ export default {
     taskDetail: {
         title: "タイトル",
         description: "説明",
+        optionalLabel: "（オプション）",
         noTitle: "タイトルなし",
         noDescription: "説明なし",
         enterTitle: "タイトルを入力...",
@@ -94,8 +95,8 @@ export default {
 
     // Quick Edit Modal
     quickEdit: {
-       dialogTitle: "タスクが作成されました！",
-       dialogDescription: "詳細を追加できます",
+        dialogTitle: "タスクが作成されました！",
+        dialogDescription: "詳細を追加できます",
     },
 
     // Login Required Alert

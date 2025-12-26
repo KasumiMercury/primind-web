@@ -153,6 +153,8 @@ export function QuickEditContent({
                         ) : (
                             <FieldAddButton
                                 label={t("taskDetail.title")}
+                                // optionalLabel="(Optional)"
+                                optionalLabel={t("taskDetail.optionalLabel")}
                                 onPress={handleStartEditTitle}
                             />
                         )}
@@ -166,6 +168,7 @@ export function QuickEditContent({
                         ) : (
                             <FieldAddButton
                                 label={t("taskDetail.description")}
+                                optionalLabel={t("taskDetail.optionalLabel")}
                                 onPress={handleStartEditDescription}
                             />
                         )}

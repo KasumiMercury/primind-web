@@ -77,6 +77,7 @@ export default {
     taskDetail: {
         title: "Title",
         description: "Description",
+        optionalLabel: "(Optional)",
         noTitle: "No title",
         noDescription: "No description",
         enterTitle: "Enter title...",
@@ -93,8 +94,8 @@ export default {
 
     // Quick Edit Modal
     quickEdit: {
-       dialogTitle: "Task Created!",
-       dialogDescription: "Add optional details to your task",
+        dialogTitle: "Task Created!",
+        dialogDescription: "Add optional details to your task",
     },
 
     // Login Required Alert
