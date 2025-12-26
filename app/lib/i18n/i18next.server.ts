@@ -29,11 +29,13 @@ function parseAcceptLanguage(header: string | null): SupportedLanguage | null {
             const quality = qValue
                 ? Number.parseFloat(qValue.split("=")[1] ?? "1")
                 : 1;
-            return { locale: locale?.trim() ?? "", quality };
+            const trimmedLocale = locale?.trim() ?? "";
+            return { locale: trimmedLocale, quality };
         })
         .sort((a, b) => b.quality - a.quality);
 
     for (const { locale } of languages) {
+        if (!locale) continue;
         try {
             const intlLocale = new Intl.Locale(locale);
             if (isSupported(intlLocale.language)) {
