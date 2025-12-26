@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import type { TaskType } from "~/gen/task/v1/task_pb";
 import {
     BASE_ITEMS,
     type IconComponent,
     TASK_TYPE_I18N_KEYS,
     type TaskTypeKey,
 } from "../lib/task-type-items";
-import type { TaskType } from "~/gen/task/v1/task_pb";
 
 interface TranslatedItemConfig {
     icon: IconComponent;
