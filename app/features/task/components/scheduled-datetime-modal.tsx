@@ -6,6 +6,7 @@ import {
 } from "@internationalized/date";
 import { useEffect, useMemo, useState } from "react";
 import { Label } from "react-aria-components";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { DatePicker } from "~/components/ui/date-picker";
 import {
@@ -30,6 +31,7 @@ export function ScheduledDateTimeModal({
     onConfirm,
     onCancel,
 }: ScheduledDateTimeModalProps) {
+    const { t } = useTranslation();
     const [dateTime, setDateTime] = useState<CalendarDateTime>(() =>
         toCalendarDateTime(now(getLocalTimeZone()).add({ hours: 1 })),
     );
@@ -86,7 +88,7 @@ export function ScheduledDateTimeModal({
             isDismissable={false}
         >
             <DialogHeader>
-                <DialogTitle>Schedule Task</DialogTitle>
+                <DialogTitle>{t("scheduleTask.title")}</DialogTitle>
             </DialogHeader>
 
             <div className="my-6 flex flex-col gap-4">
@@ -103,7 +105,7 @@ export function ScheduledDateTimeModal({
                                 }),
                             )
                         }
-                        label="Date"
+                        label={t("scheduleTask.date")}
                         className="flex-1"
                     />
 
@@ -120,7 +122,9 @@ export function ScheduledDateTimeModal({
                         }
                         className="flex-1"
                     >
-                        <Label className="font-medium text-sm">Time</Label>
+                        <Label className="font-medium text-sm">
+                            {t("scheduleTask.time")}
+                        </Label>
                         <TimeInput>
                             {(segment) => <TimeSegment segment={segment} />}
                         </TimeInput>
@@ -129,7 +133,7 @@ export function ScheduledDateTimeModal({
 
                 <div className="flex flex-col gap-2">
                     <span className="font-medium text-muted-foreground text-xs">
-                        Quick add
+                        {t("scheduleTask.quickAdd")}
                     </span>
                     <div className="flex flex-wrap gap-2">
                         <Button
@@ -165,7 +169,7 @@ export function ScheduledDateTimeModal({
 
                 <div className="flex flex-col gap-2">
                     <span className="font-medium text-muted-foreground text-xs">
-                        Round to
+                        {t("scheduleTask.roundTo")}
                     </span>
                     <div className="flex flex-wrap gap-2">
                         <Button
@@ -201,8 +205,9 @@ export function ScheduledDateTimeModal({
 
                 {isTooSoon && (
                     <p className="text-destructive text-sm">
-                        Schedule time must be at least{" "}
-                        {MINIMUM_SCHEDULE_LEAD_TIME_MINUTES} minutes from now
+                        {t("scheduleTask.tooSoon", {
+                            minutes: MINIMUM_SCHEDULE_LEAD_TIME_MINUTES,
+                        })}
                     </p>
                 )}
             </div>
@@ -214,10 +219,10 @@ export function ScheduledDateTimeModal({
                         onPress={handleConfirm}
                         isDisabled={isTooSoon}
                     >
-                        Confirm
+                        {t("common.confirm")}
                     </Button>
                     <Button variant="outline" onPress={handleCancel}>
-                        Cancel
+                        {t("common.cancel")}
                     </Button>
                 </div>
             </DialogFooter>

@@ -1,5 +1,6 @@
-import { Check, Monitor, Moon, Palette, Sun, User } from "lucide-react";
+import { Check, Globe, Monitor, Moon, Palette, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useTranslation } from "react-i18next";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,6 +17,7 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ onLogout }: UserMenuProps) {
+    const { t } = useTranslation();
     const { theme, setTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
 
@@ -47,22 +49,22 @@ export function UserMenu({ onLogout }: UserMenuProps) {
                 <DropdownMenuSubmenuTrigger>
                     <DropdownMenuItem>
                         <Palette />
-                        Theme
+                        {t("theme.title")}
                     </DropdownMenuItem>
                     <DropdownSubmenu className="outline-none">
                         <DropdownMenuItem onSelect={() => setTheme("light")}>
                             <Sun />
-                            Light
+                            {t("theme.light")}
                             {theme === "light" && <Check className="ml-auto" />}
                         </DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setTheme("dark")}>
                             <Moon />
-                            Dark
+                            {t("theme.dark")}
                             {theme === "dark" && <Check className="ml-auto" />}
                         </DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setTheme("system")}>
                             <Monitor />
-                            System
+                            {t("theme.system")}
                             {theme === "system" && (
                                 <Check className="ml-auto" />
                             )}
@@ -70,7 +72,9 @@ export function UserMenu({ onLogout }: UserMenuProps) {
                     </DropdownSubmenu>
                 </DropdownMenuSubmenuTrigger>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={onLogout}>Logout</DropdownMenuItem>
+                <DropdownMenuItem onSelect={onLogout}>
+                    {t("auth.logout")}
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

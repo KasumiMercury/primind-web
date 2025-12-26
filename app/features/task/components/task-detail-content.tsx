@@ -1,5 +1,6 @@
 import { Check, Loader2, Trash, X } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label, TextField } from "~/components/ui/text-field";
@@ -7,11 +8,8 @@ import { Textarea } from "~/components/ui/textarea";
 import { formatTimestampAbsolute } from "~/features/task/lib/absolute-time";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
 import { TaskStatus, type TaskType } from "~/gen/task/v1/task_pb";
-import {
-    ITEMS,
-    TASK_TYPE_KEYS,
-    type TaskTypeKey,
-} from "../lib/task-type-items";
+import { useTaskTypeItems } from "../hooks/use-task-type-items";
+import { TASK_TYPE_KEYS, type TaskTypeKey } from "../lib/task-type-items";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { DeleteTaskDialog } from "./delete-task-dialog";
 import { FieldDisplay } from "./field-display";
@@ -62,17 +60,6 @@ function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
     }
 }
 
-function getStatusLabel(status: TaskStatus): string {
-    switch (status) {
-        case TaskStatus.ACTIVE:
-            return "Active";
-        case TaskStatus.COMPLETED:
-            return "Completed";
-        default:
-            return "Unknown";
-    }
-}
-
 export function TaskDetailContent({
     task,
     initialTitle,
@@ -95,9 +82,22 @@ export function TaskDetailContent({
     defaultEditingField,
     defaultEditingValue,
 }: TaskDetailContentProps) {
+    const { t } = useTranslation();
+    const items = useTaskTypeItems();
     const taskTypeKey = getTaskTypeKey(task.taskType);
-    const config = ITEMS[taskTypeKey];
+    const config = items[taskTypeKey];
     const Icon = config.icon;
+
+    const getStatusLabel = (status: TaskStatus): string => {
+        switch (status) {
+            case TaskStatus.ACTIVE:
+                return t("taskDetail.statusActive");
+            case TaskStatus.COMPLETED:
+                return t("taskDetail.statusCompleted");
+            default:
+                return t("taskDetail.statusUnknown");
+        }
+    };
 
     const [editingField, setEditingField] = useState<EditingField>(
         defaultEditingField ?? "none",
@@ -176,25 +176,25 @@ export function TaskDetailContent({
 
                     <div className="flex flex-col gap-4">
                         <FieldDisplay
-                            label="Title"
+                            label={t("taskDetail.title")}
                             value={initialTitle}
                             onEdit={handleStartEditTitle}
                             maxHeightClass="max-h-12"
-                            emptyText="No title"
+                            emptyText={t("taskDetail.noTitle")}
                         />
                         <FieldDisplay
-                            label="Description"
+                            label={t("taskDetail.description")}
                             value={initialDescription}
                             onEdit={handleStartEditDescription}
                             maxHeightClass="max-h-32"
-                            emptyText="No description"
+                            emptyText={t("taskDetail.noDescription")}
                         />
                     </div>
 
                     <div className="flex flex-col gap-4">
                         <div>
                             <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                                Status
+                                {t("taskDetail.status")}
                             </h3>
                             <p className="text-foreground">
                                 {getStatusLabel(task.taskStatus)}
@@ -205,12 +205,14 @@ export function TaskDetailContent({
                             (completeError ? (
                                 <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-red-600 text-sm text-white">
                                     <X className="size-5" />
-                                    <span>Failed to complete</span>
+                                    <span>
+                                        {t("taskDetail.failedToComplete")}
+                                    </span>
                                 </div>
                             ) : completeSuccess ? (
                                 <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-green-600 text-sm text-white">
                                     <Check className="size-5" />
-                                    <span>Completed</span>
+                                    <span>{t("common.completed")}</span>
                                 </div>
                             ) : (
                                 <Button
@@ -225,12 +227,14 @@ export function TaskDetailContent({
                                     {isCompleting ? (
                                         <>
                                             <Loader2 className="size-5 animate-spin" />
-                                            <span>Completing...</span>
+                                            <span>
+                                                {t("common.completing")}
+                                            </span>
                                         </>
                                     ) : (
                                         <>
                                             <Check className="size-5" />
-                                            <span>Complete</span>
+                                            <span>{t("common.complete")}</span>
                                         </>
                                     )}
                                 </Button>
@@ -239,7 +243,7 @@ export function TaskDetailContent({
                         {task.createdAt && (
                             <div>
                                 <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                                    Created
+                                    {t("taskDetail.created")}
                                 </h3>
                                 <p className="text-foreground">
                                     {formatTimestampAbsolute(task.createdAt)}
@@ -253,7 +257,7 @@ export function TaskDetailContent({
                         {task.targetAt && (
                             <div>
                                 <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-                                    Target Time
+                                    {t("taskDetail.targetTime")}
                                 </h3>
                                 <p className="text-foreground">
                                     {formatTimestampAbsolute(task.targetAt)}
@@ -273,7 +277,7 @@ export function TaskDetailContent({
                             onPress={onDelete}
                             isDisabled={isDeleting || isSaving}
                             className="text-destructive data-hovered:bg-destructive/10"
-                            aria-label="Delete Task"
+                            aria-label={t("taskDetail.deleteTask")}
                         >
                             <Trash className="size-4" />
                         </Button>
@@ -294,7 +298,9 @@ export function TaskDetailContent({
 
     // Edit mode: editingField === "title" or "description"
     const isEditingTitle = editingField === "title";
-    const fieldLabel = isEditingTitle ? "Title" : "Description";
+    const fieldLabel = isEditingTitle
+        ? t("taskDetail.title")
+        : t("taskDetail.description");
 
     return (
         <>
@@ -314,14 +320,14 @@ export function TaskDetailContent({
                     {isEditingTitle ? (
                         <Input
                             type="text"
-                            placeholder="Enter title..."
+                            placeholder={t("taskDetail.enterTitle")}
                             value={editingValue}
                             onChange={(e) => setEditingValue(e.target.value)}
                             autoFocus
                         />
                     ) : (
                         <Textarea
-                            placeholder="Enter description..."
+                            placeholder={t("taskDetail.enterDescription")}
                             value={editingValue}
                             onChange={(e) => setEditingValue(e.target.value)}
                             autoFocus
@@ -333,12 +339,12 @@ export function TaskDetailContent({
                     {saveError ? (
                         <div className="flex h-9 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
                             <X className="size-4" />
-                            <span>Failed</span>
+                            <span>{t("common.failed")}</span>
                         </div>
                     ) : saveSuccess ? (
                         <div className="flex h-9 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
                             <Check className="size-4" />
-                            <span>Saved</span>
+                            <span>{t("common.saved")}</span>
                         </div>
                     ) : (
                         <>
@@ -348,7 +354,7 @@ export function TaskDetailContent({
                                 onPress={handleCancelEdit}
                                 isDisabled={isSaving}
                             >
-                                Cancel
+                                {t("common.cancel")}
                             </Button>
                             <Button
                                 type="submit"
@@ -357,10 +363,10 @@ export function TaskDetailContent({
                                 {isSaving ? (
                                     <>
                                         <Loader2 className="size-4 animate-spin" />
-                                        <span>Saving...</span>
+                                        <span>{t("common.saving")}</span>
                                     </>
                                 ) : (
-                                    "Save"
+                                    t("common.save")
                                 )}
                             </Button>
                         </>

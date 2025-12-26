@@ -2,11 +2,8 @@ import { Button } from "~/components/ui/button";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
 import type { TaskType } from "~/gen/task/v1/task_pb";
 import { cn } from "~/lib/utils";
-import {
-    ITEMS,
-    TASK_TYPE_KEYS,
-    type TaskTypeKey,
-} from "../lib/task-type-items";
+import { useTaskTypeItems } from "../hooks/use-task-type-items";
+import { TASK_TYPE_KEYS, type TaskTypeKey } from "../lib/task-type-items";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 
 interface TaskCardProps {
@@ -31,8 +28,9 @@ function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
 }
 
 export function TaskCard({ task, className, onPress }: TaskCardProps) {
+    const items = useTaskTypeItems();
     const taskTypeKey = getTaskTypeKey(task.taskType);
-    const config = ITEMS[taskTypeKey];
+    const config = items[taskTypeKey];
     const Icon = config.icon;
 
     const displayTitle = task.title?.trim() || "";

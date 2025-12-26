@@ -1,6 +1,7 @@
 import { Provider } from "jotai";
 import { useHydrateAtoms } from "jotai/utils";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Outlet, useOutletContext } from "react-router";
 import { toast } from "sonner";
 import { Header } from "~/components/header/header";
@@ -43,6 +44,7 @@ function AuthHydrator({
 }
 
 export default function AppLayout({ loaderData }: Route.ComponentProps) {
+    const { t } = useTranslation();
     const { isAuthenticated } = loaderData;
     const [showLoginDialog, setShowLoginDialog] = useState(false);
 
@@ -55,11 +57,11 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
                 console.error(
                     "Logout failed: server returned unsuccessful response",
                 );
-                toast.error("Failed to log out. Please try again.");
+                toast.error(t("error.failedToLogout"));
             }
         } catch (error) {
             console.error("Logout error:", error);
-            toast.error("Failed to log out. Please try again.");
+            toast.error(t("error.failedToLogout"));
         }
     };
 
