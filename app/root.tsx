@@ -1,4 +1,6 @@
+import { useTranslation } from "react-i18next";
 import {
+    data,
     isRouteErrorResponse,
     Links,
     Meta,
@@ -12,6 +14,7 @@ import "./app.css";
 import { RouterProvider } from "./components/router-provider";
 import { ThemeProvider } from "./components/theme-provider";
 import { AppToaster } from "./components/ui/toaster";
+import { getLocale, localeCookie } from "./lib/i18n/i18next.server";
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -26,9 +29,19 @@ export const links: Route.LinksFunction = () => [
     },
 ];
 
+export async function loader({ request }: Route.LoaderArgs) {
+    const locale = await getLocale(request);
+    return data(
+        { locale },
+        { headers: { "Set-Cookie": await localeCookie.serialize(locale) } },
+    );
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
+    const { i18n } = useTranslation();
+
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang={i18n.language} dir={i18n.dir()} suppressHydrationWarning>
             <head>
                 <meta charSet="utf-8" />
                 <meta
@@ -64,15 +77,17 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
-    let message = "Oops!";
-    let details = "An unexpected error occurred.";
+    const { t } = useTranslation();
+
+    let message: string = t("error.oops");
+    let details: string = t("error.unexpected");
     let stack: string | undefined;
 
     if (isRouteErrorResponse(error)) {
-        message = error.status === 404 ? "404" : "Error";
+        message = error.status === 404 ? t("error.notFound") : t("auth.error");
         details =
             error.status === 404
-                ? "The requested page could not be found."
+                ? t("error.pageNotFound")
                 : error.statusText || details;
     } else if (import.meta.env.DEV && error && error instanceof Error) {
         details = error.message;
