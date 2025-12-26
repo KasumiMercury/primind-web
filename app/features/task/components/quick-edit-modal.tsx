@@ -11,6 +11,7 @@ import { orpc } from "~/orpc/client";
 import { useTaskEdit } from "../hooks/use-task-edit";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { QuickEditContent } from "./quick-edit-content";
+import { useTranslation } from "react-i18next";
 
 interface QuickEditModalProps {
     isOpen: boolean;
@@ -29,6 +30,8 @@ export function QuickEditModal({
     onDeleted,
     onClosed,
 }: QuickEditModalProps) {
+    const { t } = useTranslation();
+
     const [isDeletePending, startDeleteTransition] = useTransition();
 
     const {
@@ -93,10 +96,10 @@ export function QuickEditModal({
             <DialogHeader className="mb-2 border-b pb-4">
                 <div className="flex items-center gap-2 text-green-600">
                     <CheckCircle className="size-5" />
-                    <DialogTitle>Task Created!</DialogTitle>
+                    <DialogTitle>{t("quickEdit.dialogTitle")}</DialogTitle>
                 </div>
                 <DialogDescription>
-                    Add details to your new task
+                    {t("quickEdit.dialogDescription")}
                 </DialogDescription>
             </DialogHeader>
             <QuickEditContent

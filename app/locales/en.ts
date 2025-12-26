@@ -91,6 +91,12 @@ export default {
         deleteTask: "Delete Task",
     },
 
+    // Quick Edit Modal
+    quickEdit: {
+       dialogTitle: "Task Created!",
+       dialogDescription: "Add optional details to your task",
+    },
+
     // Login Required Alert
     loginRequired: {
         title: "Login Required",

@@ -92,6 +92,12 @@ export default {
         deleteTask: "タスクを削除",
     },
 
+    // Quick Edit Modal
+    quickEdit: {
+       dialogTitle: "タスクが作成されました！",
+       dialogDescription: "詳細を追加できます",
+    },
+
     // Login Required Alert
     loginRequired: {
         title: "ログインが必要です",
