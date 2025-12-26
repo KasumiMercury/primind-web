@@ -1,5 +1,6 @@
 import { CheckCircle } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import {
     DialogContent,
@@ -11,7 +12,6 @@ import { orpc } from "~/orpc/client";
 import { useTaskEdit } from "../hooks/use-task-edit";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { QuickEditContent } from "./quick-edit-content";
-import { useTranslation } from "react-i18next";
 
 interface QuickEditModalProps {
     isOpen: boolean;
