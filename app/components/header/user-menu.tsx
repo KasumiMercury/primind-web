@@ -1,5 +1,6 @@
-import { Check, Monitor, Moon, Palette, Sun, User } from "lucide-react";
+import { Check, Globe, Monitor, Moon, Palette, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useTranslation } from "react-i18next";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,13 +10,16 @@ import {
     DropdownMenuTrigger,
     DropdownSubmenu,
 } from "~/components/ui/dropdown-menu";
+import { useLanguage } from "~/hooks/use-language";
 
 interface UserMenuProps {
     onLogout: () => void;
 }
 
 export function UserMenu({ onLogout }: UserMenuProps) {
+    const { t } = useTranslation();
     const { theme, setTheme } = useTheme();
+    const { language, setLanguage } = useLanguage();
 
     return (
         <DropdownMenu>
@@ -28,23 +32,39 @@ export function UserMenu({ onLogout }: UserMenuProps) {
             <DropdownMenuContent className="w-56" align="end">
                 <DropdownMenuSubmenuTrigger>
                     <DropdownMenuItem>
+                        <Globe />
+                        {t("language.title")}
+                    </DropdownMenuItem>
+                    <DropdownSubmenu className="outline-none">
+                        <DropdownMenuItem onSelect={() => setLanguage("en")}>
+                            English
+                            {language === "en" && <Check className="ml-auto" />}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setLanguage("ja")}>
+                            日本語
+                            {language === "ja" && <Check className="ml-auto" />}
+                        </DropdownMenuItem>
+                    </DropdownSubmenu>
+                </DropdownMenuSubmenuTrigger>
+                <DropdownMenuSubmenuTrigger>
+                    <DropdownMenuItem>
                         <Palette />
-                        Theme
+                        {t("theme.title")}
                     </DropdownMenuItem>
                     <DropdownSubmenu className="outline-none">
                         <DropdownMenuItem onSelect={() => setTheme("light")}>
                             <Sun />
-                            Light
+                            {t("theme.light")}
                             {theme === "light" && <Check className="ml-auto" />}
                         </DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setTheme("dark")}>
                             <Moon />
-                            Dark
+                            {t("theme.dark")}
                             {theme === "dark" && <Check className="ml-auto" />}
                         </DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setTheme("system")}>
                             <Monitor />
-                            System
+                            {t("theme.system")}
                             {theme === "system" && (
                                 <Check className="ml-auto" />
                             )}
@@ -52,7 +72,9 @@ export function UserMenu({ onLogout }: UserMenuProps) {
                     </DropdownSubmenu>
                 </DropdownMenuSubmenuTrigger>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={onLogout}>Logout</DropdownMenuItem>
+                <DropdownMenuItem onSelect={onLogout}>
+                    {t("auth.logout")}
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

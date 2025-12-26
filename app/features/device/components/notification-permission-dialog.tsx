@@ -1,6 +1,7 @@
 import { useAtom, useSetAtom } from "jotai";
 import { Bell, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import {
     DialogContent,
@@ -16,6 +17,7 @@ import {
 } from "../store/notification";
 
 export function NotificationPermissionDialog() {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useAtom(notificationModalOpenAtom);
     const setDismissed = useSetAtom(notificationDismissedAtom);
     const [isRequesting, setIsRequesting] = useState(false);
@@ -72,10 +74,10 @@ export function NotificationPermissionDialog() {
                     <Bell className="h-6 w-6 text-primary" />
                 </div>
                 <DialogTitle className="text-center">
-                    Enable Notifications
+                    {t("notification.enable")}
                 </DialogTitle>
                 <DialogDescription className="text-center">
-                    Enable notifications to remind you.
+                    {t("notification.description")}
                 </DialogDescription>
             </DialogHeader>
 
@@ -88,10 +90,10 @@ export function NotificationPermissionDialog() {
                     {isRequesting ? (
                         <>
                             <Loader2 className="size-4 animate-spin" />
-                            <span>Enabling...</span>
+                            <span>{t("notification.enabling")}</span>
                         </>
                     ) : (
-                        "Enable Notifications"
+                        t("notification.enable")
                     )}
                 </Button>
 
@@ -101,7 +103,7 @@ export function NotificationPermissionDialog() {
                     isDisabled={isRequesting}
                     className="w-full"
                 >
-                    Not now
+                    {t("common.notNow")}
                 </Button>
 
                 <Button
@@ -111,7 +113,7 @@ export function NotificationPermissionDialog() {
                     isDisabled={isRequesting}
                     className="mt-2 text-muted-foreground text-xs hover:underline disabled:opacity-50"
                 >
-                    Don't ask again
+                    {t("common.dontAskAgain")}
                 </Button>
             </DialogFooter>
         </DialogContent>

@@ -1,6 +1,7 @@
 import { type AnimationPlaybackControls, useAnimate } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ITEMS, type TaskTypeKey } from "../lib/task-type-items";
+import { useTaskTypeItems } from "../hooks/use-task-type-items";
+import type { TaskTypeKey } from "../lib/task-type-items";
 import { OperationButtons } from "./operation-buttons";
 import { OperationIndicator } from "./operation-indicator";
 import { calculateDimensions, OperationShape } from "./operation-shape";
@@ -15,9 +16,6 @@ export interface OperationConfig {
 
 type ActionSource = "button" | "swipe";
 type ActionDirection = "left" | "right" | "up" | "down";
-
-const selectableItems = Object.values(ITEMS);
-const selectableKeys = Object.keys(ITEMS) as TaskTypeKey[];
 
 const registerTransitionAmount = 10;
 const registerUpDuration = 0.1;
@@ -42,6 +40,13 @@ export function OperationArea({
     swipeFlip = true,
     onRegister,
 }: OperationAreaProps) {
+    const items = useTaskTypeItems();
+    const selectableItems = useMemo(() => Object.values(items), [items]);
+    const selectableKeys = useMemo(
+        () => Object.keys(items) as TaskTypeKey[],
+        [items],
+    );
+
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const [scope, animate] = useAnimate();
@@ -60,12 +65,12 @@ export function OperationArea({
     const selectedItem = useMemo(() => {
         if (itemsCount === 0) return null;
         return selectableItems[selectedIndex];
-    }, [selectedIndex, itemsCount]);
+    }, [selectedIndex, itemsCount, selectableItems]);
 
     const selectedKey = useMemo(() => {
         if (itemsCount === 0) return null;
         return selectableKeys[selectedIndex];
-    }, [selectedIndex, itemsCount]);
+    }, [selectedIndex, itemsCount, selectableKeys]);
 
     const selectedKeyRef = useRef<TaskTypeKey | null>(selectedKey);
 
@@ -93,7 +98,7 @@ export function OperationArea({
             return;
         }
 
-        const itemConfig = ITEMS[currentKey];
+        const itemConfig = items[currentKey];
         if (!itemConfig) {
             return;
         }

@@ -17,5 +17,6 @@ export default [
     route("/callback/google", "features/auth/oidc/callback.google.tsx"),
 
     route("/api/rpc/*", "routes/api/rpc.$.tsx"),
+    route("/api/set-language", "routes/api/set-language.ts"),
     route("/api/*", "routes/api/openapi.$.tsx"),
 ] satisfies RouteConfig;

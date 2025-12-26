@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import {
     DialogContent,
@@ -25,6 +26,8 @@ export function DeleteTaskDialog({
     error,
     isDeleting,
 }: DeleteTaskDialogProps) {
+    const { t } = useTranslation();
+
     return (
         <DialogContent
             isOpen={open}
@@ -35,14 +38,14 @@ export function DeleteTaskDialog({
             showCloseButton={false}
         >
             <DialogHeader>
-                <DialogTitle>Delete Task</DialogTitle>
+                <DialogTitle>{t("deleteTask.title")}</DialogTitle>
                 <DialogDescription>
-                    Are you sure you want to delete this task?
+                    {t("deleteTask.description")}
                 </DialogDescription>
             </DialogHeader>
             {error && (
                 <div className="rounded-md bg-red-50 p-3 text-red-600 text-sm dark:bg-red-950 dark:text-red-400">
-                    Failed to delete this task. Please try again.
+                    {t("deleteTask.error")}
                 </div>
             )}
             <DialogFooter>
@@ -51,7 +54,7 @@ export function DeleteTaskDialog({
                     onPress={onCancel}
                     isDisabled={isDeleting}
                 >
-                    Cancel
+                    {t("common.cancel")}
                 </Button>
                 <Button
                     variant="destructive"
@@ -61,10 +64,10 @@ export function DeleteTaskDialog({
                     {isDeleting ? (
                         <>
                             <Loader2 className="size-4 animate-spin" />
-                            <span>Deleting...</span>
+                            <span>{t("common.deleting")}</span>
                         </>
                     ) : (
-                        "Delete"
+                        t("common.delete")
                     )}
                 </Button>
             </DialogFooter>

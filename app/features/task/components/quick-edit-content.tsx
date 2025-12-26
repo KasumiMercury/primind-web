@@ -1,10 +1,12 @@
 import { Check, Loader2, Trash, X } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label, TextField } from "~/components/ui/text-field";
 import { Textarea } from "~/components/ui/textarea";
-import { ITEMS, type TaskTypeKey } from "../lib/task-type-items";
+import { useTaskTypeItems } from "../hooks/use-task-type-items";
+import type { TaskTypeKey } from "../lib/task-type-items";
 import { DeleteTaskDialog } from "./delete-task-dialog";
 import { FieldAddButton } from "./field-add-button";
 import { FieldDisplay } from "./field-display";
@@ -61,7 +63,9 @@ export function QuickEditContent({
     defaultEditingField,
     defaultEditingValue,
 }: QuickEditContentProps) {
-    const config = ITEMS[taskTypeKey];
+    const { t } = useTranslation();
+    const items = useTaskTypeItems();
+    const config = items[taskTypeKey];
     const Icon = config.icon;
 
     const [editingField, setEditingField] = useState<EditingField>(
@@ -141,29 +145,30 @@ export function QuickEditContent({
                     <div className="flex flex-col gap-4">
                         {initialTitle ? (
                             <FieldDisplay
-                                label="Title"
+                                label={t("taskDetail.title")}
                                 value={initialTitle}
                                 onEdit={handleStartEditTitle}
                                 maxHeightClass="max-h-12"
                             />
                         ) : (
                             <FieldAddButton
-                                label="Title"
-                                optionalLabel="(Optional)"
+                                label={t("taskDetail.title")}
+                                // optionalLabel="(Optional)"
+                                optionalLabel={t("taskDetail.optionalLabel")}
                                 onPress={handleStartEditTitle}
                             />
                         )}
                         {initialDescription ? (
                             <FieldDisplay
-                                label="Description"
+                                label={t("taskDetail.description")}
                                 value={initialDescription}
                                 onEdit={handleStartEditDescription}
                                 maxHeightClass="max-h-32"
                             />
                         ) : (
                             <FieldAddButton
-                                label="Description"
-                                optionalLabel="(Optional)"
+                                label={t("taskDetail.description")}
+                                optionalLabel={t("taskDetail.optionalLabel")}
                                 onPress={handleStartEditDescription}
                             />
                         )}
@@ -177,7 +182,7 @@ export function QuickEditContent({
                             onPress={onDelete}
                             isDisabled={isDeleting}
                             className="text-destructive data-hovered:bg-destructive/10"
-                            aria-label="Delete Task"
+                            aria-label={t("taskDetail.deleteTask")}
                         >
                             <Trash className="size-4" />
                         </Button>
@@ -197,7 +202,9 @@ export function QuickEditContent({
     }
 
     const isEditingTitle = editingField === "title";
-    const fieldLabel = isEditingTitle ? "Title" : "Description";
+    const fieldLabel = isEditingTitle
+        ? t("taskDetail.title")
+        : t("taskDetail.description");
 
     return (
         <>
@@ -212,20 +219,19 @@ export function QuickEditContent({
 
                 <TextField isDisabled={isSaving}>
                     <Label className="text-muted-foreground text-xs uppercase tracking-wide">
-                        {fieldLabel}{" "}
-                        <span className="normal-case">(Optional)</span>
+                        {fieldLabel}
                     </Label>
                     {isEditingTitle ? (
                         <Input
                             type="text"
-                            placeholder="Enter title..."
+                            placeholder={t("taskDetail.enterTitle")}
                             value={editingValue}
                             onChange={(e) => setEditingValue(e.target.value)}
                             autoFocus
                         />
                     ) : (
                         <Textarea
-                            placeholder="Enter description..."
+                            placeholder={t("taskDetail.enterDescription")}
                             value={editingValue}
                             onChange={(e) => setEditingValue(e.target.value)}
                             autoFocus
@@ -237,12 +243,12 @@ export function QuickEditContent({
                     {saveError ? (
                         <div className="flex h-9 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
                             <X className="size-4" />
-                            <span>Failed</span>
+                            <span>{t("common.failed")}</span>
                         </div>
                     ) : saveSuccess ? (
                         <div className="flex h-9 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
                             <Check className="size-4" />
-                            <span>Saved</span>
+                            <span>{t("common.saved")}</span>
                         </div>
                     ) : (
                         <>
@@ -252,7 +258,7 @@ export function QuickEditContent({
                                 onPress={handleCancelEdit}
                                 isDisabled={isSaving}
                             >
-                                Cancel
+                                {t("common.cancel")}
                             </Button>
                             <Button
                                 type="submit"
@@ -261,10 +267,10 @@ export function QuickEditContent({
                                 {isSaving ? (
                                     <>
                                         <Loader2 className="size-4 animate-spin" />
-                                        <span>Saving...</span>
+                                        <span>{t("common.saving")}</span>
                                     </>
                                 ) : (
-                                    "Save"
+                                    t("common.save")
                                 )}
                             </Button>
                         </>

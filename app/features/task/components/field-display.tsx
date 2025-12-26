@@ -1,4 +1,5 @@
 import { Pencil } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 
@@ -17,6 +18,7 @@ export function FieldDisplay({
     maxHeightClass = "max-h-24",
     emptyText,
 }: FieldDisplayProps) {
+    const { t } = useTranslation();
     const isEmpty = !value.trim();
     const displayValue = isEmpty && emptyText ? emptyText : value;
 
@@ -33,7 +35,7 @@ export function FieldDisplay({
                     className="shrink-0"
                 >
                     <Pencil className="size-4" />
-                    Edit
+                    {t("common.edit")}
                 </Button>
             </div>
             <p

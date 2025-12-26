@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useActionData, useNavigation, useSubmit } from "react-router";
 import { Button } from "~/components/ui/button";
 import type { UIProviderConfig } from "../oidc/providers";
@@ -20,6 +21,8 @@ export function LoginFormContent({
     isSubmitting = false,
     onSubmit,
 }: LoginFormContentProps) {
+    const { t } = useTranslation();
+
     const handleProviderSubmit = (providerId: string) => {
         onSubmit?.(providerId);
     };
@@ -37,15 +40,17 @@ export function LoginFormContent({
                         isDisabled={isSubmitting}
                     >
                         {isSubmitting
-                            ? "Signing in..."
-                            : `Sign in with ${provider.displayName}`}
+                            ? t("auth.signingIn")
+                            : t("auth.signInWith", {
+                                  provider: provider.displayName,
+                              })}
                     </Button>
                 ))}
             </div>
 
             {error && (
                 <div className="rounded-lg border border-destructive bg-destructive/10 px-4 py-3 text-destructive text-sm">
-                    <p className="font-medium">Error</p>
+                    <p className="font-medium">{t("auth.error")}</p>
                     <p>{error}</p>
                 </div>
             )}

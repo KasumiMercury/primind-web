@@ -3,7 +3,7 @@ import { cn } from "~/lib/utils";
 
 export interface FieldAddButtonProps {
     label: string;
-    optionalLabel: string;
+    optionalLabel?: string;
     onPress: () => void;
 }
 
@@ -25,9 +25,11 @@ export function FieldAddButton({
                 <span className="font-medium text-foreground text-sm">
                     {label}
                 </span>
-                <span className="text-muted-foreground text-xs">
-                    {optionalLabel}
-                </span>
+                {optionalLabel && (
+                    <span className="text-muted-foreground text-xs">
+                        {optionalLabel}
+                    </span>
+                )}
             </div>
             <Plus className="size-5 text-muted-foreground group-hover:text-primary" />
         </button>
