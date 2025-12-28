@@ -2,9 +2,7 @@ import { Check, Loader2, Trash, X } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { Label, TextField } from "~/components/ui/text-field";
-import { Textarea } from "~/components/ui/textarea";
 import { formatTimestampAbsolute } from "~/features/task/lib/absolute-time";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
 import { TaskStatus, type TaskType } from "~/gen/task/v1/task_pb";
@@ -12,8 +10,10 @@ import { useTaskTypeItems } from "../hooks/use-task-type-items";
 import { TASK_TYPE_KEYS, type TaskTypeKey } from "../lib/task-type-items";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { DeleteTaskDialog } from "./delete-task-dialog";
+import { DescribeEdit } from "./describe-edit";
 import { FieldDisplay } from "./field-display";
 import type { EditedValues, EditingField } from "./quick-edit-content";
+import { TitleEdit } from "./title-edit";
 
 interface TaskDetailContentProps {
     task: SerializableTask;
@@ -318,18 +318,19 @@ export function TaskDetailContent({
                         {fieldLabel}
                     </Label>
                     {isEditingTitle ? (
-                        <Input
-                            type="text"
-                            placeholder={t("taskDetail.enterTitle")}
+                        <TitleEdit
                             value={editingValue}
-                            onChange={(e) => setEditingValue(e.target.value)}
+                            onChange={setEditingValue}
+                            placeholder={t("taskDetail.enterTitle")}
+                            isDisabled={isSaving}
                             autoFocus
                         />
                     ) : (
-                        <Textarea
-                            placeholder={t("taskDetail.enterDescription")}
+                        <DescribeEdit
                             value={editingValue}
-                            onChange={(e) => setEditingValue(e.target.value)}
+                            onChange={setEditingValue}
+                            placeholder={t("taskDetail.enterDescription")}
+                            isDisabled={isSaving}
                             autoFocus
                         />
                     )}
