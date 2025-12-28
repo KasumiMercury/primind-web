@@ -104,6 +104,14 @@ export default {
         description: "Please log in to access all features",
     },
 
+    // Title Presets
+    titlePresets: {
+        label: "Quick fill",
+        shopping: "Shopping",
+        callback: "Call back",
+        laundry: "Take in laundry",
+    },
+
     // Error messages
     error: {
         oops: "Oops!",

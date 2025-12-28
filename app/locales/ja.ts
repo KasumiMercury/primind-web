@@ -105,6 +105,14 @@ export default {
         description: "すべての機能にアクセスするにはログインしてください",
     },
 
+    // Title Presets
+    titlePresets: {
+        label: "クイック入力",
+        shopping: "買い物",
+        callback: "折り返し",
+        laundry: "洗濯物取り込み",
+    },
+
     // Error messages
     error: {
         oops: "エラーが発生しました",
