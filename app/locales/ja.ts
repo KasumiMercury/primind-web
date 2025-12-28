@@ -120,6 +120,7 @@ export default {
         startListening: "音声入力を開始",
         stopListening: "音声入力を停止",
         listening: "聞き取り中...",
+        revert: "元に戻す",
         errorNoSpeech: "音声が検出されませんでした",
         errorAudioCapture: "マイクが見つかりません",
         errorNotAllowed: "マイクへのアクセスが拒否されました",
