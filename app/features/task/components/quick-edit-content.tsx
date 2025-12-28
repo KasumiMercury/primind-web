@@ -2,14 +2,14 @@ import { Check, Loader2, Trash, X } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { Label, TextField } from "~/components/ui/text-field";
-import { Textarea } from "~/components/ui/textarea";
 import { useTaskTypeItems } from "../hooks/use-task-type-items";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { DeleteTaskDialog } from "./delete-task-dialog";
+import { DescribeEdit } from "./describe-edit";
 import { FieldAddButton } from "./field-add-button";
 import { FieldDisplay } from "./field-display";
+import { TitleEdit } from "./title-edit";
 
 export type EditingField = "none" | "title" | "description";
 
@@ -222,18 +222,19 @@ export function QuickEditContent({
                         {fieldLabel}
                     </Label>
                     {isEditingTitle ? (
-                        <Input
-                            type="text"
-                            placeholder={t("taskDetail.enterTitle")}
+                        <TitleEdit
                             value={editingValue}
-                            onChange={(e) => setEditingValue(e.target.value)}
+                            onChange={setEditingValue}
+                            placeholder={t("taskDetail.enterTitle")}
+                            isDisabled={isSaving}
                             autoFocus
                         />
                     ) : (
-                        <Textarea
-                            placeholder={t("taskDetail.enterDescription")}
+                        <DescribeEdit
                             value={editingValue}
-                            onChange={(e) => setEditingValue(e.target.value)}
+                            onChange={setEditingValue}
+                            placeholder={t("taskDetail.enterDescription")}
+                            isDisabled={isSaving}
                             autoFocus
                         />
                     )}

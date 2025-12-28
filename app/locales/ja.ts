@@ -105,6 +105,28 @@ export default {
         description: "すべての機能にアクセスするにはログインしてください",
     },
 
+    // Title Presets
+    titlePresets: {
+        label: "クイック入力",
+        shopping: "買い物",
+        callback: "折り返し",
+        laundry: "洗濯物取り込み",
+    },
+
+    // Voice Input
+    voiceInput: {
+        label: "音声入力",
+        labelListening: "聞き取り中...",
+        startListening: "音声入力を開始",
+        stopListening: "音声入力を停止",
+        listening: "聞き取り中...",
+        errorNoSpeech: "音声が検出されませんでした",
+        errorAudioCapture: "マイクが見つかりません",
+        errorNotAllowed: "マイクへのアクセスが拒否されました",
+        errorNetwork: "ネットワークエラー",
+        errorGeneric: "音声入力エラー",
+    },
+
     // Error messages
     error: {
         oops: "エラーが発生しました",
