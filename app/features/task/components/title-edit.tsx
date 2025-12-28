@@ -5,7 +5,9 @@ import { useTranslation } from "react-i18next";
 
 import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
+import { useSpeechRecognition } from "../hooks/use-speech-recognition";
 import { getAllTitlePresets, type TitlePreset } from "../lib/title-presets";
+import { VoiceInputButton } from "./voice-input-button";
 
 export interface TitleEditProps {
     value: string;
@@ -15,6 +17,7 @@ export interface TitleEditProps {
     autoFocus?: boolean;
     className?: string;
     customPresets?: TitlePreset[];
+    enableVoiceInput?: boolean;
 }
 
 export function TitleEdit({
@@ -25,6 +28,7 @@ export function TitleEdit({
     autoFocus = false,
     className,
     customPresets,
+    enableVoiceInput = true,
 }: TitleEditProps) {
     const { t } = useTranslation();
     const presets = getAllTitlePresets(customPresets);
@@ -38,20 +42,53 @@ export function TitleEdit({
         onChange(translatedValue);
     };
 
+    const handleVoiceResult = (transcript: string) => {
+        const newValue = value ? `${value} ${transcript}` : transcript;
+        onChange(newValue);
+    };
+
+    const {
+        isSupported,
+        isListening,
+        startListening,
+        stopListening,
+        error,
+        clearError,
+    } = useSpeechRecognition({
+        onResult: handleVoiceResult,
+    });
+
+    const handleVoiceToggle = () => {
+        if (isListening) {
+            stopListening();
+        } else {
+            clearError();
+            startListening();
+        }
+    };
+
     return (
         <div className={cn("flex flex-col gap-2", className)}>
-            {/* Main Input with Voice Button */}
-            <div className="flex items-start gap-2">
-                <Input
-                    type="text"
-                    value={value}
-                    onChange={handleInputChange}
-                    placeholder={placeholder}
-                    disabled={isDisabled}
-                    autoFocus={autoFocus}
-                    className="flex-1"
+            {/* Main Input */}
+            <Input
+                type="text"
+                value={value}
+                onChange={handleInputChange}
+                placeholder={placeholder}
+                disabled={isDisabled}
+                autoFocus={autoFocus}
+            />
+
+            {/* Voice Input Button - below input, right aligned */}
+            {enableVoiceInput && (
+                <VoiceInputButton
+                    isListening={isListening}
+                    isSupported={isSupported}
+                    isDisabled={isDisabled}
+                    onPress={handleVoiceToggle}
+                    error={error}
                 />
-            </div>
+            )}
 
             {/* Preset Section */}
             <div className="flex flex-col gap-1">

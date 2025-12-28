@@ -112,6 +112,20 @@ export default {
         laundry: "Take in laundry",
     },
 
+    // Voice Input
+    voiceInput: {
+        label: "Voice input",
+        labelListening: "Listening...",
+        startListening: "Start voice input",
+        stopListening: "Stop voice input",
+        listening: "Listening...",
+        errorNoSpeech: "No speech detected",
+        errorAudioCapture: "No microphone found",
+        errorNotAllowed: "Microphone access denied",
+        errorNetwork: "Network error",
+        errorGeneric: "Voice input error",
+    },
+
     // Error messages
     error: {
         oops: "Oops!",
