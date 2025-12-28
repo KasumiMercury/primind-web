@@ -119,6 +119,7 @@ export default {
         startListening: "Start voice input",
         stopListening: "Stop voice input",
         listening: "Listening...",
+        revert: "Undo",
         errorNoSpeech: "No speech detected",
         errorAudioCapture: "No microphone found",
         errorNotAllowed: "Microphone access denied",

@@ -1,4 +1,7 @@
-import type { ChangeEvent } from "react";
+import { Undo2 } from "lucide-react";
+import { type ChangeEvent, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
 import { useSpeechRecognition } from "../hooks/use-speech-recognition";
@@ -23,13 +26,34 @@ export function DescribeEdit({
     className,
     enableVoiceInput = true,
 }: DescribeEditProps) {
+    const { t } = useTranslation();
+
+    // Voice input history management (stack structure)
+    const voiceHistoryRef = useRef<string[]>([]);
+    const [canRevert, setCanRevert] = useState(false);
+
     const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        voiceHistoryRef.current = [];
+        setCanRevert(false);
         onChange(e.target.value);
     };
 
     const handleVoiceResult = (transcript: string) => {
+        // Save current value to history before appending
+        voiceHistoryRef.current.push(value);
+        setCanRevert(true);
+
         const newValue = value ? `${value} ${transcript}` : transcript;
         onChange(newValue);
+    };
+
+    const handleRevert = () => {
+        const history = voiceHistoryRef.current;
+        if (history.length > 0) {
+            const previousValue = history.pop() ?? "";
+            onChange(previousValue);
+            setCanRevert(history.length > 0);
+        }
     };
 
     const {
@@ -63,15 +87,28 @@ export function DescribeEdit({
                 autoFocus={autoFocus}
             />
 
-            {/* Voice Input Button - below textarea, right aligned */}
             {enableVoiceInput && (
-                <VoiceInputButton
-                    isListening={isListening}
-                    isSupported={isSupported}
-                    isDisabled={isDisabled}
-                    onPress={handleVoiceToggle}
-                    error={error}
-                />
+                <div className="flex items-start justify-end gap-2">
+                    {canRevert && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            type="button"
+                            onPress={handleRevert}
+                            aria-label={t("voiceInput.revert")}
+                        >
+                            <Undo2 className="size-4" />
+                            <span>{t("voiceInput.revert")}</span>
+                        </Button>
+                    )}
+                    <VoiceInputButton
+                        isListening={isListening}
+                        isSupported={isSupported}
+                        isDisabled={isDisabled}
+                        onPress={handleVoiceToggle}
+                        error={error}
+                    />
+                </div>
             )}
         </div>
     );
