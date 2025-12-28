@@ -33,6 +33,8 @@ export function DescribeEdit({
     const [canRevert, setCanRevert] = useState(false);
 
     const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        voiceHistoryRef.current = [];
+        setCanRevert(false);
         onChange(e.target.value);
     };
 

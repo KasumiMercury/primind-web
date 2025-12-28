@@ -40,6 +40,8 @@ export function TitleEdit({
     const [canRevert, setCanRevert] = useState(false);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        voiceHistoryRef.current = [];
+        setCanRevert(false);
         onChange(e.target.value);
     };
 
