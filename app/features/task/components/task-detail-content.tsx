@@ -123,13 +123,6 @@ export function TaskDetailContent({
         }
     }, [saveSuccess]);
 
-    useEffect(() => {
-        if (saveError) {
-            setEditingField("none");
-            setEditingValue("");
-        }
-    }, [saveError]);
-
     const handleStartEditTitle = () => {
         setEditingValue(initialTitle);
         setEditingField("title");

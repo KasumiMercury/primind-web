@@ -92,13 +92,6 @@ export function QuickEditContent({
         }
     }, [saveSuccess]);
 
-    useEffect(() => {
-        if (saveError) {
-            setEditingField("none");
-            setEditingValue("");
-        }
-    }, [saveError]);
-
     const handleStartEditTitle = () => {
         setEditingValue(initialTitle);
         setEditingField("title");
@@ -153,7 +146,6 @@ export function QuickEditContent({
                         ) : (
                             <FieldAddButton
                                 label={t("taskDetail.title")}
-                                // optionalLabel="(Optional)"
                                 optionalLabel={t("taskDetail.optionalLabel")}
                                 onPress={handleStartEditTitle}
                             />
