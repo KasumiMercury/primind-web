@@ -26,13 +26,14 @@ export default defineConfig({
         }) as PluginOption,
         !isStorybook && reactRouter(),
         tsconfigPaths(),
-        !isStorybook && babel({
-            filter: /\.[jt]sx?$/,
-            babelConfig: {
-                presets: ["@babel/preset-typescript"],
-                plugins: [["babel-plugin-react-compiler"]],
-            },
-        }),
+        !isStorybook &&
+            babel({
+                filter: /\.[jt]sx?$/,
+                babelConfig: {
+                    presets: ["@babel/preset-typescript"],
+                    plugins: [["babel-plugin-react-compiler"]],
+                },
+            }),
     ],
     server: {
         host: "0.0.0.0",
