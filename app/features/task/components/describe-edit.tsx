@@ -1,10 +1,10 @@
 import { Undo2 } from "lucide-react";
-import { type ChangeEvent, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
-import { useSpeechRecognition } from "../hooks/use-speech-recognition";
+import type { VoiceInputProps } from "../types/voice-input";
 import { VoiceInputButton } from "./voice-input-button";
 
 export interface DescribeEditProps {
@@ -14,7 +14,9 @@ export interface DescribeEditProps {
     isDisabled?: boolean;
     autoFocus?: boolean;
     className?: string;
-    enableVoiceInput?: boolean;
+    voiceInput?: VoiceInputProps;
+    canRevert?: boolean;
+    onRevert?: () => void;
 }
 
 export function DescribeEdit({
@@ -24,57 +26,28 @@ export function DescribeEdit({
     isDisabled = false,
     autoFocus = false,
     className,
-    enableVoiceInput = true,
+    voiceInput,
+    canRevert = false,
+    onRevert,
 }: DescribeEditProps) {
     const { t } = useTranslation();
 
-    // Voice input history management (stack structure)
-    const voiceHistoryRef = useRef<string[]>([]);
-    const [canRevert, setCanRevert] = useState(false);
-
     const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        voiceHistoryRef.current = [];
-        setCanRevert(false);
         onChange(e.target.value);
     };
 
-    const handleVoiceResult = (transcript: string) => {
-        // Save current value to history before appending
-        voiceHistoryRef.current.push(value);
-        setCanRevert(true);
-
-        const newValue = value ? `${value} ${transcript}` : transcript;
-        onChange(newValue);
-    };
-
-    const handleRevert = () => {
-        const history = voiceHistoryRef.current;
-        if (history.length > 0) {
-            const previousValue = history.pop() ?? "";
-            onChange(previousValue);
-            setCanRevert(history.length > 0);
-        }
-    };
-
-    const {
-        isSupported,
-        isListening,
-        startListening,
-        stopListening,
-        error,
-        clearError,
-    } = useSpeechRecognition({
-        onResult: handleVoiceResult,
-    });
-
     const handleVoiceToggle = () => {
-        if (isListening) {
-            stopListening();
+        if (!voiceInput) return;
+
+        if (voiceInput.isListening) {
+            voiceInput.onStopListening();
         } else {
-            clearError();
-            startListening();
+            voiceInput.onClearError();
+            voiceInput.onStartListening();
         }
     };
+
+    const showVoiceInput = voiceInput !== undefined;
 
     return (
         <div className={cn("flex flex-col gap-2", className)}>
@@ -87,14 +60,14 @@ export function DescribeEdit({
                 autoFocus={autoFocus}
             />
 
-            {enableVoiceInput && (
+            {showVoiceInput && (
                 <div className="flex items-start justify-end gap-2">
-                    {canRevert && (
+                    {canRevert && onRevert && (
                         <Button
                             variant="outline"
                             size="sm"
                             type="button"
-                            onPress={handleRevert}
+                            onPress={onRevert}
                             aria-label={t("voiceInput.revert")}
                         >
                             <Undo2 className="size-4" />
@@ -102,11 +75,11 @@ export function DescribeEdit({
                         </Button>
                     )}
                     <VoiceInputButton
-                        isListening={isListening}
-                        isSupported={isSupported}
+                        isListening={voiceInput.isListening}
+                        isSupported={voiceInput.isSupported}
                         isDisabled={isDisabled}
                         onPress={handleVoiceToggle}
-                        error={error}
+                        error={voiceInput.error}
                     />
                 </div>
             )}

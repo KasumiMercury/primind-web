@@ -6,10 +6,10 @@ import { Label, TextField } from "~/components/ui/text-field";
 import { useTaskTypeItems } from "../hooks/use-task-type-items";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { DeleteTaskDialog } from "./delete-task-dialog";
-import { DescribeEdit } from "./describe-edit";
+import { DescribeEditWithVoice } from "./describe-edit-with-voice";
 import { FieldAddButton } from "./field-add-button";
 import { FieldDisplay } from "./field-display";
-import { TitleEdit } from "./title-edit";
+import { TitleEditWithVoice } from "./title-edit-with-voice";
 
 export type EditingField = "none" | "title" | "description";
 
@@ -222,7 +222,7 @@ export function QuickEditContent({
                         {fieldLabel}
                     </Label>
                     {isEditingTitle ? (
-                        <TitleEdit
+                        <TitleEditWithVoice
                             value={editingValue}
                             onChange={setEditingValue}
                             placeholder={t("taskDetail.enterTitle")}
@@ -230,7 +230,7 @@ export function QuickEditContent({
                             autoFocus
                         />
                     ) : (
-                        <DescribeEdit
+                        <DescribeEditWithVoice
                             value={editingValue}
                             onChange={setEditingValue}
                             placeholder={t("taskDetail.enterDescription")}

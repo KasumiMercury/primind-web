@@ -1,14 +1,14 @@
 import type { ParseKeys } from "i18next";
 import { Undo2 } from "lucide-react";
-import { type ChangeEvent, useRef, useState } from "react";
+import type { ChangeEvent } from "react";
 import { ListBox, ListBoxItem } from "react-aria-components";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { cn } from "~/lib/utils";
-import { useSpeechRecognition } from "../hooks/use-speech-recognition";
 import { getAllTitlePresets, type TitlePreset } from "../lib/title-presets";
+import type { VoiceInputProps } from "../types/voice-input";
 import { VoiceInputButton } from "./voice-input-button";
 
 export interface TitleEditProps {
@@ -19,7 +19,9 @@ export interface TitleEditProps {
     autoFocus?: boolean;
     className?: string;
     customPresets?: TitlePreset[];
-    enableVoiceInput?: boolean;
+    voiceInput?: VoiceInputProps;
+    canRevert?: boolean;
+    onRevert?: () => void;
 }
 
 export function TitleEdit({
@@ -30,18 +32,14 @@ export function TitleEdit({
     autoFocus = false,
     className,
     customPresets,
-    enableVoiceInput = true,
+    voiceInput,
+    canRevert = false,
+    onRevert,
 }: TitleEditProps) {
     const { t } = useTranslation();
     const presets = getAllTitlePresets(customPresets);
 
-    // Voice input history management (stack structure)
-    const voiceHistoryRef = useRef<string[]>([]);
-    const [canRevert, setCanRevert] = useState(false);
-
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        voiceHistoryRef.current = [];
-        setCanRevert(false);
         onChange(e.target.value);
     };
 
@@ -50,43 +48,18 @@ export function TitleEdit({
         onChange(translatedValue);
     };
 
-    const handleVoiceResult = (transcript: string) => {
-        // Save current value to history before appending
-        voiceHistoryRef.current.push(value);
-        setCanRevert(true);
-
-        const newValue = value ? `${value} ${transcript}` : transcript;
-        onChange(newValue);
-    };
-
-    const handleRevert = () => {
-        const history = voiceHistoryRef.current;
-        if (history.length > 0) {
-            const previousValue = history.pop() ?? "";
-            onChange(previousValue);
-            setCanRevert(history.length > 0);
-        }
-    };
-
-    const {
-        isSupported,
-        isListening,
-        startListening,
-        stopListening,
-        error,
-        clearError,
-    } = useSpeechRecognition({
-        onResult: handleVoiceResult,
-    });
-
     const handleVoiceToggle = () => {
-        if (isListening) {
-            stopListening();
+        if (!voiceInput) return;
+
+        if (voiceInput.isListening) {
+            voiceInput.onStopListening();
         } else {
-            clearError();
-            startListening();
+            voiceInput.onClearError();
+            voiceInput.onStartListening();
         }
     };
+
+    const showVoiceInput = voiceInput !== undefined;
 
     return (
         <div className={cn("flex flex-col gap-2", className)}>
@@ -100,14 +73,14 @@ export function TitleEdit({
                 autoFocus={autoFocus}
             />
 
-            {enableVoiceInput && (
+            {showVoiceInput && (
                 <div className="flex items-start justify-end gap-2">
-                    {canRevert && (
+                    {canRevert && onRevert && (
                         <Button
                             variant="outline"
                             size="sm"
                             type="button"
-                            onPress={handleRevert}
+                            onPress={onRevert}
                             aria-label={t("voiceInput.revert")}
                         >
                             <Undo2 className="size-4" />
@@ -115,11 +88,11 @@ export function TitleEdit({
                         </Button>
                     )}
                     <VoiceInputButton
-                        isListening={isListening}
-                        isSupported={isSupported}
+                        isListening={voiceInput.isListening}
+                        isSupported={voiceInput.isSupported}
                         isDisabled={isDisabled}
                         onPress={handleVoiceToggle}
-                        error={error}
+                        error={voiceInput.error}
                     />
                 </div>
             )}
