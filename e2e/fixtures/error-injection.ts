@@ -5,11 +5,16 @@ export const test = base.extend<{
     setErrorMode: (mode: MockErrorMode) => Promise<void>;
 }>({
     setErrorMode: async ({ context }, use) => {
+        await context.setExtraHTTPHeaders({
+            "Mock-Error-Mode": "none",
+        });
+
         const setMode = async (mode: MockErrorMode) => {
             await context.setExtraHTTPHeaders({
                 "Mock-Error-Mode": mode,
             });
         };
+
         await use(setMode);
     },
 });
