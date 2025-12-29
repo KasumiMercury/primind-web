@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-import { fn } from "storybook/test";
+import { expect, fn, screen, userEvent, within } from "storybook/test";
 import { DeleteTaskDialog } from "~/features/task/components/delete-task-dialog";
 
 const meta = {
@@ -57,6 +57,19 @@ export const Default: Story = {
             </div>
         );
     },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+
+        // Open the dialog
+        const openButton = canvas.getByRole("button", {
+            name: "Open Delete Dialog",
+        });
+        await userEvent.click(openButton);
+
+        // Verify dialog is open (using screen because dialog is portaled)
+        const dialog = await screen.findByRole("dialog");
+        expect(dialog).toBeInTheDocument();
+    },
 };
 
 export const Deleting: Story = {
@@ -65,6 +78,18 @@ export const Deleting: Story = {
         isDeleting: true,
         error: false,
     },
+    play: async () => {
+        // Dialog is portaled, so use screen instead of canvas
+        const dialog = await screen.findByRole("dialog");
+        expect(dialog).toBeInTheDocument();
+
+        // Buttons inside dialog should be disabled during deletion
+        const dialogCanvas = within(dialog);
+        const buttons = dialogCanvas.getAllByRole("button");
+        for (const button of buttons) {
+            expect(button).toHaveAttribute("data-disabled", "true");
+        }
+    },
 };
 
 export const WithError: Story = {
@@ -72,5 +97,57 @@ export const WithError: Story = {
         open: true,
         isDeleting: false,
         error: true,
+    },
+    play: async () => {
+        // Dialog is portaled, so use screen
+        const dialog = await screen.findByRole("dialog");
+        expect(dialog).toBeInTheDocument();
+
+        // Error message should be displayed inside dialog
+        const dialogCanvas = within(dialog);
+        const errorElement = dialogCanvas.getByText(/error|エラー/i);
+        expect(errorElement).toBeInTheDocument();
+    },
+};
+
+export const ConfirmDeletion: Story = {
+    args: {
+        open: true,
+        isDeleting: false,
+        error: false,
+    },
+    play: async ({ args }) => {
+        // Dialog is portaled, so use screen
+        const dialog = await screen.findByRole("dialog");
+        const dialogCanvas = within(dialog);
+
+        // Find and click delete button
+        const deleteButton = dialogCanvas.getByRole("button", {
+            name: /delete|削除/i,
+        });
+        await userEvent.click(deleteButton);
+
+        expect(args.onConfirm).toHaveBeenCalled();
+    },
+};
+
+export const CancelDeletion: Story = {
+    args: {
+        open: true,
+        isDeleting: false,
+        error: false,
+    },
+    play: async ({ args }) => {
+        // Dialog is portaled, so use screen
+        const dialog = await screen.findByRole("dialog");
+        const dialogCanvas = within(dialog);
+
+        // Find and click cancel button
+        const cancelButton = dialogCanvas.getByRole("button", {
+            name: /cancel|キャンセル/i,
+        });
+        await userEvent.click(cancelButton);
+
+        expect(args.onCancel).toHaveBeenCalled();
     },
 };

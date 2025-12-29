@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { fn } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { VoiceInputButton } from "~/features/task/components/voice-input-button";
 
 const meta = {
@@ -48,6 +48,14 @@ export const Default: Story = {
     args: {
         isListening: false,
     },
+    play: async ({ canvasElement, args }) => {
+        const canvas = within(canvasElement);
+        const button = canvas.getByRole("button");
+
+        expect(button).toBeInTheDocument();
+        await userEvent.click(button);
+        expect(args.onPress).toHaveBeenCalled();
+    },
 };
 
 export const Listening: Story = {
@@ -61,12 +69,24 @@ export const Disabled: Story = {
         isListening: false,
         isDisabled: true,
     },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const button = canvas.getByRole("button");
+
+        expect(button).toHaveAttribute("data-disabled", "true");
+    },
 };
 
 export const WithError: Story = {
     args: {
         isListening: false,
         error: "Microphone access denied",
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const errorMessage = canvas.getByText("Microphone access denied");
+
+        expect(errorMessage).toBeInTheDocument();
     },
 };
 
@@ -81,5 +101,11 @@ export const Unsupported: Story = {
                 story: "When speech recognition is not supported, the button is not rendered at all.",
             },
         },
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const button = canvas.queryByRole("button");
+
+        expect(button).not.toBeInTheDocument();
     },
 };

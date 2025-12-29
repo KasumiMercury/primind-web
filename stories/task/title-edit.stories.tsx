@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-import { fn } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { TitleEdit } from "~/features/task/components/title-edit";
 
 const meta = {
@@ -212,5 +212,15 @@ export const Interactive: Story = {
                 }}
             />
         );
+    },
+    play: async ({ canvasElement, args }) => {
+        const canvas = within(canvasElement);
+        const input = canvas.getByRole("textbox");
+
+        await userEvent.clear(input);
+        await userEvent.type(input, "New Task Title");
+
+        expect(args.onChange).toHaveBeenCalled();
+        expect(input).toHaveValue("New Task Title");
     },
 };
