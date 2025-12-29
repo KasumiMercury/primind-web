@@ -16,6 +16,7 @@ export function FieldAddButton({
         <button
             type="button"
             onClick={onPress}
+            aria-label={label}
             className={cn(
                 "group flex w-full items-center justify-between rounded-md border border-muted-foreground/50 border-dashed p-3 text-left transition-colors",
                 "hover:border-primary hover:bg-accent",
