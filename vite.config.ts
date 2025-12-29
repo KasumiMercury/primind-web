@@ -26,7 +26,7 @@ export default defineConfig({
         }) as PluginOption,
         !isStorybook && reactRouter(),
         tsconfigPaths(),
-        babel({
+        !isStorybook && babel({
             filter: /\.[jt]sx?$/,
             babelConfig: {
                 presets: ["@babel/preset-typescript"],
