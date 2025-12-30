@@ -4,13 +4,13 @@ import { data } from "react-router";
 import { validate as uuidValidate, version as uuidVersion } from "uuid";
 import { MINIMUM_SCHEDULE_LEAD_TIME_MINUTES } from "~/features/task/constants";
 import { CreateTaskRequestSchema, TaskType } from "~/gen/task/v1/task_pb";
-import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
+import { withMockErrorContext } from "~/lib/mock-wrapper.server";
 import { createAuthContext } from "~/lib/request-context.server";
 import { taskLogger } from "./logger.server";
 import { getTaskClient } from "./task-client.server";
 
 export async function createTaskAction(request: Request) {
-    return withRequestErrorContext(request, async () => {
+    return withMockErrorContext(request, async () => {
         const { contextValues, sessionToken } =
             await createAuthContext(request);
 

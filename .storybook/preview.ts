@@ -4,7 +4,7 @@ import React from "react";
 import { Toaster } from "sonner";
 
 import "../app/app.css";
-import { toastOptions } from "../app/components/ui/toaster";
+import { toastOptions } from "../app/components/ui/toaster-positioned";
 
 const preview: Preview = {
     parameters: {

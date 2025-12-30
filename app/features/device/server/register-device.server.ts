@@ -4,7 +4,7 @@ import {
     Platform,
     RegisterDeviceRequestSchema,
 } from "~/gen/device/v1/device_pb";
-import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
+import { withMockErrorContext } from "~/lib/mock-wrapper.server";
 import { createAuthContext } from "~/lib/request-context.server";
 import { getDeviceClient } from "./device-client.server";
 import { deviceStorage, getDeviceSession } from "./device-cookie.server";
@@ -17,7 +17,7 @@ const platformMap: Record<string, Platform> = {
 };
 
 export async function registerDeviceAction(request: Request) {
-    return withRequestErrorContext(request, async () => {
+    return withMockErrorContext(request, async () => {
         const { contextValues } = await createAuthContext(request);
         const { deviceId: existingDeviceId, getSession } =
             await getDeviceSession(request);

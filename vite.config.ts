@@ -7,7 +7,14 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 const isStorybook = process.argv[1]?.includes("storybook");
 
+const isProd = process.env.NODE_ENV === "production";
+
 export default defineConfig({
+    define: isProd
+        ? {
+              "import.meta.env.VITE_USE_MOCK_API": JSON.stringify("false"),
+          }
+        : undefined,
     plugins: [
         tailwindcss(),
         VitePWA({
@@ -26,13 +33,14 @@ export default defineConfig({
         }) as PluginOption,
         !isStorybook && reactRouter(),
         tsconfigPaths(),
-        babel({
-            filter: /\.[jt]sx?$/,
-            babelConfig: {
-                presets: ["@babel/preset-typescript"],
-                plugins: [["babel-plugin-react-compiler"]],
-            },
-        }),
+        !isStorybook &&
+            babel({
+                filter: /\.[jt]sx?$/,
+                babelConfig: {
+                    presets: ["@babel/preset-typescript"],
+                    plugins: [["babel-plugin-react-compiler"]],
+                },
+            }),
     ],
     server: {
         host: "0.0.0.0",

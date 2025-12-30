@@ -1,6 +1,6 @@
 import { create } from "@bufbuild/protobuf";
 import { GetTaskRequestSchema } from "~/gen/task/v1/task_pb";
-import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
+import { withMockErrorContext } from "~/lib/mock-wrapper.server";
 import { createAuthContext } from "~/lib/request-context.server";
 import type { SerializableTask } from "./list-active-tasks.server";
 import { taskLogger } from "./logger.server";
@@ -15,7 +15,7 @@ export async function getTask(
     request: Request,
     taskId: string,
 ): Promise<GetTaskResult> {
-    return withRequestErrorContext(request, async () => {
+    return withMockErrorContext(request, async () => {
         const { contextValues, sessionToken } =
             await createAuthContext(request);
 

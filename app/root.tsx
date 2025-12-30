@@ -13,7 +13,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { RouterProvider } from "./components/router-provider";
 import { ThemeProvider } from "./components/theme-provider";
-import { AppToaster } from "./components/ui/toaster";
+import { AppToaster } from "./components/ui/app-toaster";
 import { getLocale, localeCookie } from "./lib/i18n/i18next.server";
 
 export const links: Route.LinksFunction = () => [

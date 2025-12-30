@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
+
+export type ToasterPosition = "top-center" | "bottom-right";
 
 export const toastOptions = {
     unstyled: true,
@@ -18,25 +19,10 @@ export const toastOptions = {
     },
 } as const;
 
-export function AppToaster() {
-    const [position, setPosition] = useState<"top-center" | "bottom-right">(
-        "bottom-right",
-    );
+export interface ToasterPositionedProps {
+    position: ToasterPosition;
+}
 
-    useEffect(() => {
-        const mediaQuery = window.matchMedia("(min-width: 768px)");
-
-        const updatePosition = (e: MediaQueryList | MediaQueryListEvent) => {
-            setPosition(e.matches ? "bottom-right" : "top-center");
-        };
-
-        updatePosition(mediaQuery);
-        mediaQuery.addEventListener("change", updatePosition);
-
-        return () => {
-            mediaQuery.removeEventListener("change", updatePosition);
-        };
-    }, []);
-
+export function ToasterPositioned({ position }: ToasterPositionedProps) {
     return <Toaster position={position} toastOptions={toastOptions} />;
 }

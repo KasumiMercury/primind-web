@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-import { fn } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { TitleEdit } from "~/features/task/components/title-edit";
 
 const meta = {
@@ -34,15 +34,14 @@ const meta = {
             control: "boolean",
             description: "Whether the input should auto-focus on mount",
         },
-        enableVoiceInput: {
+        canRevert: {
             control: "boolean",
-            description: "Whether to show the voice input button",
+            description: "Whether to show the revert button",
         },
     },
     args: {
         onChange: fn(),
         placeholder: "Enter title...",
-        enableVoiceInput: true,
     },
 } satisfies Meta<typeof TitleEdit>;
 
@@ -68,29 +67,122 @@ export const Disabled: Story = {
     },
 };
 
-export const WithVoiceInput: Story = {
+export const WithoutVoiceInput: Story = {
     args: {
         value: "",
-        enableVoiceInput: true,
+        voiceInput: undefined,
     },
     parameters: {
         docs: {
             description: {
-                story: "Shows the voice input button below the input field (right-aligned). The button is only visible when the browser supports the Web Speech API.",
+                story: "Voice input is hidden when voiceInput prop is undefined.",
             },
         },
     },
 };
 
-export const WithoutVoiceInput: Story = {
+export const VoiceInputSupported: Story = {
     args: {
         value: "",
-        enableVoiceInput: false,
+        voiceInput: {
+            isSupported: true,
+            isListening: false,
+            error: null,
+            onStartListening: fn(),
+            onStopListening: fn(),
+            onClearError: fn(),
+        },
     },
     parameters: {
         docs: {
             description: {
-                story: "Voice input can be disabled by setting enableVoiceInput to false.",
+                story: "Voice input button is shown when browser supports the Web Speech API.",
+            },
+        },
+    },
+};
+
+export const VoiceInputListening: Story = {
+    args: {
+        value: "Previous text",
+        voiceInput: {
+            isSupported: true,
+            isListening: true,
+            error: null,
+            onStartListening: fn(),
+            onStopListening: fn(),
+            onClearError: fn(),
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "Voice input button shows listening state when actively recording.",
+            },
+        },
+    },
+};
+
+export const VoiceInputError: Story = {
+    args: {
+        value: "",
+        voiceInput: {
+            isSupported: true,
+            isListening: false,
+            error: "Microphone access denied",
+            onStartListening: fn(),
+            onStopListening: fn(),
+            onClearError: fn(),
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "Voice input shows error state when speech recognition fails.",
+            },
+        },
+    },
+};
+
+export const VoiceInputUnsupported: Story = {
+    args: {
+        value: "",
+        voiceInput: {
+            isSupported: false,
+            isListening: false,
+            error: null,
+            onStartListening: fn(),
+            onStopListening: fn(),
+            onClearError: fn(),
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "Voice input button is hidden when speech recognition is not supported.",
+            },
+        },
+    },
+};
+
+export const WithRevertButton: Story = {
+    args: {
+        value: "Text after voice input",
+        canRevert: true,
+        onRevert: fn(),
+        voiceInput: {
+            isSupported: true,
+            isListening: false,
+            error: null,
+            onStartListening: fn(),
+            onStopListening: fn(),
+            onClearError: fn(),
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: "Revert button is shown when canRevert is true, allowing users to undo voice input.",
             },
         },
     },
@@ -99,6 +191,14 @@ export const WithoutVoiceInput: Story = {
 export const Interactive: Story = {
     args: {
         value: "",
+        voiceInput: {
+            isSupported: true,
+            isListening: false,
+            error: null,
+            onStartListening: fn(),
+            onStopListening: fn(),
+            onClearError: fn(),
+        },
     },
     render: (args) => {
         const [value, setValue] = React.useState(args.value);
@@ -112,5 +212,15 @@ export const Interactive: Story = {
                 }}
             />
         );
+    },
+    play: async ({ canvasElement, args }) => {
+        const canvas = within(canvasElement);
+        const input = canvas.getByRole("textbox");
+
+        await userEvent.clear(input);
+        await userEvent.type(input, "New Task Title");
+
+        expect(args.onChange).toHaveBeenCalled();
+        expect(input).toHaveValue("New Task Title");
     },
 };
