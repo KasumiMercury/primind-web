@@ -33,9 +33,23 @@ const DEFAULT_TTL_MS = 5 * 60 * 1000; // 5 minutes
 class MockRegistryImpl implements MockRegistryInterface {
     private mocks = new Map<string, MockConfig[]>();
     private cleanupInterval: ReturnType<typeof setInterval> | null = null;
+    private destroyed = false;
+    private boundDestroy: () => void;
 
     constructor() {
+        this.boundDestroy = () => this.destroy();
         this.cleanupInterval = setInterval(() => this.cleanup(), 60 * 1000);
+
+        process.on("exit", this.boundDestroy);
+        process.on("SIGINT", this.boundDestroy);
+        process.on("SIGTERM", this.boundDestroy);
+
+        if (process.env.NODE_ENV === "production") {
+            console.warn(
+                "[MockRegistry] WARNING: Mock API registry is active in production mode. " +
+                    "This should only be used for testing purposes.",
+            );
+        }
     }
 
     register(config: Omit<MockConfig, "createdAt">): void {
@@ -99,10 +113,20 @@ class MockRegistryImpl implements MockRegistryInterface {
     }
 
     destroy(): void {
+        if (this.destroyed) {
+            return;
+        }
+        this.destroyed = true;
+
         if (this.cleanupInterval) {
             clearInterval(this.cleanupInterval);
             this.cleanupInterval = null;
         }
+
+        process.off("exit", this.boundDestroy);
+        process.off("SIGINT", this.boundDestroy);
+        process.off("SIGTERM", this.boundDestroy);
+
         this.mocks.clear();
     }
 }
