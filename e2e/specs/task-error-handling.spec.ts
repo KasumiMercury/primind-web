@@ -1,16 +1,21 @@
 import type { Page } from "@playwright/test";
-import { expect, test } from "../fixtures/error-injection";
+import { Code, expect, test } from "../fixtures";
 
 test.describe("Task Error Handling", () => {
     async function authenticate(page: Page) {
+        // Wait for the Login Required alert to be visible and stable
+        const loginButton = page.locator('button:has-text("Login")');
+        await expect(loginButton.first()).toBeVisible({ timeout: 10000 });
+
         // Click the login button in the Login Required alert
-        await page.click('button:has-text("Login")');
+        await loginButton.first().click();
 
         // Wait for the login dialog to appear
-        await expect(
-            page.locator('[data-slot="dialog-overlay"]').first(),
-        ).toBeVisible({
-            timeout: 5000,
+        const dialogOverlay = page
+            .locator('[data-slot="dialog-overlay"]')
+            .first();
+        await expect(dialogOverlay).toBeVisible({
+            timeout: 10000,
         });
 
         // Click Sign in with Google and wait for navigation
@@ -51,18 +56,23 @@ test.describe("Task Error Handling", () => {
         });
     }
 
-    test.beforeEach(async ({ page, setErrorMode: _ }) => {
-        // Ensure mock error header is set before navigation
+    test.beforeEach(async ({ page, mockApi: _ }) => {
+        // mockApi fixture is destructured to ensure headers are set before navigation
         await page.goto("/");
+        // Wait for page to be fully loaded and interactive
+        await page.waitForLoadState("networkidle");
     });
 
     test("displays error feedback when task creation fails", async ({
         page,
-        setErrorMode,
+        mockApi,
     }) => {
         await authenticate(page);
 
-        await setErrorMode("task.create.fail");
+        await mockApi.task.mockCreateTaskError(
+            Code.Internal,
+            "Failed to create task: internal server error",
+        );
 
         const operationArea = page.locator(".fixed.inset-x-0.bottom-0");
         const centerButton = operationArea.locator("button").nth(1);
@@ -75,7 +85,7 @@ test.describe("Task Error Handling", () => {
 
     test("displays error feedback when task update fails", async ({
         page,
-        setErrorMode,
+        mockApi,
     }) => {
         await authenticate(page);
 
@@ -98,10 +108,13 @@ test.describe("Task Error Handling", () => {
         const titleInput = dialog.getByRole("textbox").first();
         await expect(titleInput).toBeVisible({ timeout: 5000 });
 
-        // Fill title first, then set error mode, then click save
+        // Fill title first, then set error mock, then click save
         await titleInput.fill("Test Task");
 
-        await setErrorMode("task.update.fail");
+        await mockApi.task.mockUpdateTaskError(
+            Code.Internal,
+            "Failed to save changes",
+        );
         // Ensure network is idle before making the error-triggering request
         await page.waitForLoadState("networkidle");
 
@@ -117,7 +130,7 @@ test.describe("Task Error Handling", () => {
 
     test("displays error in delete dialog when delete fails", async ({
         page,
-        setErrorMode,
+        mockApi,
     }) => {
         await authenticate(page);
 
@@ -129,8 +142,11 @@ test.describe("Task Error Handling", () => {
         const dialog = page.locator('[data-slot="dialog-content"]').first();
         await expect(dialog).toBeVisible({ timeout: 5000 });
 
-        // Set error mode for delete operation before confirming delete
-        await setErrorMode("task.delete.fail");
+        // Set error mock for delete operation before confirming delete
+        await mockApi.task.mockDeleteTaskError(
+            Code.Internal,
+            "Failed to delete task",
+        );
 
         // Open delete confirmation from Quick Edit dialog
         const deleteButton = dialog.locator('[aria-label="Delete Task"]');
