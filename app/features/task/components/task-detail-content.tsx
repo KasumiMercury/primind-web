@@ -190,11 +190,14 @@ export function TaskDetailContent({
                                 {t("taskDetail.status")}
                             </h3>
                             <p className="text-foreground">
-                                {getStatusLabel(task.taskStatus)}
+                                {completeSuccess
+                                    ? t("taskDetail.statusCompleted")
+                                    : getStatusLabel(task.taskStatus)}
                             </p>
                         </div>
                         {task.taskStatus === TaskStatus.ACTIVE &&
                             onComplete &&
+                            !completeSuccess &&
                             (completeError ? (
                                 <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-red-600 text-sm text-white">
                                     <X className="size-5" />
