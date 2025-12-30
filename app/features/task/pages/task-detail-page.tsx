@@ -49,6 +49,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
     const [completeError, setCompleteError] = useState(false);
+    const [completeSuccess, setCompleteSuccess] = useState(false);
 
     const completeResetTimer = useRef<ReturnType<typeof setTimeout> | null>(
         null,
@@ -127,6 +128,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                 });
 
                 if (result.success) {
+                    setCompleteSuccess(true);
                     // Trigger confetti and navigate after animation ends
                     triggerConfetti(() => {
                         revalidate();
@@ -179,6 +181,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     deleteError={deleteError}
                     onComplete={handleComplete}
                     isCompleting={isCompletePending}
+                    completeSuccess={completeSuccess}
                     completeError={completeError}
                 />
             </div>

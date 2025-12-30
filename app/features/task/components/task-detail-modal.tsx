@@ -59,6 +59,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
     const [completeError, setCompleteError] = useState(false);
+    const [completeSuccess, setCompleteSuccess] = useState(false);
 
     // Keep callback ref updated to avoid stale closure
     const syncWithExternalDataRef = useRef(syncWithExternalData);
@@ -127,6 +128,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
 
                 if (result.success) {
                     setCompleteError(false);
+                    setCompleteSuccess(true);
                     // Trigger confetti and navigate after animation ends
                     triggerConfetti(() => {
                         revalidate();
@@ -175,6 +177,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
                     deleteError={deleteError}
                     onComplete={handleComplete}
                     isCompleting={isCompletePending}
+                    completeSuccess={completeSuccess}
                     completeError={completeError}
                 />
             </DialogContent>
