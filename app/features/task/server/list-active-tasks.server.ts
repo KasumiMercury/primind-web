@@ -6,7 +6,7 @@ import {
     type TaskStatus,
     type TaskType,
 } from "~/gen/task/v1/task_pb";
-import { withRequestErrorContext } from "~/lib/mock-error-injection.server";
+import { withMockErrorContext } from "~/lib/mock-wrapper.server";
 import { createAuthContext } from "~/lib/request-context.server";
 import { taskLogger } from "./logger.server";
 import { getTaskClient } from "./task-client.server";
@@ -55,7 +55,7 @@ export interface ActiveTasksResult {
 export async function listActiveTasks(
     request: Request,
 ): Promise<ActiveTasksResult> {
-    return withRequestErrorContext(request, async () => {
+    return withMockErrorContext(request, async () => {
         const { contextValues, sessionToken } =
             await createAuthContext(request);
 
