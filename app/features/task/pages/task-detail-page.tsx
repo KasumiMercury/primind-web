@@ -5,6 +5,7 @@ import { LinkButton } from "~/components/ui/link-button";
 import { TaskStatus } from "~/gen/task/v1/task_pb";
 import { orpc } from "~/orpc/client";
 import { TaskDetailContent } from "../components/task-detail-content";
+import { useTaskCompleteConfetti } from "../hooks/use-task-complete-confetti";
 import { useTaskEdit } from "../hooks/use-task-edit";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 
@@ -13,6 +14,7 @@ interface TaskDetailPageProps {
 }
 
 const ERROR_DISPLAY_DURATION_MS = 2500;
+const CONFETTI_REWARD_ID = "task-complete-confetti-page";
 
 export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const {
@@ -24,6 +26,10 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     const { revalidate } = useRevalidator();
     const [isDeletePending, startDeleteTransition] = useTransition();
     const [isCompletePending, startCompleteTransition] = useTransition();
+
+    const { triggerConfetti, confettiAnchor } = useTaskCompleteConfetti({
+        rewardId: CONFETTI_REWARD_ID,
+    });
 
     const {
         lastSavedTitle,
@@ -121,8 +127,11 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                 });
 
                 if (result.success) {
-                    revalidate();
-                    navigate("/", { replace: true });
+                    // Trigger confetti and navigate after animation ends
+                    triggerConfetti(() => {
+                        revalidate();
+                        navigate("/", { replace: true });
+                    });
                 } else {
                     setCompleteError(true);
                     if (completeResetTimer.current) {
@@ -173,6 +182,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     completeError={completeError}
                 />
             </div>
+            {confettiAnchor}
         </div>
     );
 }
