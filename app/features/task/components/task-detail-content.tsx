@@ -197,7 +197,7 @@ export function TaskDetailContent({
                         </div>
                         {task.taskStatus === TaskStatus.ACTIVE &&
                             onComplete &&
-                            !completeSuccess &&
+                            // !completeSuccess &&
                             (completeError ? (
                                 <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-red-600 text-sm text-white">
                                     <X className="size-5" />
