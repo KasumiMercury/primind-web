@@ -1,8 +1,4 @@
 import { Code } from "@connectrpc/connect";
-import {
-    TaskStatus,
-    TaskType,
-} from "../../../app/gen/task/v1/task_pb";
 import type {
     CreateTaskResponse as GeneratedCreateTaskResponse,
     DeleteTaskResponse as GeneratedDeleteTaskResponse,
@@ -11,6 +7,7 @@ import type {
     Task as GeneratedTask,
     UpdateTaskResponse as GeneratedUpdateTaskResponse,
 } from "../../../app/gen/task/v1/task_pb";
+import { TaskStatus, TaskType } from "../../../app/gen/task/v1/task_pb";
 import type { OmitProtoFields, TimestampJson } from "./types";
 
 export { Code, TaskStatus, TaskType };
