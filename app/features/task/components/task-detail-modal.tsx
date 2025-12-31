@@ -11,6 +11,7 @@ import { orpc } from "~/orpc/client";
 import { useTaskCompleteConfetti } from "../hooks/use-task-complete-confetti";
 import { useTaskEdit } from "../hooks/use-task-edit";
 import type { SerializableTask } from "../server/list-active-tasks.server";
+import { RecreateTaskDialog } from "./recreate-task-dialog";
 import { TaskDetailContent } from "./task-detail-content";
 
 interface TaskDetailModalProps {
@@ -60,6 +61,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const [deleteError, setDeleteError] = useState(false);
     const [completeError, setCompleteError] = useState(false);
     const [completeSuccess, setCompleteSuccess] = useState(false);
+    const [showRecreateDialog, setShowRecreateDialog] = useState(false);
 
     // Keep callback ref updated to avoid stale closure
     const syncWithExternalDataRef = useRef(syncWithExternalData);
@@ -117,6 +119,20 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
         setDeleteError(false);
     };
 
+    const handleRecreate = () => {
+        setShowRecreateDialog(true);
+    };
+
+    const handleRecreateComplete = () => {
+        setShowRecreateDialog(false);
+        revalidate();
+        navigate("/", { replace: true, preventScrollReset: true });
+    };
+
+    const handleRecreateCancel = () => {
+        setShowRecreateDialog(false);
+    };
+
     const handleComplete = () => {
         startCompleteTransition(async () => {
             try {
@@ -169,6 +185,8 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
                     onDelete={handleDelete}
                     onDeleteConfirm={handleDeleteConfirm}
                     onDeleteCancel={handleDeleteCancel}
+                    onRecreate={handleRecreate}
+                    isRecreating={showRecreateDialog}
                     isSaving={isSaving}
                     saveSuccess={saveSuccess}
                     saveError={saveError}
@@ -182,6 +200,13 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
                 />
             </DialogContent>
             {confettiAnchor}
+            <RecreateTaskDialog
+                open={showRecreateDialog}
+                onOpenChange={setShowRecreateDialog}
+                task={task}
+                onRecreateComplete={handleRecreateComplete}
+                onCancel={handleRecreateCancel}
+            />
         </>
     );
 }
