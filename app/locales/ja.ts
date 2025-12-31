@@ -56,6 +56,24 @@ export default {
         error: "タスクの削除に失敗しました。もう一度お試しください。",
     },
 
+    // Recreate Task Dialog
+    recreateTask: {
+        button: "作り直し",
+        dialogTitle: "タスクを作り直す",
+        selectType: "新しいタスクタイプを選択",
+        currentType: "現在のタイプ",
+        confirmTitle: "作り直しの確認",
+        confirmDescription: "以下の内容でタスクを作り直します：",
+        newType: "新しいタスクタイプ",
+        scheduledTime: "予定日時",
+        recreating: "作り直し中...",
+        success: "タスクを作り直しました",
+        errorCreate: "新しいタスクの作成に失敗しました",
+        errorGeneric: "タスクの作り直しに失敗しました",
+        confirm: "作り直す",
+        back: "戻る",
+    },
+
     // Schedule Task Modal
     scheduleTask: {
         title: "タスクをスケジュール",

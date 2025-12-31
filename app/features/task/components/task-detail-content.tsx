@@ -1,4 +1,4 @@
-import { Check, Loader2, Trash, X } from "lucide-react";
+import { Check, Loader2, RefreshCw, Trash, X } from "lucide-react";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
@@ -28,6 +28,9 @@ interface TaskDetailContentProps {
     onDelete: () => void;
     onDeleteConfirm?: () => void;
     onDeleteCancel?: () => void;
+
+    onRecreate?: () => void;
+    isRecreating?: boolean;
 
     isSaving?: boolean;
     saveSuccess?: boolean;
@@ -69,6 +72,8 @@ export function TaskDetailContent({
     onDelete,
     onDeleteConfirm,
     onDeleteCancel,
+    onRecreate,
+    isRecreating = false,
     isSaving = false,
     saveSuccess = false,
     saveError = false,
@@ -265,18 +270,32 @@ export function TaskDetailContent({
                         )}
                     </div>
 
-                    <div className="flex justify-start border-t pt-4">
+                    <div className="flex justify-start gap-2 border-t pt-4">
                         <Button
                             variant="ghost"
                             size="icon"
                             type="button"
                             onPress={onDelete}
-                            isDisabled={isDeleting || isSaving}
+                            isDisabled={isDeleting || isSaving || isRecreating}
                             className="text-destructive data-hovered:bg-destructive/10"
                             aria-label={t("taskDetail.deleteTask")}
                         >
                             <Trash className="size-4" />
                         </Button>
+                        {onRecreate && (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                type="button"
+                                onPress={onRecreate}
+                                isDisabled={
+                                    isDeleting || isSaving || isRecreating
+                                }
+                                aria-label={t("recreateTask.button")}
+                            >
+                                <RefreshCw className="size-4" />
+                            </Button>
+                        )}
                     </div>
                 </div>
 
