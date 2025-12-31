@@ -8,7 +8,6 @@ import {
     DialogTitle,
 } from "~/components/ui/dialog";
 import { orpc } from "~/orpc/client";
-import { getRandomTaskColor } from "../lib/task-colors";
 import {
     getTaskTypeFromKey,
     TASK_TYPE_KEYS,
@@ -112,7 +111,7 @@ export function RecreateTaskDialog({
             setError(null);
 
             const newTaskId = uuidv7();
-            const color = getRandomTaskColor();
+            const color = task.color;
 
             try {
                 // Create new task
