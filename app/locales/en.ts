@@ -56,6 +56,25 @@ export default {
         error: "Failed to delete this task. Please try again.",
     },
 
+    // Recreate Task Dialog
+    recreateTask: {
+        button: "Recreate",
+        dialogTitle: "Recreate Task",
+        selectType: "Select new task type",
+        currentType: "Current type",
+        confirmTitle: "Confirm Recreation",
+        confirmDescription:
+            "The task will be recreated with the following details:",
+        newType: "New Task Type",
+        scheduledTime: "Scheduled Time",
+        recreating: "Recreating...",
+        success: "Task recreated successfully",
+        errorCreate: "Failed to create new task",
+        errorGeneric: "Failed to recreate task",
+        confirm: "Recreate",
+        back: "Back",
+    },
+
     // Schedule Task Modal
     scheduleTask: {
         title: "Schedule Task",
