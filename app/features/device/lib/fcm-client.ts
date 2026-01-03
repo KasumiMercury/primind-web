@@ -11,6 +11,7 @@ import {
     onMessage,
     type Unsubscribe,
 } from "firebase/messaging";
+import { validate as uuidValidate, version as uuidVersion } from "uuid";
 import {
     firebaseConfig,
     hasFirebaseConfig,
@@ -20,6 +21,16 @@ import {
 
 const DEFAULT_NOTIFICATION_TITLE = "New Notification";
 const DEFAULT_NOTIFICATION_ICON = "/favicon.ico";
+
+function resolveTaskUrl(
+    data: Record<string, string> | undefined,
+): string | null {
+    const taskId = data?.task_id;
+    if (!taskId || !uuidValidate(taskId) || uuidVersion(taskId) !== 7) {
+        return null;
+    }
+    return `/tasks/${taskId}`;
+}
 
 const SW_ACTIVATION_TIMEOUT_MS = 30000;
 const FCM_TOKEN_RETRY_COUNT = 3;
@@ -203,7 +214,9 @@ export function setupForegroundMessageHandler(
                 const notificationPayload = payload.notification as
                     | { click_action?: string }
                     | undefined;
+                const taskUrl = resolveTaskUrl(payload.data);
                 const url =
+                    taskUrl ??
                     payload.data?.url ??
                     fcmOptions?.link ??
                     notificationPayload?.click_action ??

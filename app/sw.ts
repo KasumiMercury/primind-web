@@ -7,6 +7,7 @@ import {
     type Messaging,
     onBackgroundMessage,
 } from "firebase/messaging/sw";
+import { validate as uuidValidate, version as uuidVersion } from "uuid";
 import {
     firebaseConfig,
     hasFirebaseConfig,
@@ -20,7 +21,21 @@ const DEFAULT_URL = "/";
 
 let messaging: Messaging | null = null;
 
+function resolveTaskUrl(
+    data: Record<string, string> | undefined,
+): string | null {
+    const taskId = data?.task_id;
+    if (!taskId || !uuidValidate(taskId) || uuidVersion(taskId) !== 7) {
+        return null;
+    }
+    return `/tasks/${taskId}`;
+}
+
 function resolveNotificationUrl(payload: MessagePayload): string {
+    const taskUrl = resolveTaskUrl(payload.data);
+    if (taskUrl) {
+        return taskUrl;
+    }
     const fcmOptions = (payload as { fcmOptions?: { link?: string } })
         .fcmOptions;
     const notification = payload.notification as
