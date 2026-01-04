@@ -1,5 +1,5 @@
 import { Info } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useRevalidator } from "react-router";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
@@ -29,10 +29,14 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
         null,
     );
 
+    // track previous authentication state to detect logout
+    const lastAuthenticatedRef = useRef(isAuthenticated);
     useEffect(() => {
-        if (!isAuthenticated) {
+        // clear latestTask only when user logs out
+        if (lastAuthenticatedRef.current && !isAuthenticated) {
             setLatestTask(null);
         }
+        lastAuthenticatedRef.current = isAuthenticated;
     }, [isAuthenticated]);
 
     const handleDeleted = () => {
