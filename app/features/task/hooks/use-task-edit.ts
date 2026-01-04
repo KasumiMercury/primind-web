@@ -1,10 +1,4 @@
-import {
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-    useTransition,
-} from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import type { EditedValues } from "../components/quick-edit-content";
 import { useTaskService } from "./use-task-service";
 

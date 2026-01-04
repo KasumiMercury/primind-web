@@ -126,7 +126,10 @@ export function QuickEditModal({
                 deleteError={deleteError}
             />
             {!isDirty && (
-                <Button className="mt-4 w-full" onPress={() => onClosedRef.current?.()}>
+                <Button
+                    className="mt-4 w-full"
+                    onPress={() => onClosedRef.current?.()}
+                >
                     OK
                 </Button>
             )}
