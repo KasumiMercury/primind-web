@@ -7,9 +7,9 @@ import {
     DialogTitle,
 } from "~/components/ui/dialog";
 import { TaskStatus } from "~/gen/task/v1/task_pb";
-import { orpc } from "~/orpc/client";
 import { useTaskCompleteConfetti } from "../hooks/use-task-complete-confetti";
 import { useTaskEdit } from "../hooks/use-task-edit";
+import { useTaskService } from "../hooks/use-task-service";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { RecreateTaskDialog } from "./recreate-task-dialog";
 import { TaskDetailContent } from "./task-detail-content";
@@ -28,6 +28,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     } = task;
     const navigate = useNavigate();
     const { revalidate } = useRevalidator();
+    const taskService = useTaskService();
     const [isDeletePending, startDeleteTransition] = useTransition();
     const [isCompletePending, startCompleteTransition] = useTransition();
 
@@ -98,9 +99,9 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const handleDeleteConfirm = () => {
         startDeleteTransition(async () => {
             try {
-                const result = await orpc.task.delete({ taskId });
+                const result = await taskService.delete(taskId);
 
-                if (result.success) {
+                if (result.data.success) {
                     setDeleteError(false);
                     setShowDeleteConfirm(false);
                     revalidate();
@@ -136,13 +137,13 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
     const handleComplete = () => {
         startCompleteTransition(async () => {
             try {
-                const result = await orpc.task.update({
+                const result = await taskService.update({
                     taskId,
                     taskStatus: TaskStatus.COMPLETED,
                     updateMask: ["task_status"],
                 });
 
-                if (result.success) {
+                if (!result.error) {
                     setCompleteError(false);
                     setCompleteSuccess(true);
                     // Trigger confetti and navigate after animation ends

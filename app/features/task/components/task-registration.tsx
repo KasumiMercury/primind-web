@@ -1,7 +1,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { v7 as uuidv7 } from "uuid";
-import { orpc } from "~/orpc/client";
+import { useTaskService } from "../hooks/use-task-service";
 import { getRandomTaskColor } from "../lib/task-colors";
 import { getTaskTypeFromKey, type TaskTypeKey } from "../lib/task-type-items";
 import { OperationArea } from "./operation-area";
@@ -12,6 +12,7 @@ export interface TaskRegistrationEvent {
     taskTypeKey: TaskTypeKey;
     color: string;
     scheduledAt?: Date;
+    isLocalOperation: boolean;
 }
 
 interface TaskRegistrationProps {
@@ -26,6 +27,7 @@ export function TaskRegistration({
     onTaskRegistered,
 }: TaskRegistrationProps) {
     const [isPending, startTransition] = useTransition();
+    const taskService = useTaskService();
 
     const [showScheduledModal, setShowScheduledModal] = useState(false);
     const [pendingRegistration, setPendingRegistration] = useState<{
@@ -49,18 +51,23 @@ export function TaskRegistration({
 
         startTransition(async () => {
             try {
-                const result = await orpc.task.create({
+                const result = await taskService.create({
                     taskId,
                     taskType: getTaskTypeFromKey(taskTypeKey),
                     color,
                 });
 
-                if (!result.success) {
+                if (result.error) {
                     toast.error(result.error || "failed to create task");
                     return;
                 }
 
-                onTaskRegistered?.({ taskId, taskTypeKey, color });
+                onTaskRegistered?.({
+                    taskId,
+                    taskTypeKey,
+                    color,
+                    isLocalOperation: result.isLocalOperation,
+                });
             } catch {
                 toast.error("failed to create task");
             }
@@ -76,14 +83,14 @@ export function TaskRegistration({
 
         startTransition(async () => {
             try {
-                const result = await orpc.task.create({
+                const result = await taskService.create({
                     taskId,
                     taskType: getTaskTypeFromKey("scheduled"),
                     color,
                     scheduledAt: scheduledAt.toISOString(),
                 });
 
-                if (!result.success) {
+                if (result.error) {
                     toast.error(result.error || "failed to create task");
                     return;
                 }
@@ -93,6 +100,7 @@ export function TaskRegistration({
                     taskTypeKey: "scheduled",
                     color,
                     scheduledAt,
+                    isLocalOperation: result.isLocalOperation,
                 });
             } catch {
                 toast.error("failed to create task");

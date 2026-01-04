@@ -1,8 +1,13 @@
 import type { ShouldRevalidateFunctionArgs } from "react-router";
 import { Outlet, useLocation, useOutletContext } from "react-router";
+import { Loading } from "~/components/ui/loading";
 import { getUserSession } from "~/features/auth/server/session.server";
+import { useGuestInitialLoad } from "~/features/task/hooks/use-guest-initial-load";
 import { HomeView } from "~/features/task/pages/task-list-view";
+import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
 import { listActiveTasks } from "~/features/task/server/list-active-tasks.server";
+import { getTaskDB } from "~/features/task/store/db.client";
+import { TaskStatus } from "~/gen/task/v1/task_pb";
 import type { Route } from "./+types/home-shell";
 
 export interface HomeShellContext {
@@ -35,6 +40,47 @@ export async function loader({ request }: Route.LoaderArgs) {
     };
 }
 
+export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
+    const serverData = await serverLoader();
+
+    if (serverData.isAuthenticated) {
+        return serverData;
+    }
+
+    // fetch from IndexedDB
+    const db = getTaskDB();
+    if (!db) {
+        return {
+            ...serverData,
+            tasks: [] as SerializableTask[],
+        };
+    }
+
+    try {
+        const localTasks = await db.tasks
+            .where("taskStatus")
+            .equals(TaskStatus.ACTIVE)
+            .toArray();
+
+        localTasks.sort(
+            (a, b) =>
+                Number(a.targetAt?.seconds ?? Infinity) -
+                Number(b.targetAt?.seconds ?? Infinity),
+        );
+
+        return {
+            ...serverData,
+            tasks: localTasks as SerializableTask[],
+        };
+    } catch (error) {
+        console.error("Failed to load local tasks:", error);
+        return {
+            ...serverData,
+            tasks: [] as SerializableTask[],
+        };
+    }
+}
+
 // Prevent loader re-run when navigating from home to task detail
 export function shouldRevalidate({
     currentUrl,
@@ -53,12 +99,11 @@ export function shouldRevalidate({
 
 export default function HomeShellLayout({ loaderData }: Route.ComponentProps) {
     const location = useLocation();
+    const { isAuthenticated, tasks } = loaderData;
 
-    const tasks = loaderData.tasks;
-    const isAuthenticated = loaderData.isAuthenticated;
+    const { isLoading } = useGuestInitialLoad({ isAuthenticated });
 
     const isModal = location.state?.modal === true;
-
     const isHomeRoute = location.pathname === "/";
 
     const outletContext: HomeShellContext = {
@@ -69,7 +114,6 @@ export default function HomeShellLayout({ loaderData }: Route.ComponentProps) {
 
     return (
         <>
-            {/* HomeView is always mounted, visibility controlled by CSS */}
             <div
                 className="contents"
                 style={{
@@ -77,7 +121,11 @@ export default function HomeShellLayout({ loaderData }: Route.ComponentProps) {
                 }}
                 aria-hidden={!showHomeView}
             >
-                <HomeView tasks={tasks} isAuthenticated={isAuthenticated} />
+                {isLoading ? (
+                    <Loading />
+                ) : (
+                    <HomeView tasks={tasks} isAuthenticated={isAuthenticated} />
+                )}
             </div>
 
             <Outlet context={outletContext} />

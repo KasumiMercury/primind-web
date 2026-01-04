@@ -155,5 +155,10 @@ export default {
         failedToLogout: "ログアウトに失敗しました。もう一度お試しください。",
         failedToLogin: "ログインの開始に失敗しました",
         authFailed: "認証に失敗しました",
+        unsupportedBrowser: {
+            title: "非対応のブラウザ",
+            description:
+                "このブラウザには対応しておりません。別のブラウザをお試しください。",
+        },
     },
 } as const;
