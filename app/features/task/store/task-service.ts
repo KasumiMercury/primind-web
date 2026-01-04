@@ -297,16 +297,6 @@ function createLocalTaskService(): TaskService {
                                 updates.color = input.color;
                             }
                             break;
-                        case "scheduled_at":
-                            if (input.scheduledAt !== undefined) {
-                                updates.scheduledAt = {
-                                    seconds: Math.floor(
-                                        new Date(input.scheduledAt).getTime() /
-                                            1000,
-                                    ).toString(),
-                                };
-                            }
-                            break;
                     }
                 }
 
