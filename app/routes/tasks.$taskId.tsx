@@ -1,5 +1,6 @@
 import { data } from "react-router";
 import { Loading } from "~/components/ui/loading";
+import { UnsupportedBrowser } from "~/components/ui/unsupported-browser";
 import { getUserSession } from "~/features/auth/server/session.server";
 import { TaskDetailModal } from "~/features/task/components/task-detail-modal";
 import { useGuestInitialLoad } from "~/features/task/hooks/use-guest-initial-load";
@@ -50,13 +51,18 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
     const serverData = await serverLoader();
 
     if (serverData.isAuthenticated && serverData.task) {
-        return serverData;
+        return { ...serverData, storageUnavailable: false };
     }
 
     // fetch from IndexedDB
     const db = getTaskDB();
     if (!db) {
-        throw data({ message: "Task not found" }, { status: 404 });
+        return {
+            task: null,
+            isAuthenticated: false,
+            taskId: serverData.taskId,
+            storageUnavailable: true,
+        };
     }
 
     try {
@@ -70,6 +76,7 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
             task: task as SerializableTask,
             isAuthenticated: false,
             taskId: serverData.taskId,
+            storageUnavailable: false,
         };
     } catch (error) {
         if (error instanceof Response) {
@@ -89,6 +96,10 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
 
     if (isLoading) {
         return <Loading />;
+    }
+
+    if ("storageUnavailable" in loaderData && loaderData.storageUnavailable) {
+        return <UnsupportedBrowser />;
     }
 
     if (!loaderData.task) {
