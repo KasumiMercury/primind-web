@@ -92,7 +92,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
             try {
                 const result = await taskService.delete(taskId);
 
-                if (result.data.success) {
+                if (!result.error) {
                     setShowDeleteConfirm(false);
                     setDeleteError(false);
                     revalidate();
