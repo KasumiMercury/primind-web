@@ -60,7 +60,13 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
         const localTasks = await db.tasks
             .where("taskStatus")
             .equals(TaskStatus.ACTIVE)
-            .sortBy("targetAt.seconds");
+            .toArray();
+
+        localTasks.sort(
+            (a, b) =>
+                Number(a.targetAt?.seconds ?? Infinity) -
+                Number(b.targetAt?.seconds ?? Infinity),
+        );
 
         return {
             ...serverData,

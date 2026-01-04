@@ -370,7 +370,13 @@ function createLocalTaskService(): TaskService {
                 const tasks = await db.tasks
                     .where("taskStatus")
                     .equals(TaskStatus.ACTIVE)
-                    .sortBy("targetAt.seconds");
+                    .toArray();
+
+                tasks.sort(
+                    (a, b) =>
+                        Number(a.targetAt?.seconds ?? Infinity) -
+                        Number(b.targetAt?.seconds ?? Infinity),
+                );
 
                 return {
                     data: { tasks },
