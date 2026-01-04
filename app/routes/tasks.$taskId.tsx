@@ -102,7 +102,11 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
         return <UnsupportedBrowser />;
     }
 
-    const task = loaderData.task as SerializableTask;
+    if (!loaderData.task) {
+        throw data({ message: "Task not found" }, { status: 404 });
+    }
+
+    const task = loaderData.task;
 
     if (isModal) {
         return <TaskDetailModal key={task.taskId} task={task} />;
