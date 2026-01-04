@@ -8,8 +8,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from "~/components/ui/dialog";
-import { orpc } from "~/orpc/client";
 import { useTaskEdit } from "../hooks/use-task-edit";
+import { useTaskService } from "../hooks/use-task-service";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { QuickEditContent } from "./quick-edit-content";
 
@@ -31,6 +31,7 @@ export function QuickEditModal({
     onClosed,
 }: QuickEditModalProps) {
     const { t } = useTranslation();
+    const taskService = useTaskService();
 
     const [isDeletePending, startDeleteTransition] = useTransition();
 
@@ -53,9 +54,14 @@ export function QuickEditModal({
         onDeletedRef.current = onDeleted;
     }, [onDeleted]);
 
+    const onClosedRef = useRef(onClosed);
+    useEffect(() => {
+        onClosedRef.current = onClosed;
+    }, [onClosed]);
+
     const handleOpenChange = (open: boolean) => {
         if (!open) {
-            onClosed?.();
+            onClosedRef.current?.();
         }
     };
 
@@ -66,9 +72,9 @@ export function QuickEditModal({
     const handleDeleteConfirm = () => {
         startDeleteTransition(async () => {
             try {
-                const result = await orpc.task.delete({ taskId });
+                const result = await taskService.delete(taskId);
 
-                if (result.success) {
+                if (result.data.success) {
                     setDeleteError(false);
                     setShowDeleteConfirm(false);
                     onDeletedRef.current?.();
@@ -120,7 +126,7 @@ export function QuickEditModal({
                 deleteError={deleteError}
             />
             {!isDirty && (
-                <Button className="mt-4 w-full" onPress={() => onClosed?.()}>
+                <Button className="mt-4 w-full" onPress={() => onClosedRef.current?.()}>
                     OK
                 </Button>
             )}

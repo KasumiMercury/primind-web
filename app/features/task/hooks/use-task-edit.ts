@@ -1,6 +1,12 @@
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
-import { orpc } from "~/orpc/client";
+import {
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+    useTransition,
+} from "react";
 import type { EditedValues } from "../components/quick-edit-content";
+import { useTaskService } from "./use-task-service";
 
 const SAVE_SUCCESS_DURATION_MS = 2500;
 const ERROR_DISPLAY_DURATION_MS = 2500;
@@ -26,6 +32,8 @@ interface UseTaskEditReturn {
     setIsDirty: (dirty: boolean) => void;
     handleSave: (values: EditedValues) => void;
     syncWithExternalData: (data: ExternalSyncData) => void;
+    /** Whether the last save operation was local (for unauthenticated users) */
+    isLastSaveLocal: boolean;
 }
 
 export function useTaskEdit({
@@ -34,6 +42,7 @@ export function useTaskEdit({
     initialDescription = "",
 }: UseTaskEditOptions): UseTaskEditReturn {
     const [isPending, startTransition] = useTransition();
+    const taskService = useTaskService();
 
     const [lastSavedTitle, setLastSavedTitle] = useState(initialTitle);
     const [lastSavedDescription, setLastSavedDescription] =
@@ -41,6 +50,7 @@ export function useTaskEdit({
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [saveError, setSaveError] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
+    const [isLastSaveLocal, setIsLastSaveLocal] = useState(false);
 
     const saveResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const errorResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -69,16 +79,17 @@ export function useTaskEdit({
             setIsProcessing(true);
 
             try {
-                const result = await orpc.task.update({
+                const result = await taskService.update({
                     taskId,
                     title: values.title,
                     description: values.description,
                     updateMask: ["title", "description"],
                 });
 
-                if (result.success) {
+                if (!result.error) {
                     setLastSavedTitle(values.title);
                     setLastSavedDescription(values.description);
+                    setIsLastSaveLocal(result.isLocalOperation);
 
                     // Check if there are pending changes made during this save
                     if (
@@ -126,7 +137,7 @@ export function useTaskEdit({
                 setIsProcessing(false);
             }
         },
-        [taskId],
+        [taskId, taskService],
     );
 
     const handleSave = useCallback(
@@ -177,5 +188,6 @@ export function useTaskEdit({
         setIsDirty,
         handleSave,
         syncWithExternalData,
+        isLastSaveLocal,
     };
 }

@@ -3,10 +3,10 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useNavigate, useRevalidator } from "react-router";
 import { LinkButton } from "~/components/ui/link-button";
 import { TaskStatus } from "~/gen/task/v1/task_pb";
-import { orpc } from "~/orpc/client";
 import { TaskDetailContent } from "../components/task-detail-content";
 import { useTaskCompleteConfetti } from "../hooks/use-task-complete-confetti";
 import { useTaskEdit } from "../hooks/use-task-edit";
+import { useTaskService } from "../hooks/use-task-service";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 
 interface TaskDetailPageProps {
@@ -24,6 +24,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
     } = task;
     const navigate = useNavigate();
     const { revalidate } = useRevalidator();
+    const taskService = useTaskService();
     const [isDeletePending, startDeleteTransition] = useTransition();
     const [isCompletePending, startCompleteTransition] = useTransition();
 
@@ -89,9 +90,9 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
         setDeleteError(false);
         startDeleteTransition(async () => {
             try {
-                const result = await orpc.task.delete({ taskId });
+                const result = await taskService.delete(taskId);
 
-                if (result.success) {
+                if (result.data.success) {
                     setShowDeleteConfirm(false);
                     setDeleteError(false);
                     revalidate();
@@ -121,13 +122,13 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
 
         startCompleteTransition(async () => {
             try {
-                const result = await orpc.task.update({
+                const result = await taskService.update({
                     taskId,
                     taskStatus: TaskStatus.COMPLETED,
                     updateMask: ["task_status"],
                 });
 
-                if (result.success) {
+                if (!result.error) {
                     setCompleteSuccess(true);
                     // Trigger confetti and navigate after animation ends
                     triggerConfetti(() => {

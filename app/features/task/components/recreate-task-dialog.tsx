@@ -7,7 +7,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "~/components/ui/dialog";
-import { orpc } from "~/orpc/client";
+import { useTaskService } from "../hooks/use-task-service";
 import {
     getTaskTypeFromKey,
     TASK_TYPE_KEYS,
@@ -51,6 +51,7 @@ export function RecreateTaskDialog({
     onCancel,
 }: RecreateTaskDialogProps) {
     const { t } = useTranslation();
+    const taskService = useTaskService();
     const [isPending, startTransition] = useTransition();
 
     const [step, setStep] = useState<RecreateStep>("type-select");
@@ -115,7 +116,7 @@ export function RecreateTaskDialog({
 
             try {
                 // Create new task
-                const createResult = await orpc.task.create({
+                const createResult = await taskService.create({
                     taskId: newTaskId,
                     taskType: getTaskTypeFromKey(selectedTaskType),
                     color,
@@ -126,7 +127,7 @@ export function RecreateTaskDialog({
                             : undefined,
                 });
 
-                if (!createResult.success) {
+                if (createResult.error) {
                     setError(
                         createResult.error || t("recreateTask.errorCreate"),
                     );
@@ -134,14 +135,14 @@ export function RecreateTaskDialog({
                 }
 
                 // Update title and description
-                const updateResult = await orpc.task.update({
+                const updateResult = await taskService.update({
                     taskId: newTaskId,
                     title: task.title,
                     description: task.description,
                     updateMask: ["title", "description"],
                 });
 
-                if (!updateResult.success) {
+                if (updateResult.error) {
                     console.warn(
                         "Failed to update title/description:",
                         updateResult.error,
@@ -149,11 +150,9 @@ export function RecreateTaskDialog({
                 }
 
                 // Delete original task
-                const deleteResult = await orpc.task.delete({
-                    taskId: task.taskId,
-                });
+                const deleteResult = await taskService.delete(task.taskId);
 
-                if (!deleteResult.success) {
+                if (!deleteResult.data.success) {
                     console.warn(
                         "Failed to delete original task:",
                         deleteResult.error,
