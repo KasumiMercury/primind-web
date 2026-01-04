@@ -155,5 +155,10 @@ export default {
         failedToLogout: "Failed to log out. Please try again.",
         failedToLogin: "Failed to initiate login",
         authFailed: "Authentication Failed",
+        unsupportedBrowser: {
+            title: "Browser Not Supported",
+            description:
+                "This browser is not supported. Please try using a different browser.",
+        },
     },
 } as const;
