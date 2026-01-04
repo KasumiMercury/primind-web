@@ -7,3 +7,9 @@ export interface LocalTask extends SerializableTask {
     _localUpdatedAt: string;
     _syncStatus?: SyncStatus;
 }
+
+export interface TaskOperationResult<T> {
+    data: T;
+    isLocalOperation: boolean;
+    error?: string;
+}
