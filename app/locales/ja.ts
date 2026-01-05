@@ -92,6 +92,15 @@ export default {
         description: "リマインダー通知を受け取ります。",
     },
 
+    // Session Invalid Dialog
+    session: {
+        invalid: {
+            title: "サインアウトされました",
+            description: "サインアウトされました。再度サインインしてください。",
+            goHome: "ホームへ戻る",
+        },
+    },
+
     // Task Detail
     taskDetail: {
         title: "タイトル",

@@ -92,6 +92,15 @@ export default {
         description: "Enable notifications to remind you.",
     },
 
+    // Session Invalid Dialog
+    session: {
+        invalid: {
+            title: "Signed Out",
+            description: "You have been signed out. Please sign in again.",
+            goHome: "Go to Home",
+        },
+    },
+
     // Task Detail
     taskDetail: {
         title: "Title",

@@ -1,9 +1,16 @@
+import { ORPCError } from "@orpc/client";
 import { TaskStatus, TaskType } from "~/gen/task/v1/task_pb";
 import { orpc } from "~/orpc/client";
 import type { CreateTaskInput, UpdateTaskInput } from "~/orpc/schemas/task";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { getTaskDB } from "./db.client";
 import type { LocalTask, TaskOperationResult } from "./types";
+
+function isUnauthorizedError(
+    err: unknown,
+): err is ORPCError<"UNAUTHORIZED", unknown> {
+    return err instanceof ORPCError && err.code === "UNAUTHORIZED";
+}
 
 export interface TaskService {
     create(
@@ -62,6 +69,14 @@ function createServerTaskService(): TaskService {
                     error: result.error,
                 };
             } catch (err) {
+                if (isUnauthorizedError(err)) {
+                    return {
+                        data: { taskId: "" },
+                        isLocalOperation: false,
+                        error: "Session invalid",
+                        sessionInvalid: true,
+                    };
+                }
                 return {
                     data: { taskId: "" },
                     isLocalOperation: false,
@@ -82,6 +97,14 @@ function createServerTaskService(): TaskService {
                     error: result.error,
                 };
             } catch (err) {
+                if (isUnauthorizedError(err)) {
+                    return {
+                        data: { task: undefined },
+                        isLocalOperation: false,
+                        error: "Session invalid",
+                        sessionInvalid: true,
+                    };
+                }
                 return {
                     data: { task: undefined },
                     isLocalOperation: false,
@@ -102,6 +125,14 @@ function createServerTaskService(): TaskService {
                     error: result.error,
                 };
             } catch (err) {
+                if (isUnauthorizedError(err)) {
+                    return {
+                        data: { taskId: "" },
+                        isLocalOperation: false,
+                        error: "Session invalid",
+                        sessionInvalid: true,
+                    };
+                }
                 return {
                     data: { taskId: "" },
                     isLocalOperation: false,
@@ -122,6 +153,14 @@ function createServerTaskService(): TaskService {
                     error: result.error,
                 };
             } catch (err) {
+                if (isUnauthorizedError(err)) {
+                    return {
+                        data: { success: false },
+                        isLocalOperation: false,
+                        error: "Session invalid",
+                        sessionInvalid: true,
+                    };
+                }
                 return {
                     data: { success: false },
                     isLocalOperation: false,
@@ -142,6 +181,14 @@ function createServerTaskService(): TaskService {
                     error: result.error,
                 };
             } catch (err) {
+                if (isUnauthorizedError(err)) {
+                    return {
+                        data: { tasks: [] },
+                        isLocalOperation: false,
+                        error: "Session invalid",
+                        sessionInvalid: true,
+                    };
+                }
                 return {
                     data: { tasks: [] },
                     isLocalOperation: false,

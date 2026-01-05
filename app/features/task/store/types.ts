@@ -12,4 +12,5 @@ export interface TaskOperationResult<T> {
     data: T;
     isLocalOperation: boolean;
     error?: string;
+    sessionInvalid?: boolean;
 }
