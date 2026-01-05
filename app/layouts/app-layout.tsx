@@ -6,6 +6,7 @@ import { data, Outlet, useOutletContext } from "react-router";
 import { toast } from "sonner";
 import { Header } from "~/components/header/header";
 import { LoginDialog } from "~/features/auth/components/login-dialog";
+import { SessionInvalidDialog } from "~/features/auth/components/session-invalid-dialog";
 import {
     getUserSession,
     sessionStorage,
@@ -111,6 +112,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
                     onOpenChange={setShowLoginDialog}
                 />
                 <NotificationPermissionDialog />
+                <SessionInvalidDialog />
             </AuthHydrator>
         </Provider>
     );
