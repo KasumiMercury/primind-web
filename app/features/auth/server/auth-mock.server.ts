@@ -13,6 +13,22 @@ import { authLogger } from "./logger.server";
 
 const mockSessions = new Map<string, string>();
 
+function createMockJWT(sessionId: string): string {
+    const header = { alg: "none", typ: "JWT" };
+    const now = Math.floor(Date.now() / 1000);
+    const payload = {
+        jti: sessionId,
+        iss: process.env.JWT_ISSUER || "mock-issuer",
+        iat: now,
+        exp: now + 24 * 60 * 60,
+    };
+
+    const base64UrlEncode = (obj: object) =>
+        Buffer.from(JSON.stringify(obj)).toString("base64url");
+
+    return `${base64UrlEncode(header)}.${base64UrlEncode(payload)}.mock-signature`;
+}
+
 export function createAuthMockTransport() {
     authLogger.info("Creating mock AuthService transport");
 
@@ -44,14 +60,15 @@ export function createAuthMockTransport() {
                             "Mock: OIDCLogin called",
                         );
 
-                        const sessionToken = `mock-session-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+                        const sessionId = `mock-session-${Date.now()}-${Math.random().toString(36).substring(7)}`;
                         const userId = `mock-user-${Date.now()}`;
+                        const sessionToken = createMockJWT(sessionId);
 
                         mockSessions.set(sessionToken, userId);
 
                         authLogger.info(
-                            { sessionToken, userId },
-                            "Mock: Created session",
+                            { sessionId, userId },
+                            "Mock: Created JWT session",
                         );
 
                         return create(OIDCLoginResponseSchema, {
