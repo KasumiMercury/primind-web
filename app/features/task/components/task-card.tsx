@@ -65,7 +65,7 @@ export function TaskCard({ task, className, onPress }: TaskCardProps) {
                 <Icon
                     className={cn(
                         "size-14 md:size-16",
-                        !task.color && config.strokeClass
+                        !task.color && config.strokeClass,
                     )}
                     label=""
                     fillColor={task.color || undefined}
