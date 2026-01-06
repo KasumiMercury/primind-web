@@ -3,6 +3,7 @@ interface PillIconProps {
     label: string;
     showLabel?: boolean;
     fillColor?: string;
+    strokeWidth?: number;
 }
 
 export function PillIcon({
@@ -10,6 +11,7 @@ export function PillIcon({
     label,
     showLabel: displayLabel,
     fillColor,
+    strokeWidth = 4,
 }: PillIconProps) {
     return (
         <svg
@@ -20,13 +22,14 @@ export function PillIcon({
             aria-label={label}
         >
             <rect
-                x="20"
-                y="35"
-                width="60"
-                height="30"
-                rx="15"
-                ry="15"
+                x="14"
+                y="26"
+                width="72"
+                height="48"
+                rx="24"
+                ry="24"
                 fill={fillColor ?? "none"}
+                strokeWidth={strokeWidth}
             />
             {displayLabel && (
                 <text

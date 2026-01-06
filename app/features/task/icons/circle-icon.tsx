@@ -3,6 +3,7 @@ interface CircleIconProps {
     label: string;
     showLabel?: boolean;
     fillColor?: string;
+    strokeWidth?: number;
 }
 
 export function CircleIcon({
@@ -10,6 +11,7 @@ export function CircleIcon({
     label,
     showLabel: displayLabel,
     fillColor,
+    strokeWidth = 4,
 }: CircleIconProps) {
     return (
         <svg
@@ -19,7 +21,13 @@ export function CircleIcon({
             role="img"
             aria-label={label}
         >
-            <circle cx="50" cy="50" r="45" fill={fillColor ?? "none"} />
+            <circle
+                cx="50"
+                cy="50"
+                r="42"
+                fill={fillColor ?? "none"}
+                strokeWidth={strokeWidth}
+            />
             {displayLabel && (
                 <text
                     x="50"
