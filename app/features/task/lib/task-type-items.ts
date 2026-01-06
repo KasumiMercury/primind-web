@@ -23,29 +23,34 @@ export type TaskTypeKey = (typeof TASK_TYPE_KEYS)[keyof typeof TASK_TYPE_KEYS];
 
 interface BaseItemConfig {
     icon: IconComponent;
-    className: string;
+    strokeClass: string;
+    bgClass: string;
     taskType: TaskType;
 }
 
 export const BASE_ITEMS: Record<TaskTypeKey, BaseItemConfig> = {
     [TASK_TYPE_KEYS.SHORT]: {
         icon: StarBurstIcon,
-        className: "stroke-red-500",
+        strokeClass: "stroke-task-short",
+        bgClass: "bg-task-short",
         taskType: TaskType.SHORT,
     },
     [TASK_TYPE_KEYS.NEAR]: {
         icon: CircleIcon,
-        className: "stroke-blue-500",
+        strokeClass: "stroke-task-near",
+        bgClass: "bg-task-near",
         taskType: TaskType.NEAR,
     },
     [TASK_TYPE_KEYS.RELAXED]: {
         icon: PillIcon,
-        className: "stroke-green-500",
+        strokeClass: "stroke-task-relaxed",
+        bgClass: "bg-task-relaxed",
         taskType: TaskType.RELAXED,
     },
     [TASK_TYPE_KEYS.SCHEDULED]: {
         icon: RectangleIcon,
-        className: "stroke-yellow-500",
+        strokeClass: "stroke-task-scheduled",
+        bgClass: "bg-task-scheduled",
         taskType: TaskType.SCHEDULED,
     },
 };
