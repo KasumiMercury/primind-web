@@ -129,9 +129,10 @@ export function QuickEditContent({
                 <div className="flex flex-col gap-6">
                     <div className="flex justify-center">
                         <Icon
-                            className="size-24"
+                            className={`size-24 ${!color ? config.strokeClass : ""}`}
                             label=""
                             fillColor={color || undefined}
+                            strokeWidth={color ? 0 : 6}
                         />
                     </div>
 
@@ -203,9 +204,10 @@ export function QuickEditContent({
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <div className="flex justify-center">
                     <Icon
-                        className="size-24"
+                        className={`size-24 ${!color ? config.strokeClass : ""}`}
                         label=""
                         fillColor={color || undefined}
+                        strokeWidth={color ? 0 : 6}
                     />
                 </div>
 

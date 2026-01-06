@@ -44,7 +44,7 @@ export function TaskTypeSelectList({
                             isDisabled={disabled || isCurrent}
                         >
                             <Icon
-                                className={`size-6 ${item.className} stroke-6`}
+                                className={`size-6 ${item.strokeClass} stroke-6`}
                                 label=""
                             />
                             <span className="text-base">{item.label}</span>

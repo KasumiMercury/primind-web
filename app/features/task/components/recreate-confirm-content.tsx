@@ -75,9 +75,10 @@ export function RecreateConfirmContent({
                     </h4>
                     <div className="flex items-center gap-2">
                         <Icon
-                            className="size-5"
+                            className={`size-5 ${!taskColor ? taskTypeConfig.strokeClass : ""}`}
                             label=""
                             fillColor={taskColor}
+                            strokeWidth={taskColor ? 0 : 4}
                         />
                         <span className="text-foreground">
                             {taskTypeConfig.label}
