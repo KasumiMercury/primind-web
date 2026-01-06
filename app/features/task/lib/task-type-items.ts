@@ -10,6 +10,7 @@ export type IconComponent = ComponentType<{
     label: string;
     showLabel?: boolean;
     fillColor?: string;
+    strokeWidth?: number;
 }>;
 
 export const TASK_TYPE_KEYS = {
