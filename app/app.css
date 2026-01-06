@@ -45,6 +45,10 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+    --color-task-short: var(--task-short);
+    --color-task-near: var(--task-near);
+    --color-task-relaxed: var(--task-relaxed);
+    --color-task-scheduled: var(--task-scheduled);
 }
 
 :root {
@@ -82,6 +86,10 @@
     --sidebar-border: oklch(0.21 0.051 278 / 0.125);
     --sidebar-ring: oklch(0.44 0.086 276);
     --primary-ring: oklch(0.27 0.066 278);
+    --task-short: oklch(0.65 0.22 25);
+    --task-near: oklch(0.6 0.2 250);
+    --task-relaxed: oklch(0.62 0.2 145);
+    --task-scheduled: oklch(0.72 0.18 85);
 }
 
 .dark {
@@ -119,6 +127,10 @@
     --sidebar-ring: oklch(0.44 0.086 276);
     --radius: 0.5rem;
     --primary-ring: oklch(0.71 0.052 267);
+    --task-short: oklch(0.72 0.2 25);
+    --task-near: oklch(0.7 0.17 250);
+    --task-relaxed: oklch(0.7 0.17 145);
+    --task-scheduled: oklch(0.78 0.16 85);
 }
 
 @layer base {
