@@ -166,9 +166,10 @@ export function TaskDetailContent({
                 <div className="flex flex-col gap-6">
                     <div className="flex justify-center">
                         <Icon
-                            className="size-24"
+                            className={`size-24 ${!task.color ? config.strokeClass : ""}`}
                             label=""
                             fillColor={task.color || undefined}
+                            strokeWidth={task.color ? 0 : 6}
                         />
                     </div>
 
@@ -322,9 +323,10 @@ export function TaskDetailContent({
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <div className="flex justify-center">
                     <Icon
-                        className="size-24"
+                        className={`size-24 ${!task.color ? config.strokeClass : ""}`}
                         label=""
                         fillColor={task.color || undefined}
+                        strokeWidth={task.color ? 0 : 6}
                     />
                 </div>
 

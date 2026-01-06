@@ -223,9 +223,10 @@ export function OperationArea({
             {SelectedIcon ? (
                 <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
                     <SelectedIcon
-                        className={`h-1/2 ${selectedItem.className}`}
+                        className={`h-1/2 ${selectedItem.strokeClass}`}
                         label={selectedItem?.label ?? ""}
                         showLabel={true}
+                        strokeWidth={2}
                     />
                 </div>
             ) : null}
@@ -234,6 +235,7 @@ export function OperationArea({
                     itemCount={itemsCount}
                     selectedIndex={selectedIndex}
                     className="gap-1.5 rounded-full bg-accent px-3 py-2 shadow-background shadow-sm"
+                    selectedBgClass={selectedItem?.bgClass}
                 />
             </div>
         </div>

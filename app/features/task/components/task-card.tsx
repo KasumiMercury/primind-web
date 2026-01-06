@@ -42,10 +42,10 @@ export function TaskCard({ task, className, onPress }: TaskCardProps) {
             type="button"
             onPress={onPress}
             className={cn(
-                "flex h-auto w-full flex-col items-center gap-2",
-                "rounded-lg border border-border bg-card p-3 sm:p-4",
-                "cursor-pointer text-center transition-colors",
-                "data-hovered:bg-accent",
+                "flex h-auto w-full flex-col items-center gap-3",
+                "rounded-xl border border-border bg-card p-4 sm:p-5",
+                "cursor-pointer text-center transition-all duration-200",
+                "data-hovered:scale-[1.02] data-hovered:bg-accent",
                 "data-focus-visible:outline-none data-focus-visible:ring-2 data-focus-visible:ring-ring data-focus-visible:ring-offset-2",
                 className,
             )}
@@ -53,25 +53,37 @@ export function TaskCard({ task, className, onPress }: TaskCardProps) {
                 displayTitle ? `Task: ${displayTitle}` : `${config.label} task`
             }
         >
-            <div className="shrink-0" aria-hidden="true">
+            <div
+                className="shrink-0 rounded-full p-2"
+                style={{
+                    backgroundColor: task.color
+                        ? `color-mix(in oklch, ${task.color} 15%, transparent)`
+                        : undefined,
+                }}
+                aria-hidden="true"
+            >
                 <Icon
-                    className="size-12 md:size-14"
+                    className={cn(
+                        "size-14 md:size-16",
+                        !task.color && config.strokeClass,
+                    )}
                     label=""
                     fillColor={task.color || undefined}
+                    strokeWidth={task.color ? 0 : 5}
                 />
             </div>
 
             {(displayTitle || relativeTime) && (
-                <div className="flex w-full min-w-0 flex-col items-center gap-0.5">
+                <div className="flex w-full min-w-0 flex-col items-center gap-1">
                     <p
-                        className="min-h-5 w-full truncate text-center font-medium text-foreground text-sm"
+                        className="min-h-4 w-full truncate text-center font-medium text-foreground text-xs"
                         title={displayTitle || undefined}
                     >
                         {displayTitle}
                     </p>
 
                     {relativeTime && (
-                        <p className="text-center text-muted-foreground text-xs">
+                        <p className="text-center text-muted-foreground/60 text-xs">
                             {relativeTime}
                         </p>
                     )}

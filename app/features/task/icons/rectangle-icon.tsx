@@ -3,6 +3,7 @@ interface RectangleIconProps {
     label: string;
     showLabel?: boolean;
     fillColor?: string;
+    strokeWidth?: number;
 }
 
 export function RectangleIcon({
@@ -10,6 +11,7 @@ export function RectangleIcon({
     label,
     showLabel: displayLabel,
     fillColor,
+    strokeWidth = 4,
 }: RectangleIconProps) {
     return (
         <svg
@@ -20,11 +22,14 @@ export function RectangleIcon({
             aria-label={label}
         >
             <rect
-                x="10"
-                y="35"
-                width="80"
-                height="30"
+                x="12"
+                y="26"
+                width="76"
+                height="48"
+                rx="4"
+                ry="4"
                 fill={fillColor ?? "none"}
+                strokeWidth={strokeWidth}
             />
             {displayLabel && (
                 <text

@@ -3,6 +3,7 @@ interface StarBurstIconProps {
     label: string;
     showLabel?: boolean;
     fillColor?: string;
+    strokeWidth?: number;
 }
 
 const toFixed = (num: number, digits: number = 6) => {
@@ -14,12 +15,13 @@ export function StarBurstIcon({
     label,
     showLabel: displayLabel,
     fillColor,
+    strokeWidth = 4,
 }: StarBurstIconProps) {
     const points = [];
     const centerX = 50;
     const centerY = 50;
-    const outerRadius = 45;
-    const innerRadius = 30;
+    const outerRadius = 42;
+    const innerRadius = 28;
     const numPoints = 10;
 
     for (let i = 0; i < numPoints * 2; i++) {
@@ -38,7 +40,11 @@ export function StarBurstIcon({
             role="img"
             aria-label={label}
         >
-            <polygon points={points.join(" ")} fill={fillColor ?? "none"} />
+            <polygon
+                points={points.join(" ")}
+                fill={fillColor ?? "none"}
+                strokeWidth={strokeWidth}
+            />
             {displayLabel && (
                 <text
                     x="50"

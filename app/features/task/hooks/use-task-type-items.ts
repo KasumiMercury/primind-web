@@ -11,7 +11,8 @@ import {
 interface TranslatedItemConfig {
     icon: IconComponent;
     label: string;
-    className: string;
+    strokeClass: string;
+    bgClass: string;
     taskType: TaskType;
 }
 
