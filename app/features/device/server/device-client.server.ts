@@ -1,11 +1,11 @@
 import type { Client, Transport } from "@connectrpc/connect";
 import { createClient } from "@connectrpc/connect";
-import { createConnectTransport } from "@connectrpc/connect-node";
 import {
     DeviceService,
     type DeviceService as DeviceServiceType,
 } from "~/gen/device/v1/device_pb";
 import { authInterceptor } from "~/interceptor/auth-interceptor";
+import { createRuntimeConnectTransport } from "~/lib/connect-transport.server";
 import { logTransportMode, mockApiEnabled } from "~/lib/mock-utils.server";
 import { deviceLogger } from "./logger.server";
 
@@ -18,7 +18,7 @@ async function createTransport(): Promise<Transport> {
         );
         return createDeviceMockTransport();
     }
-    return createConnectTransport({
+    return createRuntimeConnectTransport({
         baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
         httpVersion: "1.1",
         interceptors: [authInterceptor],
