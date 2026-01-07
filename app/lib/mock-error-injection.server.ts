@@ -1,4 +1,3 @@
-import { AsyncLocalStorage } from "node:async_hooks";
 import { Code, ConnectError } from "@connectrpc/connect";
 import {
     ERROR_CONFIGS,
@@ -13,10 +12,17 @@ interface ErrorContext {
     errorMode: MockErrorMode;
 }
 
-const errorContextStorage = new AsyncLocalStorage<ErrorContext>();
+let errorContextStorage:
+    | import("node:async_hooks").AsyncLocalStorage<ErrorContext>
+    | null = null;
+
+if (useMock) {
+    const { AsyncLocalStorage } = await import("node:async_hooks");
+    errorContextStorage = new AsyncLocalStorage<ErrorContext>();
+}
 
 export function getCurrentErrorMode(): MockErrorMode {
-    const context = errorContextStorage.getStore();
+    const context = errorContextStorage?.getStore();
     if (context?.errorMode) {
         return context.errorMode;
     }
@@ -48,6 +54,9 @@ export function runWithErrorContext<T>(
     errorMode: MockErrorMode,
     fn: () => T | Promise<T>,
 ): Promise<T> {
+    if (!errorContextStorage) {
+        return Promise.resolve(fn());
+    }
     return errorContextStorage.run({ errorMode }, () => Promise.resolve(fn()));
 }
 

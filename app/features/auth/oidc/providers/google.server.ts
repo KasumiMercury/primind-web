@@ -1,4 +1,5 @@
 import { OIDCProvider } from "~/gen/auth/v1/auth_pb";
+import { getEnv } from "~/lib/runtime-env.server";
 import { authLogger } from "../../server/logger.server";
 import type {
     OIDCProviderDefinition,
@@ -6,7 +7,7 @@ import type {
 } from "../provider.server";
 
 function validateGoogleEnvironment() {
-    const clientId = process.env.VITE_OIDC_GOOGLE_CLIENT_ID;
+    const clientId = getEnv("VITE_OIDC_GOOGLE_CLIENT_ID");
 
     if (!clientId) {
         authLogger.error(

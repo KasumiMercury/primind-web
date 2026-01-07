@@ -1,3 +1,5 @@
+import { base64UrlDecode } from "~/lib/base64.server";
+import { getEnv } from "~/lib/runtime-env.server";
 import { authLogger } from "../server/logger.server";
 
 export interface JWTPayload {
@@ -20,9 +22,7 @@ export function decodeJWT(token: string): JWTPayload | null {
         if (parts.length !== 3) {
             return null;
         }
-        const payload = JSON.parse(
-            Buffer.from(parts[1], "base64url").toString("utf-8"),
-        );
+        const payload = JSON.parse(base64UrlDecode(parts[1]));
         return payload;
     } catch {
         return null;
@@ -45,7 +45,7 @@ export function validateJWT(token: string): JWTValidationResult {
         }
     }
 
-    const expectedIssuer = process.env.JWT_ISSUER;
+    const expectedIssuer = getEnv("JWT_ISSUER");
     if (expectedIssuer && payload.iss !== expectedIssuer) {
         authLogger.warn(
             { expected: expectedIssuer, actual: payload.iss },

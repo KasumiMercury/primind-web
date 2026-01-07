@@ -1,4 +1,5 @@
 import { createCookie } from "react-router";
+import { isProduction } from "../runtime-env.server";
 import {
     fallbackLanguage,
     LANGUAGE_COOKIE_MAX_AGE,
@@ -10,7 +11,7 @@ import {
 export const localeCookie = createCookie(LANGUAGE_COOKIE_NAME, {
     path: "/",
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction(),
     httpOnly: false,
     maxAge: LANGUAGE_COOKIE_MAX_AGE,
 });

@@ -1,5 +1,8 @@
 import type { Code } from "@connectrpc/connect";
 import { mockApiEnabled } from "./mock-utils.server";
+import { isProduction } from "./runtime-env.server";
+
+const isCloudflareBuild = import.meta.env.VITE_RUNTIME === "cloudflare";
 
 export type MockServiceType = "task" | "auth" | "device";
 
@@ -40,11 +43,13 @@ class MockRegistryImpl implements MockRegistryInterface {
         this.boundDestroy = () => this.destroy();
         this.cleanupInterval = setInterval(() => this.cleanup(), 60 * 1000);
 
-        process.on("exit", this.boundDestroy);
-        process.on("SIGINT", this.boundDestroy);
-        process.on("SIGTERM", this.boundDestroy);
+        if (!isCloudflareBuild) {
+            process.on("exit", this.boundDestroy);
+            process.on("SIGINT", this.boundDestroy);
+            process.on("SIGTERM", this.boundDestroy);
+        }
 
-        if (process.env.NODE_ENV === "production") {
+        if (isProduction()) {
             console.warn(
                 "[MockRegistry] WARNING: Mock API registry is active in production mode. " +
                     "This should only be used for testing purposes.",
@@ -123,9 +128,11 @@ class MockRegistryImpl implements MockRegistryInterface {
             this.cleanupInterval = null;
         }
 
-        process.off("exit", this.boundDestroy);
-        process.off("SIGINT", this.boundDestroy);
-        process.off("SIGTERM", this.boundDestroy);
+        if (!isCloudflareBuild) {
+            process.off("exit", this.boundDestroy);
+            process.off("SIGINT", this.boundDestroy);
+            process.off("SIGTERM", this.boundDestroy);
+        }
 
         this.mocks.clear();
     }

@@ -1,7 +1,9 @@
 const mockApiEnv = import.meta.env.VITE_USE_MOCK_API;
 const mockFlag = mockApiEnv === "true" || mockApiEnv === true;
+const isCloudflareBuild = import.meta.env.VITE_RUNTIME === "cloudflare";
 
-export const mockApiEnabled = import.meta.env.DEV && mockFlag;
+export const mockApiEnabled =
+    import.meta.env.DEV && mockFlag && !isCloudflareBuild;
 
 export function logTransportMode(
     serviceName: string,

@@ -1,10 +1,11 @@
 import { createCookieSessionStorage } from "react-router";
+import { getEnv, isProduction } from "~/lib/runtime-env.server";
 import { deviceLogger } from "./logger.server";
 
 function getDeviceSecret(): string {
-    const secret = process.env.COOKIE_SECRET;
+    const secret = getEnv("COOKIE_SECRET");
 
-    if (process.env.NODE_ENV === "production") {
+    if (isProduction()) {
         if (!secret || secret === "dev-secret-change-in-production") {
             deviceLogger.error(
                 "COOKIE_SECRET must be configured with a strong secret in production",
@@ -29,7 +30,7 @@ function getDeviceSecret(): string {
 
     deviceLogger.debug(
         {
-            isProduction: process.env.NODE_ENV === "production",
+            isProduction: isProduction(),
             secretConfigured: Boolean(secret),
         },
         "Resolved device secret configuration",
@@ -53,7 +54,7 @@ export const deviceStorage = createCookieSessionStorage<
     cookie: {
         name: "device",
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isProduction(),
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 365, // 1 year
         path: "/",

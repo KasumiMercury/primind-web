@@ -8,13 +8,15 @@ let mockContextStorage:
     | import("node:async_hooks").AsyncLocalStorage<MockContext>
     | null = null;
 
-if (mockApiEnabled) {
+const canUseMockContext = mockApiEnabled;
+
+if (canUseMockContext) {
     const { AsyncLocalStorage } = await import("node:async_hooks");
     mockContextStorage = new AsyncLocalStorage<MockContext>();
 }
 
 export function getCurrentTestId(): string | null {
-    if (!mockApiEnabled || !mockContextStorage) return null;
+    if (!canUseMockContext || !mockContextStorage) return null;
     return mockContextStorage.getStore()?.testId ?? null;
 }
 
@@ -36,7 +38,7 @@ export async function withRequestMockContext<T>(
     request: Request,
     fn: () => T | Promise<T>,
 ): Promise<T> {
-    if (!mockApiEnabled || !mockContextStorage) {
+    if (!canUseMockContext || !mockContextStorage) {
         return Promise.resolve(fn());
     }
 
