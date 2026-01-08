@@ -1,5 +1,6 @@
 import { ORPCError } from "@orpc/client";
 import { TaskStatus, TaskType } from "~/gen/task/v1/task_pb";
+import { ERROR_CODES } from "~/lib/errors";
 import { orpc } from "~/orpc/client";
 import type { CreateTaskInput, UpdateTaskInput } from "~/orpc/schemas/task";
 import type { SerializableTask } from "../server/list-active-tasks.server";
@@ -73,17 +74,14 @@ function createServerTaskService(): TaskService {
                     return {
                         data: { taskId: "" },
                         isLocalOperation: false,
-                        error: "Session invalid",
+                        error: ERROR_CODES.AUTH_SESSION_INVALID,
                         sessionInvalid: true,
                     };
                 }
                 return {
                     data: { taskId: "" },
                     isLocalOperation: false,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to create task",
+                    error: ERROR_CODES.TASK_CREATE_FAILED,
                 };
             }
         },
@@ -101,17 +99,14 @@ function createServerTaskService(): TaskService {
                     return {
                         data: { task: undefined },
                         isLocalOperation: false,
-                        error: "Session invalid",
+                        error: ERROR_CODES.AUTH_SESSION_INVALID,
                         sessionInvalid: true,
                     };
                 }
                 return {
                     data: { task: undefined },
                     isLocalOperation: false,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to get task",
+                    error: ERROR_CODES.TASK_GET_FAILED,
                 };
             }
         },
@@ -129,17 +124,14 @@ function createServerTaskService(): TaskService {
                     return {
                         data: { taskId: "" },
                         isLocalOperation: false,
-                        error: "Session invalid",
+                        error: ERROR_CODES.AUTH_SESSION_INVALID,
                         sessionInvalid: true,
                     };
                 }
                 return {
                     data: { taskId: "" },
                     isLocalOperation: false,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to update task",
+                    error: ERROR_CODES.TASK_UPDATE_FAILED,
                 };
             }
         },
@@ -157,17 +149,14 @@ function createServerTaskService(): TaskService {
                     return {
                         data: { success: false },
                         isLocalOperation: false,
-                        error: "Session invalid",
+                        error: ERROR_CODES.AUTH_SESSION_INVALID,
                         sessionInvalid: true,
                     };
                 }
                 return {
                     data: { success: false },
                     isLocalOperation: false,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to delete task",
+                    error: ERROR_CODES.TASK_DELETE_FAILED,
                 };
             }
         },
@@ -185,17 +174,14 @@ function createServerTaskService(): TaskService {
                     return {
                         data: { tasks: [] },
                         isLocalOperation: false,
-                        error: "Session invalid",
+                        error: ERROR_CODES.AUTH_SESSION_INVALID,
                         sessionInvalid: true,
                     };
                 }
                 return {
                     data: { tasks: [] },
                     isLocalOperation: false,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to list tasks",
+                    error: ERROR_CODES.TASK_LIST_FAILED,
                 };
             }
         },
@@ -211,7 +197,7 @@ function createLocalTaskService(): TaskService {
                     return {
                         data: { taskId: "" },
                         isLocalOperation: true,
-                        error: "Local storage not available",
+                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
                     };
                 }
 
@@ -256,14 +242,11 @@ function createLocalTaskService(): TaskService {
                     data: { taskId: localTask.taskId },
                     isLocalOperation: true,
                 };
-            } catch (err) {
+            } catch {
                 return {
                     data: { taskId: "" },
                     isLocalOperation: true,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to create task locally",
+                    error: ERROR_CODES.TASK_CREATE_FAILED,
                 };
             }
         },
@@ -275,7 +258,7 @@ function createLocalTaskService(): TaskService {
                     return {
                         data: { task: undefined },
                         isLocalOperation: true,
-                        error: "Local storage not available",
+                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
                     };
                 }
 
@@ -284,14 +267,11 @@ function createLocalTaskService(): TaskService {
                     data: { task },
                     isLocalOperation: true,
                 };
-            } catch (err) {
+            } catch {
                 return {
                     data: { task: undefined },
                     isLocalOperation: true,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to get task locally",
+                    error: ERROR_CODES.TASK_GET_FAILED,
                 };
             }
         },
@@ -303,7 +283,7 @@ function createLocalTaskService(): TaskService {
                     return {
                         data: { taskId: "" },
                         isLocalOperation: true,
-                        error: "Local storage not available",
+                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
                     };
                 }
 
@@ -312,7 +292,7 @@ function createLocalTaskService(): TaskService {
                     return {
                         data: { taskId: "" },
                         isLocalOperation: true,
-                        error: "Task not found",
+                        error: ERROR_CODES.TASK_NOT_FOUND,
                     };
                 }
 
@@ -353,14 +333,11 @@ function createLocalTaskService(): TaskService {
                     data: { taskId: input.taskId },
                     isLocalOperation: true,
                 };
-            } catch (err) {
+            } catch {
                 return {
                     data: { taskId: "" },
                     isLocalOperation: true,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to update task locally",
+                    error: ERROR_CODES.TASK_UPDATE_FAILED,
                 };
             }
         },
@@ -372,7 +349,7 @@ function createLocalTaskService(): TaskService {
                     return {
                         data: { success: false },
                         isLocalOperation: true,
-                        error: "Local storage not available",
+                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
                     };
                 }
 
@@ -381,14 +358,11 @@ function createLocalTaskService(): TaskService {
                     data: { success: true },
                     isLocalOperation: true,
                 };
-            } catch (err) {
+            } catch {
                 return {
                     data: { success: false },
                     isLocalOperation: true,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to delete task locally",
+                    error: ERROR_CODES.TASK_DELETE_FAILED,
                 };
             }
         },
@@ -400,7 +374,7 @@ function createLocalTaskService(): TaskService {
                     return {
                         data: { tasks: [] },
                         isLocalOperation: true,
-                        error: "Local storage not available",
+                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
                     };
                 }
 
@@ -419,14 +393,11 @@ function createLocalTaskService(): TaskService {
                     data: { tasks },
                     isLocalOperation: true,
                 };
-            } catch (err) {
+            } catch {
                 return {
                     data: { tasks: [] },
                     isLocalOperation: true,
-                    error:
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to list tasks locally",
+                    error: ERROR_CODES.TASK_LIST_FAILED,
                 };
             }
         },

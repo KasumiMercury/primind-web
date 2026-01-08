@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useActionData, useNavigation, useSubmit } from "react-router";
 import { Button } from "~/components/ui/button";
+import { getErrorMessage } from "~/lib/errors";
 import type { UIProviderConfig } from "../oidc/providers";
 import { uiProviders } from "../oidc/providers";
 
@@ -51,7 +52,7 @@ export function LoginFormContent({
             {error && (
                 <div className="rounded-lg border border-destructive bg-destructive/10 px-4 py-3 text-destructive text-sm">
                     <p className="font-medium">{t("auth.error")}</p>
-                    <p>{error}</p>
+                    <p>{getErrorMessage(t, error)}</p>
                 </div>
             )}
         </div>

@@ -1,4 +1,5 @@
 import { data } from "react-router";
+import { ERROR_CODES } from "~/lib/errors";
 import { initiateOIDCFlow } from "../oidc/flow.server";
 import type { OIDCProviderDefinition } from "../oidc/provider.server";
 import { googleProvider } from "../oidc/providers/google.server";
@@ -50,10 +51,7 @@ export async function action({ request }: Route.ActionArgs) {
         );
         return data(
             {
-                error:
-                    err instanceof Error
-                        ? err.message
-                        : "Failed to initiate login",
+                error: ERROR_CODES.AUTH_LOGIN_FAILED,
             },
             { status: 400 },
         );

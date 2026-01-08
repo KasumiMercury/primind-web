@@ -1,6 +1,7 @@
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { v7 as uuidv7 } from "uuid";
+import { ERROR_CODES, showErrorToast } from "~/lib/errors";
 import { useTaskService } from "../hooks/use-task-service";
 import { getRandomTaskColor } from "../lib/task-colors";
 import { getTaskTypeFromKey, type TaskTypeKey } from "../lib/task-type-items";
@@ -26,6 +27,7 @@ export function TaskRegistration({
     innerClassName,
     onTaskRegistered,
 }: TaskRegistrationProps) {
+    const { t } = useTranslation();
     const [isPending, startTransition] = useTransition();
     const taskService = useTaskService();
 
@@ -58,7 +60,10 @@ export function TaskRegistration({
                 });
 
                 if (result.error) {
-                    toast.error(result.error || "failed to create task");
+                    showErrorToast(
+                        t,
+                        result.error || ERROR_CODES.TASK_CREATE_FAILED,
+                    );
                     return;
                 }
 
@@ -69,7 +74,7 @@ export function TaskRegistration({
                     isLocalOperation: result.isLocalOperation,
                 });
             } catch {
-                toast.error("failed to create task");
+                showErrorToast(t, ERROR_CODES.TASK_CREATE_FAILED);
             }
         });
     };
@@ -91,7 +96,10 @@ export function TaskRegistration({
                 });
 
                 if (result.error) {
-                    toast.error(result.error || "failed to create task");
+                    showErrorToast(
+                        t,
+                        result.error || ERROR_CODES.TASK_CREATE_FAILED,
+                    );
                     return;
                 }
 
@@ -103,7 +111,7 @@ export function TaskRegistration({
                     isLocalOperation: result.isLocalOperation,
                 });
             } catch {
-                toast.error("failed to create task");
+                showErrorToast(t, ERROR_CODES.TASK_CREATE_FAILED);
             }
         });
 

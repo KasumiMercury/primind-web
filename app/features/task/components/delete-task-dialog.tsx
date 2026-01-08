@@ -8,6 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "~/components/ui/dialog";
+import { ERROR_CODES, getErrorMessage } from "~/lib/errors";
 
 interface DeleteTaskDialogProps {
     open: boolean;
@@ -45,7 +46,7 @@ export function DeleteTaskDialog({
             </DialogHeader>
             {error && (
                 <div className="rounded-md bg-red-50 p-3 text-red-600 text-sm dark:bg-red-950 dark:text-red-400">
-                    {t("deleteTask.error")}
+                    {getErrorMessage(t, ERROR_CODES.TASK_DELETE_FAILED)}
                 </div>
             )}
             <DialogFooter>
