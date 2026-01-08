@@ -48,6 +48,20 @@ export default defineConfig({
         ? {
               target: "webworker",
               noExternal: true,
+              external: [
+                  "util",
+                  "crypto",
+                  "async_hooks",
+                  "stream",
+                  "node:async_hooks",
+                  "node:crypto",
+                  "node:http",
+                  "node:https",
+                  "node:zlib",
+                  "node:util",
+                  "node:http2",
+                  "@connectrpc/connect-node",
+              ],
           }
         : undefined,
     server: {
