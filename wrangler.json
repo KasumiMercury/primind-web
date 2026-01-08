@@ -1,0 +1,20 @@
+{
+    "$schema": "./node_modules/wrangler/config-schema.json",
+    "name": "primind-web",
+    "main": "./worker.ts",
+    "compatibility_date": "2025-10-08",
+    "compatibility_flags": ["nodejs_compat"],
+    "keep_names": false,
+    "observability": {
+        "enabled": true
+    },
+    "upload_source_maps": true,
+    "vars": {
+        "NODE_ENV": "production",
+        "VITE_RUNTIME": "cloudflare"
+    },
+    "assets": {
+        "directory": "./build/client",
+        "binding": "ASSETS"
+    }
+}

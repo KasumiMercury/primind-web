@@ -8,6 +8,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 const isStorybook = process.argv[1]?.includes("storybook");
 
 const isProd = process.env.NODE_ENV === "production";
+const runtimeTarget = process.env.VITE_RUNTIME;
+const isCloudflare = runtimeTarget === "cloudflare";
 
 export default defineConfig({
     define: isProd
@@ -42,11 +44,14 @@ export default defineConfig({
                 },
             }),
     ],
+    ssr: isCloudflare
+        ? {
+              target: "webworker",
+              noExternal: true,
+          }
+        : undefined,
     server: {
         host: "0.0.0.0",
         port: 5173,
-        // watch: {
-        //     // usePolling: true,
-        // },
     },
 });

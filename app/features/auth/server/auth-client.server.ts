@@ -1,10 +1,10 @@
 import type { Client, Transport } from "@connectrpc/connect";
 import { createClient } from "@connectrpc/connect";
-import { createConnectTransport } from "@connectrpc/connect-node";
 import {
     AuthService,
     type AuthService as AuthServiceType,
 } from "~/gen/auth/v1/auth_pb";
+import { createRuntimeConnectTransport } from "~/lib/connect-transport.server";
 import { logTransportMode, mockApiEnabled } from "~/lib/mock-utils.server";
 import { authLogger } from "./logger.server";
 
@@ -15,7 +15,7 @@ async function createTransport(): Promise<Transport> {
         const { createAuthMockTransport } = await import("./auth-mock.server");
         return createAuthMockTransport();
     }
-    return createConnectTransport({
+    return createRuntimeConnectTransport({
         baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
         httpVersion: "1.1",
     });

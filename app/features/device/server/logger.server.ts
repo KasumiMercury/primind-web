@@ -1,6 +1,7 @@
 import pino from "pino";
+import { getEnv } from "~/lib/runtime-env.server";
 
 export const deviceLogger = pino({
-    level: process.env.LOG_LEVEL || "info",
+    level: getEnv("LOG_LEVEL") || "info",
     name: "device",
 });

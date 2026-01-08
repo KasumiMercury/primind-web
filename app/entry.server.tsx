@@ -1,9 +1,6 @@
-import { PassThrough } from "node:stream";
-import { createReadableStreamFromReadable } from "@react-router/node";
 import { createInstance, type i18n } from "i18next";
 import { isbot } from "isbot";
-import type { RenderToPipeableStreamOptions } from "react-dom/server";
-import { renderToPipeableStream } from "react-dom/server";
+import { renderToReadableStream } from "react-dom/server";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import type { EntryContext } from "react-router";
 import { ServerRouter } from "react-router";
@@ -39,49 +36,56 @@ export default async function handleRequest(
     responseHeaders: Headers,
     entryContext: EntryContext,
 ) {
+    if (request.method.toUpperCase() === "HEAD") {
+        return new Response(null, {
+            status: responseStatusCode,
+            headers: responseHeaders,
+        });
+    }
+
     const locale = await getLocale(request);
     const i18nInstance = await createI18nInstance(locale);
 
-    return new Promise((resolve, reject) => {
-        let shellRendered = false;
-        const userAgent = request.headers.get("user-agent");
+    let responseStatus = responseStatusCode;
+    const userAgent = request.headers.get("user-agent");
+    const waitForAllReady =
+        (userAgent && isbot(userAgent)) || entryContext.isSpaMode;
 
-        const readyOption: keyof RenderToPipeableStreamOptions =
-            (userAgent && isbot(userAgent)) || entryContext.isSpaMode
-                ? "onAllReady"
-                : "onShellReady";
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(
+        () => abortController.abort(),
+        streamTimeout + 1000,
+    );
 
-        const { pipe, abort } = renderToPipeableStream(
+    try {
+        const stream = await renderToReadableStream(
             <I18nextProvider i18n={i18nInstance}>
                 <ServerRouter context={entryContext} url={request.url} />
             </I18nextProvider>,
             {
-                [readyOption]() {
-                    shellRendered = true;
-                    const body = new PassThrough();
-                    const stream = createReadableStreamFromReadable(body);
-
-                    responseHeaders.set("Content-Type", "text/html");
-
-                    resolve(
-                        new Response(stream, {
-                            headers: responseHeaders,
-                            status: responseStatusCode,
-                        }),
-                    );
-
-                    pipe(body);
-                },
-                onShellError(error: unknown) {
-                    reject(error);
-                },
+                signal: abortController.signal,
                 onError(error: unknown) {
-                    responseStatusCode = 500;
-                    if (shellRendered) console.error(error);
+                    responseStatus = 500;
+                    console.error(error);
                 },
             },
         );
 
-        setTimeout(abort, streamTimeout + 1000);
-    });
+        if (waitForAllReady) {
+            await (stream as ReadableStream & { allReady?: Promise<void> })
+                .allReady;
+        }
+
+        responseHeaders.set("Content-Type", "text/html");
+
+        return new Response(stream, {
+            headers: responseHeaders,
+            status: responseStatus,
+        });
+    } catch (error) {
+        console.error(error);
+        return new Response("Internal Server Error", { status: 500 });
+    } finally {
+        clearTimeout(timeoutId);
+    }
 }

@@ -7,8 +7,10 @@ import {
     OIDCParamsResponseSchema,
     ValidateSessionResponseSchema,
 } from "~/gen/auth/v1/auth_pb";
+import { base64UrlEncode } from "~/lib/base64.server";
 import { withErrorInjection } from "~/lib/mock-error-injection.server";
 import { withMockOverride } from "~/lib/mock-registry.server";
+import { getEnv } from "~/lib/runtime-env.server";
 import { authLogger } from "./logger.server";
 
 const mockSessions = new Map<string, string>();
@@ -18,15 +20,14 @@ function createMockJWT(sessionId: string): string {
     const now = Math.floor(Date.now() / 1000);
     const payload = {
         jti: sessionId,
-        iss: process.env.JWT_ISSUER || "mock-issuer",
+        iss: getEnv("JWT_ISSUER") || "mock-issuer",
         iat: now,
         exp: now + 24 * 60 * 60,
     };
 
-    const base64UrlEncode = (obj: object) =>
-        Buffer.from(JSON.stringify(obj)).toString("base64url");
-
-    return `${base64UrlEncode(header)}.${base64UrlEncode(payload)}.mock-signature`;
+    return `${base64UrlEncode(JSON.stringify(header))}.${base64UrlEncode(
+        JSON.stringify(payload),
+    )}.mock-signature`;
 }
 
 export function createAuthMockTransport() {
