@@ -3,7 +3,6 @@ import { useHydrateAtoms } from "jotai/utils";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { data, Outlet, useOutletContext } from "react-router";
-import { toast } from "sonner";
 import { Header } from "~/components/header/header";
 import { LoginDialog } from "~/features/auth/components/login-dialog";
 import { SessionInvalidDialog } from "~/features/auth/components/session-invalid-dialog";
@@ -14,6 +13,7 @@ import {
 import { validateSession } from "~/features/auth/server/validate-session.server";
 import { NotificationPermissionDialog } from "~/features/device/components/notification-permission-dialog";
 import { useDeviceRegistration } from "~/features/device/hooks/use-device-registration";
+import { ERROR_CODES, showErrorToast } from "~/lib/errors";
 import { orpc } from "~/orpc/client";
 import { type AuthState, authStateAtom } from "~/store/auth";
 import type { Route } from "./+types/app-layout";
@@ -75,11 +75,11 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
                 console.error(
                     "Logout failed: server returned unsuccessful response",
                 );
-                toast.error(t("error.failedToLogout"));
+                showErrorToast(t, ERROR_CODES.AUTH_LOGOUT_FAILED);
             }
         } catch (error) {
             console.error("Logout error:", error);
-            toast.error(t("error.failedToLogout"));
+            showErrorToast(t, ERROR_CODES.AUTH_LOGOUT_FAILED);
         }
     };
 

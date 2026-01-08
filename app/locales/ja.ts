@@ -155,7 +155,7 @@ export default {
         errorGeneric: "音声入力エラー",
     },
 
-    // Error messages
+    // Legacy error messages (kept for backward compatibility during migration)
     error: {
         oops: "エラーが発生しました",
         unexpected: "予期せぬエラーが発生しました。",
@@ -169,5 +169,35 @@ export default {
             description:
                 "このブラウザには対応しておりません。別のブラウザをお試しください。",
         },
+    },
+
+    errors: {
+        "task.create.failed":
+            "タスクの作成に失敗しました。もう一度お試しください。",
+        "task.get.failed": "タスクの読み込みに失敗しました。",
+        "task.update.failed":
+            "タスクの更新に失敗しました。もう一度お試しください。",
+        "task.delete.failed":
+            "タスクの削除に失敗しました。もう一度お試しください。",
+        "task.list.failed": "タスク一覧の読み込みに失敗しました。",
+        "task.complete.failed":
+            "タスクの完了に失敗しました。もう一度お試しください。",
+        "task.notFound": "タスクが見つかりません。",
+
+        "auth.session.invalid":
+            "セッションが期限切れです。再度サインインしてください。",
+        "auth.login.failed":
+            "サインインに失敗しました。もう一度お試しください。",
+        "auth.logout.failed":
+            "サインアウトに失敗しました。もう一度お試しください。",
+
+        "device.register.failed":
+            "通知の有効化に失敗しました。もう一度お試しください。",
+        "device.storage.unavailable": "ローカルストレージが利用できません。",
+
+        "common.unexpected":
+            "予期せぬエラーが発生しました。もう一度お試しください。",
+        "common.networkError":
+            "ネットワークエラーです。接続を確認してください。",
     },
 } as const;

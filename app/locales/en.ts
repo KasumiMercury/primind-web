@@ -155,7 +155,7 @@ export default {
         errorGeneric: "Voice input error",
     },
 
-    // Error messages
+    // Legacy error messages (kept for backward compatibility during migration)
     error: {
         oops: "Oops!",
         unexpected: "An unexpected error occurred.",
@@ -169,5 +169,27 @@ export default {
             description:
                 "This browser is not supported. Please try using a different browser.",
         },
+    },
+
+    errors: {
+        "task.create.failed": "Failed to create task. Please try again.",
+        "task.get.failed": "Failed to load task details.",
+        "task.update.failed": "Failed to update task. Please try again.",
+        "task.delete.failed": "Failed to delete task. Please try again.",
+        "task.list.failed": "Failed to load tasks.",
+        "task.complete.failed": "Failed to complete task. Please try again.",
+        "task.notFound": "Task not found.",
+
+        "auth.session.invalid":
+            "Your session has expired. Please sign in again.",
+        "auth.login.failed": "Failed to sign in. Please try again.",
+        "auth.logout.failed": "Failed to sign out. Please try again.",
+
+        "device.register.failed":
+            "Failed to enable notifications. Please try again.",
+        "device.storage.unavailable": "Local storage is not available.",
+
+        "common.unexpected": "An unexpected error occurred. Please try again.",
+        "common.networkError": "Network error. Please check your connection.",
     },
 } as const;

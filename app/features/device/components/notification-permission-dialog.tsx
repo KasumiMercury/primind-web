@@ -1,5 +1,7 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ERROR_CODES, showErrorToast } from "~/lib/errors";
 import { orpc } from "~/orpc/client";
 import { requestAndGetFCMToken } from "../lib/notification";
 import {
@@ -9,6 +11,7 @@ import {
 import { NotificationPermissionDialogContent } from "./notification-permission-dialog-content";
 
 export function NotificationPermissionDialog() {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useAtom(notificationModalOpenAtom);
     const setDismissed = useSetAtom(notificationDismissedAtom);
     const [isRequesting, setIsRequesting] = useState(false);
@@ -26,15 +29,18 @@ export function NotificationPermissionDialog() {
                     fcmToken: token,
                 });
                 if (!result.success) {
-                    throw new Error(
-                        result.error || "Failed to register device",
+                    showErrorToast(
+                        t,
+                        result.error || ERROR_CODES.DEVICE_REGISTER_FAILED,
                     );
+                    return;
                 }
             }
 
             setIsOpen(false);
         } catch (err) {
             console.error("Failed to enable notifications:", err);
+            showErrorToast(t, ERROR_CODES.DEVICE_REGISTER_FAILED);
         } finally {
             setIsRequesting(false);
         }

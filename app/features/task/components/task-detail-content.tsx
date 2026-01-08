@@ -6,6 +6,7 @@ import { Label, TextField } from "~/components/ui/text-field";
 import { formatTimestampAbsolute } from "~/features/task/lib/absolute-time";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
 import { TaskStatus, type TaskType } from "~/gen/task/v1/task_pb";
+import { ERROR_CODES, getErrorMessage } from "~/lib/errors";
 import { useTaskTypeItems } from "../hooks/use-task-type-items";
 import { TASK_TYPE_KEYS, type TaskTypeKey } from "../lib/task-type-items";
 import type { SerializableTask } from "../server/list-active-tasks.server";
@@ -208,7 +209,10 @@ export function TaskDetailContent({
                                 <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-red-600 text-sm text-white">
                                     <X className="size-5" />
                                     <span>
-                                        {t("taskDetail.failedToComplete")}
+                                        {getErrorMessage(
+                                            t,
+                                            ERROR_CODES.TASK_COMPLETE_FAILED,
+                                        )}
                                     </span>
                                 </div>
                             ) : completeSuccess ? (

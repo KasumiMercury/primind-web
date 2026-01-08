@@ -7,6 +7,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "~/components/ui/dialog";
+import { ERROR_CODES, getErrorMessage } from "~/lib/errors";
 import { useTaskService } from "../hooks/use-task-service";
 import {
     getTaskTypeFromKey,
@@ -129,7 +130,11 @@ export function RecreateTaskDialog({
 
                 if (createResult.error) {
                     setError(
-                        createResult.error || t("recreateTask.errorCreate"),
+                        getErrorMessage(
+                            t,
+                            createResult.error ||
+                                ERROR_CODES.TASK_CREATE_FAILED,
+                        ),
                     );
                     return;
                 }
@@ -161,12 +166,8 @@ export function RecreateTaskDialog({
 
                 resetState();
                 onRecreateComplete();
-            } catch (err) {
-                setError(
-                    err instanceof Error
-                        ? err.message
-                        : t("recreateTask.errorGeneric"),
-                );
+            } catch {
+                setError(getErrorMessage(t, ERROR_CODES.COMMON_UNEXPECTED));
             }
         });
     };
