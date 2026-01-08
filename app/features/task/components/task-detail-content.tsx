@@ -88,7 +88,7 @@ export function TaskDetailContent({
     defaultEditingField,
     defaultEditingValue,
 }: TaskDetailContentProps) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const items = useTaskTypeItems();
     const taskTypeKey = getTaskTypeKey(task.taskType);
     const config = items[taskTypeKey];
@@ -252,10 +252,17 @@ export function TaskDetailContent({
                                     {t("taskDetail.created")}
                                 </h3>
                                 <p className="text-foreground">
-                                    {formatTimestampAbsolute(task.createdAt)}
+                                    {formatTimestampAbsolute(
+                                        task.createdAt,
+                                        i18n.language,
+                                    )}
                                 </p>
                                 <p className="text-muted-foreground text-sm">
-                                    {formatTimestampRelative(task.createdAt)}
+                                    {formatTimestampRelative(
+                                        task.createdAt,
+                                        i18n.language,
+                                        t("relativeTime.now"),
+                                    )}
                                 </p>
                             </div>
                         )}
@@ -266,10 +273,17 @@ export function TaskDetailContent({
                                     {t("taskDetail.targetTime")}
                                 </h3>
                                 <p className="text-foreground">
-                                    {formatTimestampAbsolute(task.targetAt)}
+                                    {formatTimestampAbsolute(
+                                        task.targetAt,
+                                        i18n.language,
+                                    )}
                                 </p>
                                 <p className="text-muted-foreground text-sm">
-                                    {formatTimestampRelative(task.targetAt)}
+                                    {formatTimestampRelative(
+                                        task.targetAt,
+                                        i18n.language,
+                                        t("relativeTime.now"),
+                                    )}
                                 </p>
                             </div>
                         )}
