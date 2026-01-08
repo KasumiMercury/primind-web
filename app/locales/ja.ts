@@ -140,6 +140,11 @@ export default {
         laundry: "洗濯物取り込み",
     },
 
+    // Relative Time
+    relativeTime: {
+        now: "now",
+    },
+
     // Voice Input
     voiceInput: {
         label: "音声入力",

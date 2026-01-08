@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { formatTimestampRelative } from "~/features/task/lib/relative-time";
 import type { TaskType } from "~/gen/task/v1/task_pb";
@@ -28,13 +29,18 @@ function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
 }
 
 export function TaskCard({ task, className, onPress }: TaskCardProps) {
+    const { t, i18n } = useTranslation();
     const items = useTaskTypeItems();
     const taskTypeKey = getTaskTypeKey(task.taskType);
     const config = items[taskTypeKey];
     const Icon = config.icon;
 
     const displayTitle = task.title?.trim() || "";
-    const relativeTime = formatTimestampRelative(task.createdAt);
+    const relativeTime = formatTimestampRelative(
+        task.createdAt,
+        i18n.language,
+        t("relativeTime.now"),
+    );
 
     return (
         <Button

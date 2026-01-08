@@ -2,6 +2,7 @@ import { Loader2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { useTaskTypeItems } from "../hooks/use-task-type-items";
+import { formatAbsoluteTime } from "../lib/absolute-time";
 import type { TaskTypeKey } from "../lib/task-type-items";
 
 interface RecreateConfirmContentProps {
@@ -27,20 +28,10 @@ export function RecreateConfirmContent({
     onConfirm,
     onBack,
 }: RecreateConfirmContentProps) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const items = useTaskTypeItems();
     const taskTypeConfig = items[newTaskType];
     const Icon = taskTypeConfig.icon;
-
-    const formatDateTime = (date: Date) => {
-        return date.toLocaleString(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        });
-    };
 
     return (
         <div className="flex flex-col gap-4">
@@ -92,7 +83,7 @@ export function RecreateConfirmContent({
                             {t("recreateTask.scheduledTime")}
                         </h4>
                         <p className="text-foreground">
-                            {formatDateTime(scheduledAt)}
+                            {formatAbsoluteTime(scheduledAt, i18n.language)}
                         </p>
                     </div>
                 )}

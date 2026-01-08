@@ -31,10 +31,19 @@ const THRESHOLDS: TimeThreshold[] = [
     { max: Number.POSITIVE_INFINITY, divisor: YEAR, unit: "year" },
 ];
 
-export function formatRelativeTime(date: Date, locale: string = "en"): string {
+export function formatRelativeTime(
+    date: Date,
+    locale: string = "en",
+    nowText: string = "now",
+): string {
     const now = Date.now();
     const diff = date.getTime() - now;
     const absDiff = Math.abs(diff);
+
+    // Return "now" text if less than 1 minute
+    if (absDiff < MINUTE) {
+        return nowText;
+    }
 
     const formatter = new Intl.RelativeTimeFormat(locale, {
         numeric: "auto",
@@ -54,6 +63,7 @@ export function formatRelativeTime(date: Date, locale: string = "en"): string {
 export function formatTimestampRelative(
     timestamp: { seconds: bigint | string } | undefined,
     locale: string = "en",
+    nowText: string = "now",
 ): string {
     if (!timestamp) {
         return "";
@@ -65,5 +75,5 @@ export function formatTimestampRelative(
             : Number(timestamp.seconds);
 
     const date = new Date(seconds * 1000);
-    return formatRelativeTime(date, locale);
+    return formatRelativeTime(date, locale, nowText);
 }

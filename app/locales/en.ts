@@ -140,6 +140,11 @@ export default {
         laundry: "Take in laundry",
     },
 
+    // Relative Time
+    relativeTime: {
+        now: "now",
+    },
+
     // Voice Input
     voiceInput: {
         label: "Voice input",
