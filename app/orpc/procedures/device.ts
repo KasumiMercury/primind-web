@@ -9,6 +9,7 @@ import {
     Platform,
     RegisterDeviceRequestSchema,
 } from "~/gen/device/v1/device_pb";
+import { ERROR_CODES } from "~/lib/errors";
 import { createAuthContext } from "~/lib/request-context.server";
 import { baseProcedure } from "../middleware/auth";
 import {
@@ -91,7 +92,7 @@ export const registerDeviceProcedure = baseProcedure
             deviceLogger.error({ err }, "RegisterDevice failed");
             return {
                 success: false,
-                error: "Failed to register device",
+                error: ERROR_CODES.DEVICE_REGISTER_FAILED,
             };
         }
     });

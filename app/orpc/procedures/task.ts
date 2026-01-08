@@ -14,6 +14,7 @@ import {
     type TaskType,
     UpdateTaskRequestSchema,
 } from "~/gen/task/v1/task_pb";
+import { ERROR_CODES } from "~/lib/errors";
 import { authedProcedure } from "../middleware/auth";
 import {
     createTaskInputSchema,
@@ -76,7 +77,7 @@ export const createTaskProcedure = authedProcedure
                     );
                     return {
                         success: false,
-                        error: `Schedule time must be at least ${MINIMUM_SCHEDULE_LEAD_TIME_MINUTES} minutes from now`,
+                        error: ERROR_CODES.TASK_CREATE_FAILED,
                     };
                 }
             }
@@ -122,10 +123,7 @@ export const createTaskProcedure = authedProcedure
             );
             return {
                 success: false,
-                error:
-                    err instanceof Error
-                        ? err.message
-                        : "Failed to create task",
+                error: ERROR_CODES.TASK_CREATE_FAILED,
             };
         }
     });
@@ -188,10 +186,7 @@ export const updateTaskProcedure = authedProcedure
             );
             return {
                 success: false,
-                error:
-                    err instanceof Error
-                        ? err.message
-                        : "Failed to update task",
+                error: ERROR_CODES.TASK_UPDATE_FAILED,
             };
         }
     });
@@ -225,10 +220,7 @@ export const deleteTaskProcedure = authedProcedure
             );
             return {
                 success: false,
-                error:
-                    err instanceof Error
-                        ? err.message
-                        : "Failed to delete task",
+                error: ERROR_CODES.TASK_DELETE_FAILED,
             };
         }
     });
@@ -248,7 +240,7 @@ export const getTaskProcedure = authedProcedure
             });
 
             if (!response.task) {
-                return { error: "Task not found" };
+                return { error: ERROR_CODES.TASK_NOT_FOUND };
             }
 
             taskLogger.info(
@@ -262,8 +254,7 @@ export const getTaskProcedure = authedProcedure
         } catch (err) {
             taskLogger.error({ err, taskId: input.taskId }, "GetTask failed");
             return {
-                error:
-                    err instanceof Error ? err.message : "Failed to get task",
+                error: ERROR_CODES.TASK_GET_FAILED,
             };
         }
     });
@@ -291,8 +282,7 @@ export const listActiveTasksProcedure = authedProcedure
             taskLogger.error({ err }, "ListActiveTasks failed");
             return {
                 tasks: [],
-                error:
-                    err instanceof Error ? err.message : "Failed to list tasks",
+                error: ERROR_CODES.TASK_LIST_FAILED,
             };
         }
     });
