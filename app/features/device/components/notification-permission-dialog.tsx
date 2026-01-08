@@ -1,5 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
+import { orpc } from "~/orpc/client";
 import { requestAndGetFCMToken } from "../lib/notification";
 import {
     notificationDismissedAtom,
@@ -18,19 +19,16 @@ export function NotificationPermissionDialog() {
             const { permission, token } = await requestAndGetFCMToken();
 
             if (permission === "granted" && token) {
-                const res = await fetch("/api/device", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        timezone:
-                            Intl.DateTimeFormat().resolvedOptions().timeZone,
-                        locale: navigator.language,
-                        platform: "web",
-                        fcm_token: token,
-                    }),
+                const result = await orpc.device.register({
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    locale: navigator.language,
+                    platform: "web",
+                    fcmToken: token,
                 });
-                if (!res.ok) {
-                    throw new Error("Failed to register device");
+                if (!result.success) {
+                    throw new Error(
+                        result.error || "Failed to register device",
+                    );
                 }
             }
 
