@@ -242,7 +242,8 @@ function createLocalTaskService(): TaskService {
                     data: { taskId: localTask.taskId },
                     isLocalOperation: true,
                 };
-            } catch {
+            } catch (err) {
+                console.error("TaskLocalService.create failed:", err);
                 return {
                     data: { taskId: "" },
                     isLocalOperation: true,
@@ -267,7 +268,8 @@ function createLocalTaskService(): TaskService {
                     data: { task },
                     isLocalOperation: true,
                 };
-            } catch {
+            } catch (err) {
+                console.error("TaskLocalService.get failed:", err);
                 return {
                     data: { task: undefined },
                     isLocalOperation: true,
@@ -333,7 +335,8 @@ function createLocalTaskService(): TaskService {
                     data: { taskId: input.taskId },
                     isLocalOperation: true,
                 };
-            } catch {
+            } catch (err) {
+                console.error("TaskLocalService.update failed:", err);
                 return {
                     data: { taskId: "" },
                     isLocalOperation: true,
@@ -358,7 +361,8 @@ function createLocalTaskService(): TaskService {
                     data: { success: true },
                     isLocalOperation: true,
                 };
-            } catch {
+            } catch (err) {
+                console.error("TaskLocalService.delete failed:", err);
                 return {
                     data: { success: false },
                     isLocalOperation: true,
@@ -393,7 +397,8 @@ function createLocalTaskService(): TaskService {
                     data: { tasks },
                     isLocalOperation: true,
                 };
-            } catch {
+            } catch (err) {
+                console.error("TaskLocalService.listActive failed:", err);
                 return {
                     data: { tasks: [] },
                     isLocalOperation: true,
