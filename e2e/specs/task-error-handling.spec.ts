@@ -23,7 +23,7 @@ test.describe("Task Error Handling", () => {
             (response) => response.url().includes("/callback/google"),
             { timeout: 15000 },
         );
-        await page.click('button:has-text("Sign in with Google")');
+        await page.click('button:has-text("Log in with Google")');
 
         // Wait for the callback response (indicates auth flow completed)
         await responsePromise;
