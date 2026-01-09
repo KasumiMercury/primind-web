@@ -27,8 +27,7 @@ export function CallbackStatus({
                             Processing login...
                         </h1>
                         <p className="mt-2 text-muted-foreground">
-                            Please wait while we complete your {provider} sign
-                            in.
+                            Please wait while we complete your {provider} login.
                         </p>
                     </>
                 )}
