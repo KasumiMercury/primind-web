@@ -10,6 +10,10 @@ const isDev = process.env.NODE_ENV === "development";
 const apiRoutes: RouteConfig = [
     route("/api/rpc/*", "routes/api/rpc.$.tsx"),
     route("/api/set-language", "routes/api/set-language.ts"),
+    route(
+        "/api/notification-icon/:taskType/:colorHex",
+        "routes/api/notification-icon.$taskType.$colorHex.ts",
+    ),
     ...(isDev ? [route("/api/test-mock", "routes/api/test-mock.ts")] : []),
     route("/api/*", "routes/api/openapi.$.tsx"),
 ];
