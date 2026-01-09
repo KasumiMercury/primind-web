@@ -1,5 +1,17 @@
-import { Resvg } from "@resvg/resvg-js";
+import { Resvg, initWasm } from "@resvg/resvg-wasm";
 import type { Route } from "./+types/notification-icon.$taskType.$colorHex";
+
+// WASM initialization (lazy, single init)
+let wasmInitialized = false;
+async function ensureWasmInitialized() {
+    if (!wasmInitialized) {
+        // Fetch and initialize WASM from unpkg CDN
+        await initWasm(
+            fetch("https://unpkg.com/@resvg/resvg-wasm@2.6.2/index_bg.wasm"),
+        );
+        wasmInitialized = true;
+    }
+}
 
 const VALID_TASK_TYPES = ["short", "near", "relaxed", "scheduled"] as const;
 type TaskType = (typeof VALID_TASK_TYPES)[number];
@@ -30,6 +42,8 @@ function generateSVG(taskType: TaskType, colorHex: string): string {
 }
 
 export async function loader({ params }: Route.LoaderArgs): Promise<Response> {
+    await ensureWasmInitialized();
+
     const taskType = params.taskType?.toLowerCase();
     // Remove .png extension if present
     const colorHex = params.colorHex?.replace(/\.png$/, "");
