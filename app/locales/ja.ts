@@ -146,6 +146,16 @@ export default {
         now: "now",
     },
 
+    // Onboarding
+    onboarding: {
+        step1Title: "タイプを選択",
+        step1Desc: "左右にスワイプ、または端をタップ",
+        step2Title: "リマインドを作成",
+        step2Desc: "中央をタップ",
+        step3Title: "完了！",
+        step3Desc: "リマインドが作成されました",
+    },
+
     // Voice Input
     voiceInput: {
         label: "音声入力",

@@ -146,6 +146,16 @@ export default {
         now: "now",
     },
 
+    // Onboarding
+    onboarding: {
+        step1Title: "Choose type",
+        step1Desc: "Swipe left/right or tap edges",
+        step2Title: "Create remind",
+        step2Desc: "Tap the center",
+        step3Title: "Done!",
+        step3Desc: "Your remind is created",
+    },
+
     // Voice Input
     voiceInput: {
         label: "Voice input",
