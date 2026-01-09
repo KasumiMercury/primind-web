@@ -6,10 +6,6 @@ interface StarBurstIconProps {
     strokeWidth?: number;
 }
 
-const toFixed = (num: number, digits: number = 6) => {
-    return parseFloat(num.toFixed(digits));
-};
-
 export function StarBurstIcon({
     className = "",
     label,
@@ -17,21 +13,6 @@ export function StarBurstIcon({
     fillColor,
     strokeWidth = 4,
 }: StarBurstIconProps) {
-    const points = [];
-    const centerX = 50;
-    const centerY = 50;
-    const outerRadius = 42;
-    const innerRadius = 28;
-    const numPoints = 10;
-
-    for (let i = 0; i < numPoints * 2; i++) {
-        const angle = (i * Math.PI) / numPoints - Math.PI / 2;
-        const radius = i % 2 === 0 ? outerRadius : innerRadius;
-        const x = centerX + radius * Math.cos(angle);
-        const y = centerY + radius * Math.sin(angle);
-        points.push(`${toFixed(x)},${toFixed(y)}`);
-    }
-
     return (
         <svg
             viewBox="0 0 100 100"
@@ -41,7 +22,7 @@ export function StarBurstIcon({
             aria-label={label}
         >
             <polygon
-                points={points.join(" ")}
+                points="50,8 58.652476,23.370418 74.686981,16.021286 72.652476,33.542013 89.944374,37.021286 78,50 89.944374,62.978714 72.652476,66.457987 74.686981,83.978714 58.652476,76.629582 50,92 41.347524,76.629582 25.313019,83.978714 27.347524,66.457987 10.055626,62.978714 22,50 10.055626,37.021286 27.347524,33.542013 25.313019,16.021286 41.347524,23.370418"
                 fill={fillColor ?? "none"}
                 strokeWidth={strokeWidth}
             />
