@@ -12,6 +12,15 @@ interface TaskRegistrationOnboardingProps {
 
 const DEMO_WIDTH = 140;
 
+// Animation timing constants (total cycle: 8 seconds)
+const CYCLE_DURATION = 8;
+const STEP1_START = 0;
+const STEP1_DURATION = 2.5;
+const STEP2_START = 3;
+const STEP2_DURATION = 1.5;
+const STEP3_START = 5;
+const STEP3_DURATION = 1.5;
+
 function TouchIndicator({ className }: { className?: string }) {
     return (
         <div
@@ -42,10 +51,11 @@ function SwipeAnimation({ width }: { width: number }) {
                 opacity: [0, 1, 1, 1, 0],
             }}
             transition={{
-                duration: 2.5,
+                duration: STEP1_DURATION,
                 times: [0, 0.3, 0.7, 0.95, 1],
                 repeat: Number.POSITIVE_INFINITY,
-                repeatDelay: 0.5,
+                repeatDelay: CYCLE_DURATION - STEP1_DURATION,
+                delay: STEP1_START,
                 ease: "easeInOut",
             }}
         >
@@ -74,10 +84,11 @@ function TapAnimation({ width }: { width: number }) {
                     opacity: [0, 1, 1, 1, 1, 0],
                 }}
                 transition={{
-                    duration: 1.5,
+                    duration: STEP2_DURATION,
                     times: [0, 0.1, 0.4, 0.5, 0.6, 1],
                     repeat: Number.POSITIVE_INFINITY,
-                    repeatDelay: 1,
+                    repeatDelay: CYCLE_DURATION - STEP2_DURATION,
+                    delay: STEP2_START,
                     ease: "easeInOut",
                 }}
             >
@@ -98,8 +109,8 @@ function TapAnimation({ width }: { width: number }) {
                 transition={{
                     duration: 0.8,
                     repeat: Number.POSITIVE_INFINITY,
-                    repeatDelay: 1.7,
-                    delay: 0.5,
+                    repeatDelay: CYCLE_DURATION - 0.8,
+                    delay: STEP2_START + 0.4,
                     ease: "easeOut",
                 }}
             />
@@ -124,26 +135,29 @@ function SuccessAnimation({ width }: { width: number }) {
                 height: 40,
             }}
             animate={{
-                scale: [0, 1.1, 1],
-                opacity: [0, 1, 1],
+                scale: [0, 1.1, 1, 1, 0],
+                opacity: [0, 1, 1, 1, 0],
             }}
             transition={{
-                duration: 0.6,
-                times: [0, 0.6, 1],
+                duration: STEP3_DURATION,
+                times: [0, 0.3, 0.5, 0.8, 1],
                 repeat: Number.POSITIVE_INFINITY,
-                repeatDelay: 2,
+                repeatDelay: CYCLE_DURATION - STEP3_DURATION,
+                delay: STEP3_START,
                 ease: "easeOut",
             }}
         >
             <motion.div
                 animate={{
-                    scale: [0, 1],
+                    scale: [0, 1, 1, 0],
+                    opacity: [0, 1, 1, 0],
                 }}
                 transition={{
-                    duration: 0.3,
-                    delay: 0.3,
+                    duration: STEP3_DURATION,
+                    times: [0, 0.3, 0.8, 1],
                     repeat: Number.POSITIVE_INFINITY,
-                    repeatDelay: 2.3,
+                    repeatDelay: CYCLE_DURATION - STEP3_DURATION,
+                    delay: STEP3_START + 0.2,
                     ease: "easeOut",
                 }}
             >
