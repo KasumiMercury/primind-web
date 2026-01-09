@@ -26,8 +26,8 @@ export default {
     auth: {
         login: "Login",
         logout: "Logout",
-        signingIn: "Signing in...",
-        signInWith: "Sign in with {{provider}}",
+        loggingIn: "Logging in...",
+        loginWith: "Log in with {{provider}}",
         error: "Error",
     },
 
@@ -96,8 +96,8 @@ export default {
     // Session Invalid Dialog
     session: {
         invalid: {
-            title: "Signed Out",
-            description: "You have been signed out. Please sign in again.",
+            title: "Logged Out",
+            description: "You have been logged out. Please log in again.",
             goHome: "Go to Home",
         },
     },
@@ -187,9 +187,9 @@ export default {
         "task.notFound": "Task not found.",
 
         "auth.session.invalid":
-            "Your session has expired. Please sign in again.",
-        "auth.login.failed": "Failed to sign in. Please try again.",
-        "auth.logout.failed": "Failed to sign out. Please try again.",
+            "Your session has expired. Please log in again.",
+        "auth.login.failed": "Failed to log in. Please try again.",
+        "auth.logout.failed": "Failed to log out. Please try again.",
 
         "device.register.failed":
             "Failed to enable notifications. Please try again.",

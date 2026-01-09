@@ -7,7 +7,7 @@ interface LoginPageContentProps {
 }
 
 export function LoginPageContent({
-    title = "Sign In",
+    title = "Login",
     action,
     children,
 }: LoginPageContentProps) {

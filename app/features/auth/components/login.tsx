@@ -12,7 +12,7 @@ const providerRegistry: Record<string, OIDCProviderDefinition> = {
 };
 
 export function meta(_: Route.MetaArgs) {
-    return [{ title: "Sign In" }, { name: "description", content: "Sign in" }];
+    return [{ title: "Login" }, { name: "description", content: "Login" }];
 }
 
 export async function action({ request }: Route.ActionArgs) {

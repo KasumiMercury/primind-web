@@ -26,10 +26,10 @@ export function LoginDialog({
             className="sm:max-w-md"
         >
             <DialogHeader>
-                <DialogTitle>Sign in</DialogTitle>
+                <DialogTitle>Login</DialogTitle>
             </DialogHeader>
             <DialogDescription className="sr-only">
-                Sign in to your account.
+                Log in to your account.
             </DialogDescription>
             {children || <LoginForm action={action} />}
         </DialogContent>

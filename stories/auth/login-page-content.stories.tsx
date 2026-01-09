@@ -35,7 +35,7 @@ export const CustomTitle: Story = {
 
 export const CustomAction: Story = {
     args: {
-        title: "Sign In",
+        title: "Login",
         children: (
             <LoginFormContent
                 providers={mockProviders}
@@ -48,7 +48,7 @@ export const CustomAction: Story = {
 
 export const WithError: Story = {
     args: {
-        title: "Sign In",
+        title: "Login",
         children: (
             <LoginFormContent
                 providers={singleProvider}
@@ -79,7 +79,7 @@ export const WithCustomContent: Story = {
 
 export const FullPage: Story = {
     args: {
-        title: "Sign In to Your Account",
+        title: "Login to Your Account",
         children: (
             <LoginFormContent providers={mockProviders} onSubmit={fn()} />
         ),

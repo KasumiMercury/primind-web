@@ -41,8 +41,8 @@ export function LoginFormContent({
                         isDisabled={isSubmitting}
                     >
                         {isSubmitting
-                            ? t("auth.signingIn")
-                            : t("auth.signInWith", {
+                            ? t("auth.loggingIn")
+                            : t("auth.loginWith", {
                                   provider: provider.displayName,
                               })}
                     </Button>
