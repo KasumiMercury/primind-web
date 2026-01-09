@@ -12,7 +12,7 @@ import type { Route } from "./+types/tasks.$taskId";
 export function meta({ loaderData }: Route.MetaArgs) {
     const title = loaderData?.task?.title?.trim() || "Task Detail";
     return [
-        { title: `${title} | Primind` },
+        { title: `${title} | PriMind` },
         { name: "description", content: "Task detail view" },
     ];
 }
