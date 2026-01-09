@@ -1,4 +1,4 @@
-import { Resvg, initWasm } from "@resvg/resvg-wasm";
+import { initWasm, Resvg } from "@resvg/resvg-wasm";
 import type { Route } from "./+types/notification-icon.$taskType.$colorHex";
 
 // WASM initialization (lazy, single init)
