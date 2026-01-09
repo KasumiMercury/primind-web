@@ -34,15 +34,10 @@ function TaskCardSkeleton() {
             )}
         >
             {/* Icon placeholder */}
-            <div className="shrink-0 rounded-full bg-muted p-2">
-                <div className="size-14 rounded-full bg-muted-foreground/20 md:size-16" />
-            </div>
+            <div className="size-18 shrink-0 rounded-full bg-muted md:size-20" />
 
             {/* Text placeholders */}
-            <div className="flex w-full min-w-0 flex-col items-center gap-1">
-                <div className="h-4 w-3/4 rounded bg-muted-foreground/20" />
-                <div className="h-3 w-1/2 rounded bg-muted-foreground/10" />
-            </div>
+            <div className="h-9" />
         </div>
     );
 }
