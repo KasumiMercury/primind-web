@@ -47,6 +47,7 @@ export default {
         complete: "完了",
         completing: "完了処理中...",
         completed: "完了しました",
+        retry: "リトライ",
     },
 
     // Delete Task Dialog
