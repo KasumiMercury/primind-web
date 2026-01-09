@@ -47,6 +47,7 @@ export default {
         complete: "Complete",
         completing: "Completing...",
         completed: "Completed",
+        retry: "Retry",
     },
 
     // Delete Task Dialog
