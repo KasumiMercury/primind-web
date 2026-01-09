@@ -4,22 +4,25 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useRevalidator } from "react-router";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
+import { AsyncTaskCardGrid } from "~/features/task/components/async-task-card-grid";
 import { QuickEditModal } from "~/features/task/components/quick-edit-modal";
-import { TaskCardGrid } from "~/features/task/components/task-card-grid";
 import {
     TaskRegistration,
     type TaskRegistrationEvent,
 } from "~/features/task/components/task-registration";
 import { TASK_TYPE_KEYS } from "~/features/task/lib/task-type-items";
-import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
+import type {
+    ActiveTasksResult,
+    SerializableTask,
+} from "~/features/task/server/list-active-tasks.server";
 import { useAppLayoutContext } from "~/layouts/app-layout";
 
 interface HomeViewProps {
-    tasks: SerializableTask[];
+    tasksPromise: Promise<ActiveTasksResult>;
     isAuthenticated: boolean;
 }
 
-export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
+export function HomeView({ tasksPromise, isAuthenticated }: HomeViewProps) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { revalidate } = useRevalidator();
@@ -97,7 +100,10 @@ export function HomeView({ tasks, isAuthenticated }: HomeViewProps) {
             />
 
             <section className="w-full max-w-4xl">
-                <TaskCardGrid tasks={tasks} onTaskClick={handleTaskClick} />
+                <AsyncTaskCardGrid
+                    tasksPromise={tasksPromise}
+                    onTaskClick={handleTaskClick}
+                />
             </section>
 
             {/* space for OperationArea */}

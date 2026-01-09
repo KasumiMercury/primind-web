@@ -1,10 +1,11 @@
 import type { ShouldRevalidateFunctionArgs } from "react-router";
 import { Outlet, useLocation, useOutletContext } from "react-router";
-import { Loading } from "~/components/ui/loading";
 import { getUserSession } from "~/features/auth/server/session.server";
-import { useGuestInitialLoad } from "~/features/task/hooks/use-guest-initial-load";
 import { HomeView } from "~/features/task/pages/task-list-view";
-import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
+import type {
+    ActiveTasksResult,
+    SerializableTask,
+} from "~/features/task/server/list-active-tasks.server";
 import { listActiveTasks } from "~/features/task/server/list-active-tasks.server";
 import { getTaskDB } from "~/features/task/store/db.client";
 import { TaskStatus } from "~/gen/task/v1/task_pb";
@@ -25,17 +26,16 @@ export async function loader({ request }: Route.LoaderArgs) {
     // For direct access to /tasks/:taskId, skip fetching
     // For modal navigation from home, shouldRevalidate prevents re-run and keeps existing data
     if (!isHomeRoute || !isAuthenticated) {
+        // Return resolved promise for consistency with deferred pattern
         return {
-            tasks: [],
+            tasks: Promise.resolve({ tasks: [] } as ActiveTasksResult),
             isAuthenticated,
-            error: undefined,
         };
     }
 
-    const result = await listActiveTasks(request);
+    const tasksPromise = listActiveTasks(request);
     return {
-        tasks: result.tasks,
-        error: result.error,
+        tasks: tasksPromise,
         isAuthenticated: true,
     };
 }
@@ -44,41 +44,40 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
     const serverData = await serverLoader();
 
     if (serverData.isAuthenticated) {
+        // Pass through the server's deferred promise
         return serverData;
     }
 
-    // fetch from IndexedDB
-    const db = getTaskDB();
-    if (!db) {
-        return {
-            ...serverData,
-            tasks: [] as SerializableTask[],
-        };
-    }
+    // For guest users: return IndexedDB fetch as a deferred promise
+    const tasksPromise = (async (): Promise<ActiveTasksResult> => {
+        const db = getTaskDB();
+        if (!db) {
+            return { tasks: [] };
+        }
 
-    try {
-        const localTasks = await db.tasks
-            .where("taskStatus")
-            .equals(TaskStatus.ACTIVE)
-            .toArray();
+        try {
+            const localTasks = await db.tasks
+                .where("taskStatus")
+                .equals(TaskStatus.ACTIVE)
+                .toArray();
 
-        localTasks.sort(
-            (a, b) =>
-                Number(a.targetAt?.seconds ?? Infinity) -
-                Number(b.targetAt?.seconds ?? Infinity),
-        );
+            localTasks.sort(
+                (a, b) =>
+                    Number(a.targetAt?.seconds ?? Infinity) -
+                    Number(b.targetAt?.seconds ?? Infinity),
+            );
 
-        return {
-            ...serverData,
-            tasks: localTasks as SerializableTask[],
-        };
-    } catch (error) {
-        console.error("Failed to load local tasks:", error);
-        return {
-            ...serverData,
-            tasks: [] as SerializableTask[],
-        };
-    }
+            return { tasks: localTasks as SerializableTask[] };
+        } catch (error) {
+            console.error("Failed to load local tasks:", error);
+            return { tasks: [], error: "Failed to load local tasks" };
+        }
+    })();
+
+    return {
+        ...serverData,
+        tasks: tasksPromise,
+    };
 }
 
 // Prevent loader re-run when navigating from home to task detail
@@ -99,9 +98,7 @@ export function shouldRevalidate({
 
 export default function HomeShellLayout({ loaderData }: Route.ComponentProps) {
     const location = useLocation();
-    const { isAuthenticated, tasks } = loaderData;
-
-    const { isLoading } = useGuestInitialLoad({ isAuthenticated });
+    const { isAuthenticated, tasks: tasksPromise } = loaderData;
 
     const isModal = location.state?.modal === true;
     const isHomeRoute = location.pathname === "/";
@@ -121,11 +118,10 @@ export default function HomeShellLayout({ loaderData }: Route.ComponentProps) {
                 }}
                 aria-hidden={!showHomeView}
             >
-                {isLoading ? (
-                    <Loading />
-                ) : (
-                    <HomeView tasks={tasks} isAuthenticated={isAuthenticated} />
-                )}
+                <HomeView
+                    tasksPromise={tasksPromise}
+                    isAuthenticated={isAuthenticated}
+                />
             </div>
 
             <Outlet context={outletContext} />
