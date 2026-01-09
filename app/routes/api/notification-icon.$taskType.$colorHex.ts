@@ -16,31 +16,33 @@ async function ensureWasmInitialized(): Promise<void> {
 
     // Create and store the initialization promise
     wasmInitPromise = (async () => {
-        if (isCloudflare) {
-            // Cloudflare: fetch from bundled URL
-            const response = await fetch(resvgWasmUrl);
-            if (!response.ok) {
-                throw new Error(
-                    `Failed to fetch WASM: ${response.status} ${response.statusText}`,
+        try {
+            if (isCloudflare) {
+                // Cloudflare: fetch from bundled URL
+                const response = await fetch(resvgWasmUrl);
+                if (!response.ok) {
+                    throw new Error(
+                        `Failed to fetch WASM: ${response.status} ${response.statusText}`,
+                    );
+                }
+                await initWasm(response);
+            } else {
+                // Node.js (dev): read from filesystem
+                const fs = await import("node:fs/promises");
+                const { fileURLToPath } = await import("node:url");
+                const wasmUrl = import.meta.resolve(
+                    "@resvg/resvg-wasm/index_bg.wasm",
                 );
+                const wasmPath = fileURLToPath(wasmUrl);
+                const wasmBytes = await fs.readFile(wasmPath);
+                await initWasm(wasmBytes);
             }
-            await initWasm(response);
-        } else {
-            // Node.js (dev): read from filesystem
-            const fs = await import("node:fs/promises");
-            const { fileURLToPath } = await import("node:url");
-            const wasmUrl = import.meta.resolve(
-                "@resvg/resvg-wasm/index_bg.wasm",
-            );
-            const wasmPath = fileURLToPath(wasmUrl);
-            const wasmBytes = await fs.readFile(wasmPath);
-            await initWasm(wasmBytes);
+        } catch (error) {
+            // Clear the promise before rejecting so subsequent calls can retry
+            wasmInitPromise = null;
+            throw error;
         }
-    })().catch((error) => {
-        // Clear the promise so subsequent calls can retry
-        wasmInitPromise = null;
-        throw error;
-    });
+    })();
 
     return wasmInitPromise;
 }
