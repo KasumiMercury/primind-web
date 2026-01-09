@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useLocation, useOutletContext, useRevalidator } from "react-router";
+import {
+    Outlet,
+    useLocation,
+    useOutletContext,
+    useRevalidator,
+} from "react-router";
 import { QuickEditModal } from "~/features/task/components/quick-edit-modal";
 import {
     TaskRegistration,
