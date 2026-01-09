@@ -192,8 +192,7 @@ export default {
 
         "auth.session.invalid":
             "セッションが期限切れです。再度ログインしてください。",
-        "auth.login.failed":
-            "ログインに失敗しました。もう一度お試しください。",
+        "auth.login.failed": "ログインに失敗しました。もう一度お試しください。",
         "auth.logout.failed":
             "ログアウトに失敗しました。もう一度お試しください。",
 
