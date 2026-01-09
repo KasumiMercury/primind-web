@@ -1,6 +1,8 @@
 import type { ShouldRevalidateFunctionArgs } from "react-router";
 import { Outlet, useLocation, useOutletContext } from "react-router";
 import { getUserSession } from "~/features/auth/server/session.server";
+import { TaskCardGridSkeleton } from "~/features/task/components/task-card-grid-skeleton";
+import { TaskRegistration } from "~/features/task/components/task-registration";
 import { HomeView } from "~/features/task/pages/task-list-view";
 import type {
     ActiveTasksResult,
@@ -79,6 +81,7 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
         tasks: tasksPromise,
     };
 }
+clientLoader.hydrate = true;
 
 // Prevent loader re-run when navigating from home to task detail
 export function shouldRevalidate({
@@ -131,4 +134,27 @@ export default function HomeShellLayout({ loaderData }: Route.ComponentProps) {
 
 export function useHomeShellContext() {
     return useOutletContext<HomeShellContext>();
+}
+
+export function HydrateFallback() {
+    return (
+        <>
+            <section className="w-full max-w-4xl">
+                <TaskCardGridSkeleton count={4} />
+            </section>
+
+            {/* space for OperationArea */}
+            <div className="h-70 w-full shrink-0" aria-hidden="true" />
+
+            <div className="fixed inset-x-0 bottom-0">
+                <div
+                    className="pointer-events-none absolute inset-0 bg-linear-to-b from-transparent to-black/30 md:hidden"
+                    aria-hidden="true"
+                />
+                <div className="flex items-center justify-center p-4">
+                    <TaskRegistration className="w-full max-w-xl drop-shadow-primary/20 drop-shadow-xl" />
+                </div>
+            </div>
+        </>
+    );
 }

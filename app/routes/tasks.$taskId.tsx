@@ -1,9 +1,7 @@
 import { data } from "react-router";
-import { Loading } from "~/components/ui/loading";
 import { UnsupportedBrowser } from "~/components/ui/unsupported-browser";
 import { getUserSession } from "~/features/auth/server/session.server";
 import { TaskDetailModal } from "~/features/task/components/task-detail-modal";
-import { useGuestInitialLoad } from "~/features/task/hooks/use-guest-initial-load";
 import { TaskDetailPage } from "~/features/task/pages/task-detail-page";
 import { getTask } from "~/features/task/server/get-task.server";
 import type { SerializableTask } from "~/features/task/server/list-active-tasks.server";
@@ -85,18 +83,10 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
         throw data({ message: "Task not found" }, { status: 404 });
     }
 }
+clientLoader.hydrate = true;
 
 export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
     const { isModal } = useHomeShellContext();
-
-    const { isLoading } = useGuestInitialLoad({
-        isAuthenticated: loaderData.isAuthenticated,
-        shouldRevalidate: !loaderData.task,
-    });
-
-    if (isLoading) {
-        return <Loading />;
-    }
 
     if ("storageUnavailable" in loaderData && loaderData.storageUnavailable) {
         return <UnsupportedBrowser />;
