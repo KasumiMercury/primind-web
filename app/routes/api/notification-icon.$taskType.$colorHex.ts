@@ -33,7 +33,11 @@ async function ensureWasmInitialized(): Promise<void> {
             );
             await initWasm(wasmBytes);
         }
-    })();
+    })().catch((error) => {
+        // Clear the promise so subsequent calls can retry
+        wasmInitPromise = null;
+        throw error;
+    });
 
     return wasmInitPromise;
 }
