@@ -1,6 +1,7 @@
 import { cn } from "~/lib/utils";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { TaskCard } from "./task-card";
+import { TaskRegistrationOnboarding } from "./task-registration-onboarding";
 
 interface TaskCardGridProps {
     tasks: SerializableTask[];
@@ -14,11 +15,7 @@ export function TaskCardGrid({
     onTaskClick,
 }: TaskCardGridProps) {
     if (tasks.length === 0) {
-        return (
-            <div className="py-8 text-center text-muted-foreground">
-                No active tasks
-            </div>
-        );
+        return <TaskRegistrationOnboarding />;
     }
 
     return (
