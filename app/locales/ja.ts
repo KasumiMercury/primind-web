@@ -26,8 +26,8 @@ export default {
     auth: {
         login: "ログイン",
         logout: "ログアウト",
-        signingIn: "サインイン中...",
-        signInWith: "{{provider}}でサインイン",
+        loggingIn: "ログイン中...",
+        loginWith: "{{provider}}でログイン",
         error: "エラー",
     },
 
@@ -96,8 +96,8 @@ export default {
     // Session Invalid Dialog
     session: {
         invalid: {
-            title: "サインアウトされました",
-            description: "サインアウトされました。再度サインインしてください。",
+            title: "ログアウトしました",
+            description: "ログアウトしました。再度ログインしてください。",
             goHome: "ホームへ戻る",
         },
     },
@@ -191,11 +191,11 @@ export default {
         "task.notFound": "タスクが見つかりません。",
 
         "auth.session.invalid":
-            "セッションが期限切れです。再度サインインしてください。",
+            "セッションが期限切れです。再度ログインしてください。",
         "auth.login.failed":
-            "サインインに失敗しました。もう一度お試しください。",
+            "ログインに失敗しました。もう一度お試しください。",
         "auth.logout.failed":
-            "サインアウトに失敗しました。もう一度お試しください。",
+            "ログアウトに失敗しました。もう一度お試しください。",
 
         "device.register.failed":
             "通知の有効化に失敗しました。もう一度お試しください。",
