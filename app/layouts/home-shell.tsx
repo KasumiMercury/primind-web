@@ -15,11 +15,12 @@ import { useAppLayoutContext } from "~/layouts/app-layout";
 
 export interface HomeShellContext {
     isModal: boolean;
+    openLoginDialog: () => void;
 }
 
 export default function HomeShellLayout() {
     const location = useLocation();
-    const { isAuthenticated } = useAppLayoutContext();
+    const { isAuthenticated, openLoginDialog } = useAppLayoutContext();
     const { revalidate } = useRevalidator();
 
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
@@ -51,7 +52,7 @@ export default function HomeShellLayout() {
     };
 
     const isModal = location.state?.modal === true;
-    const outletContext: HomeShellContext = { isModal };
+    const outletContext: HomeShellContext = { isModal, openLoginDialog };
 
     return (
         <>

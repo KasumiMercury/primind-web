@@ -7,7 +7,7 @@ import type {
     ActiveTasksResult,
     SerializableTask,
 } from "~/features/task/server/list-active-tasks.server";
-import { useAppLayoutContext } from "~/layouts/app-layout";
+import { useHomeShellContext } from "~/layouts/home-shell";
 
 interface TaskListViewProps {
     tasksPromise: Promise<ActiveTasksResult>;
@@ -21,7 +21,7 @@ export function TaskListView({
     onTaskClick,
 }: TaskListViewProps) {
     const { t } = useTranslation();
-    const { openLoginDialog } = useAppLayoutContext();
+    const { openLoginDialog } = useHomeShellContext();
 
     return (
         <>
@@ -39,7 +39,7 @@ export function TaskListView({
                             variant="outline"
                             size="sm"
                             className="mt-2"
-                            onClick={openLoginDialog}
+                            onPress={openLoginDialog}
                         >
                             {t("auth.login")}
                         </Button>
