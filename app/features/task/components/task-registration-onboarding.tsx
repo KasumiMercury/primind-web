@@ -212,7 +212,7 @@ export function TaskRegistrationOnboarding({
     const { t } = useTranslation();
 
     return (
-        <div className={`flex flex-col items-center gap-4 py-6 ${className}`}>
+        <div className={`flex flex-col items-center gap-4 px-4 py-6 ${className}`}>
             <div className="flex w-full max-w-sm flex-col gap-6">
                 <OnboardingStep
                     number={1}
