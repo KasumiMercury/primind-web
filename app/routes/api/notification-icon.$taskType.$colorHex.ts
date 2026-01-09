@@ -1,16 +1,41 @@
 import { initWasm, Resvg } from "@resvg/resvg-wasm";
+// Bundle WASM file with the worker (Vite handles this via ?url import)
+import resvgWasmUrl from "@resvg/resvg-wasm/index_bg.wasm?url";
 import type { Route } from "./+types/notification-icon.$taskType.$colorHex";
 
-// WASM initialization (lazy, single init)
-let wasmInitialized = false;
-async function ensureWasmInitialized() {
-    if (!wasmInitialized) {
-        // Fetch and initialize WASM from unpkg CDN
-        await initWasm(
-            fetch("https://unpkg.com/@resvg/resvg-wasm@2.6.2/index_bg.wasm"),
-        );
-        wasmInitialized = true;
+const isCloudflare = import.meta.env.VITE_RUNTIME === "cloudflare";
+
+// WASM initialization with mutex pattern to prevent concurrent init
+let wasmInitPromise: Promise<void> | null = null;
+
+async function ensureWasmInitialized(): Promise<void> {
+    // Return existing promise if initialization is in progress or done
+    if (wasmInitPromise) {
+        return wasmInitPromise;
     }
+
+    // Create and store the initialization promise
+    wasmInitPromise = (async () => {
+        if (isCloudflare) {
+            // Cloudflare: fetch from bundled URL
+            const response = await fetch(resvgWasmUrl);
+            if (!response.ok) {
+                throw new Error(
+                    `Failed to fetch WASM: ${response.status} ${response.statusText}`,
+                );
+            }
+            await initWasm(response);
+        } else {
+            // Node.js (dev): read from filesystem
+            const fs = await import("node:fs/promises");
+            const wasmBytes = await fs.readFile(
+                "node_modules/@resvg/resvg-wasm/index_bg.wasm",
+            );
+            await initWasm(wasmBytes);
+        }
+    })();
+
+    return wasmInitPromise;
 }
 
 const VALID_TASK_TYPES = ["short", "near", "relaxed", "scheduled"] as const;
@@ -42,8 +67,6 @@ function generateSVG(taskType: TaskType, colorHex: string): string {
 }
 
 export async function loader({ params }: Route.LoaderArgs): Promise<Response> {
-    await ensureWasmInitialized();
-
     const taskType = params.taskType?.toLowerCase();
     // Remove .png extension if present
     const colorHex = params.colorHex?.replace(/\.png$/, "");
@@ -56,19 +79,25 @@ export async function loader({ params }: Route.LoaderArgs): Promise<Response> {
         return new Response("Invalid color format", { status: 400 });
     }
 
-    const svg = generateSVG(taskType as TaskType, colorHex);
+    try {
+        await ensureWasmInitialized();
 
-    const resvg = new Resvg(svg, {
-        fitTo: { mode: "width", value: ICON_SIZE },
-        background: "rgba(0, 0, 0, 0)",
-    });
-    const pngData = resvg.render().asPng();
+        const svg = generateSVG(taskType as TaskType, colorHex);
+        const resvg = new Resvg(svg, {
+            fitTo: { mode: "width", value: ICON_SIZE },
+            background: "rgba(0, 0, 0, 0)",
+        });
+        const pngData = resvg.render().asPng();
 
-    return new Response(new Uint8Array(pngData), {
-        status: 200,
-        headers: {
-            "Content-Type": "image/png",
-            "Cache-Control": `public, max-age=${CACHE_MAX_AGE}, immutable`,
-        },
-    });
+        return new Response(new Uint8Array(pngData), {
+            status: 200,
+            headers: {
+                "Content-Type": "image/png",
+                "Cache-Control": `public, max-age=${CACHE_MAX_AGE}, immutable`,
+            },
+        });
+    } catch (error) {
+        console.error("Failed to generate notification icon:", error);
+        return new Response("Failed to generate icon", { status: 500 });
+    }
 }
