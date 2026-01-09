@@ -28,9 +28,12 @@ async function ensureWasmInitialized(): Promise<void> {
         } else {
             // Node.js (dev): read from filesystem
             const fs = await import("node:fs/promises");
-            const wasmBytes = await fs.readFile(
-                "node_modules/@resvg/resvg-wasm/index_bg.wasm",
+            const { fileURLToPath } = await import("node:url");
+            const wasmUrl = import.meta.resolve(
+                "@resvg/resvg-wasm/index_bg.wasm",
             );
+            const wasmPath = fileURLToPath(wasmUrl);
+            const wasmBytes = await fs.readFile(wasmPath);
             await initWasm(wasmBytes);
         }
     })().catch((error) => {
