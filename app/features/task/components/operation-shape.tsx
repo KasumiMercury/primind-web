@@ -98,13 +98,13 @@ export function OperationShape({
             >
                 {children}
             </foreignObject>
-                <path
-                    d={clipPolygonPath}
-                    fill="none"
-                    className={borderClassName}
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                    />
+            <path
+                d={clipPolygonPath}
+                fill="none"
+                className={borderClassName}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+            />
             <path
                 d={arrowPolygonPath}
                 className={arrowClassName}

@@ -1,12 +1,12 @@
 import { type AnimationPlaybackControls, useAnimate } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { cn } from "~/lib/utils";
 import { useTaskTypeItems } from "../hooks/use-task-type-items";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { OperationButtons } from "./operation-buttons";
 import { OperationIndicator } from "./operation-indicator";
 import { calculateDimensions, OperationShape } from "./operation-shape";
 import { OperationSwipe, type SwipeActions } from "./operation-swipe";
-import { cn } from "~/lib/utils";
 
 export interface OperationConfig {
     upAction: () => void;

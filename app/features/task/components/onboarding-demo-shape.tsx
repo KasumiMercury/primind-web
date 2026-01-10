@@ -46,7 +46,7 @@ export function OnboardingDemoShape({
                     paintOrder="stroke"
                     strokeLinejoin="round"
                     strokeLinecap="round"
-                    />
+                />
                 <line
                     x1={leftDividerX}
                     y1={upperHeight}

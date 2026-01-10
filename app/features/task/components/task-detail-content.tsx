@@ -216,7 +216,7 @@ export function TaskDetailContent({
                                     </span>
                                 </div>
                             ) : completeSuccess ? (
-                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-green-600 dark:bg-emerald-600 text-sm text-white">
+                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-green-600 text-sm text-white dark:bg-emerald-600">
                                     <Check className="size-5" />
                                     <span>{t("common.completed")}</span>
                                 </div>
