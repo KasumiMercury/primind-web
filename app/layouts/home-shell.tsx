@@ -1,3 +1,4 @@
+import { useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import {
     Outlet,
@@ -10,7 +11,12 @@ import {
     TaskRegistration,
     type TaskRegistrationEvent,
 } from "~/features/task/components/task-registration";
-import { TASK_TYPE_KEYS } from "~/features/task/lib/task-type-items";
+import {
+    getTaskTypeFromKey,
+    TASK_TYPE_KEYS,
+} from "~/features/task/lib/task-type-items";
+import { activeTasksAtom } from "~/features/task/store/active-tasks";
+import { TaskStatus } from "~/gen/task/v1/task_pb";
 import { useAppLayoutContext } from "~/layouts/app-layout";
 
 export interface HomeShellContext {
@@ -22,6 +28,7 @@ export default function HomeShellLayout() {
     const location = useLocation();
     const { isAuthenticated, openLoginDialog } = useAppLayoutContext();
     const { revalidate } = useRevalidator();
+    const setActiveTasks = useSetAtom(activeTasksAtom);
 
     const [latestTask, setLatestTask] = useState<TaskRegistrationEvent | null>(
         null,
@@ -38,6 +45,20 @@ export default function HomeShellLayout() {
 
     const handleTaskRegistered = (event: TaskRegistrationEvent) => {
         setLatestTask(event);
+
+        // Optimistically add task to atom for duplicate color prevention
+        setActiveTasks((prev) => [
+            ...prev,
+            {
+                taskId: event.taskId,
+                taskType: getTaskTypeFromKey(event.taskTypeKey),
+                taskStatus: TaskStatus.ACTIVE,
+                title: "",
+                description: "",
+                color: event.color,
+            },
+        ]);
+
         revalidate();
     };
 
