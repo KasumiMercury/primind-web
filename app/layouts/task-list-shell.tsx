@@ -1,3 +1,5 @@
+import { useSetAtom } from "jotai";
+import { useEffect } from "react";
 import type { ShouldRevalidateFunctionArgs } from "react-router";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { getUserSession } from "~/features/auth/server/session.server";
@@ -8,6 +10,7 @@ import type {
     SerializableTask,
 } from "~/features/task/server/list-active-tasks.server";
 import { listActiveTasks } from "~/features/task/server/list-active-tasks.server";
+import { activeTasksAtom } from "~/features/task/store/active-tasks";
 import { getTaskDB } from "~/features/task/store/db.client";
 import { TaskStatus } from "~/gen/task/v1/task_pb";
 import {
@@ -104,6 +107,16 @@ export default function TaskListShellLayout({
     const navigate = useNavigate();
     const homeShellContext = useHomeShellContext();
     const { isAuthenticated, tasks: tasksPromise } = loaderData;
+    const setActiveTasks = useSetAtom(activeTasksAtom);
+
+    // Hydrate active tasks atom when promise resolves
+    useEffect(() => {
+        tasksPromise.then((result) => {
+            if (!result.error) {
+                setActiveTasks(result.tasks);
+            }
+        });
+    }, [tasksPromise, setActiveTasks]);
 
     const isHomeRoute = location.pathname === "/";
     const showHomeView = isHomeRoute || homeShellContext.isModal;
