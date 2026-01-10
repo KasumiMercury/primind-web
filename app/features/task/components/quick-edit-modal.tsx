@@ -100,7 +100,7 @@ export function QuickEditModal({
             className="max-h-[85vh] overflow-y-auto"
         >
             <DialogHeader className="mb-2 border-b pb-4">
-                <div className="flex items-center gap-2 text-green-600">
+                <div className="flex items-center gap-2 text-green-600 dark:text-emerald-600">
                     <CheckCircle className="size-5" />
                     <DialogTitle>{t("quickEdit.dialogTitle")}</DialogTitle>
                 </div>
@@ -127,6 +127,7 @@ export function QuickEditModal({
             />
             {!isDirty && (
                 <Button
+                    variant="default"
                     className="mt-4 w-full"
                     onPress={() => onClosedRef.current?.()}
                 >

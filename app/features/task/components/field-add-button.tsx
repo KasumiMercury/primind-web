@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 
 export interface FieldAddButtonProps {
@@ -13,13 +14,14 @@ export function FieldAddButton({
     onPress,
 }: FieldAddButtonProps) {
     return (
-        <button
+        <Button
             type="button"
+            variant="outline"
             onClick={onPress}
             aria-label={label}
             className={cn(
                 "group flex w-full items-center justify-between rounded-md border border-muted-foreground/50 border-dashed p-3 text-left transition-colors",
-                "hover:border-primary hover:bg-accent",
+                "hover:border-primary hover:bg-primary/10",
             )}
         >
             <div className="flex items-center gap-2">
@@ -33,6 +35,6 @@ export function FieldAddButton({
                 )}
             </div>
             <Plus className="size-5 text-muted-foreground group-hover:text-primary" />
-        </button>
+        </Button>
     );
 }
