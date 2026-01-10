@@ -302,15 +302,14 @@ export function TaskDetailContent({
                         {onRecreate && (
                             <Button
                                 variant="ghost"
-                                size="icon"
                                 type="button"
                                 onPress={onRecreate}
                                 isDisabled={
                                     isDeleting || isSaving || isRecreating
                                 }
-                                aria-label={t("recreateTask.button")}
                             >
                                 <RefreshCw className="size-4" />
+                                <span>{t("recreateTask.button")}</span>
                             </Button>
                         )}
                     </div>
