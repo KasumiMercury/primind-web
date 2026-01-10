@@ -49,9 +49,9 @@ export function TaskCard({ task, className, onPress }: TaskCardProps) {
             onPress={onPress}
             className={cn(
                 "flex h-auto w-full flex-col items-center gap-3",
-                "rounded-xl border border-border bg-card p-4 sm:p-5",
+                "rounded-xl border border-border bg-card p-4 sm:p-5 dark:bg-background",
                 "cursor-pointer text-center transition-all duration-200",
-                "data-hovered:scale-[1.02] data-hovered:bg-accent",
+                "data-hovered:scale-[1.02] data-hovered:bg-primary/5 dark:data-hovered:bg-primary/10",
                 "data-focus-visible:outline-none data-focus-visible:ring-2 data-focus-visible:ring-ring data-focus-visible:ring-offset-2",
                 className,
             )}
