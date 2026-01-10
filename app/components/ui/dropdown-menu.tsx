@@ -130,10 +130,12 @@ function DropdownMenuItem({
             data-slot="dropdown-menu-item"
             onAction={onSelect}
             className={cn(
-                "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden",
-                "data-focused:bg-accent data-focused:text-accent-foreground",
+                "relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden",
+                "text-foreground [&_svg:not([class*='text-'])]:text-muted-foreground",
+                "data-focused:bg-primary data-focused:text-primary-foreground data-focused:[&_svg]:text-primary-foreground!",
+                "data-hovered:bg-primary data-hovered:text-primary-foreground data-hovered:[&_svg]:text-primary-foreground!",
                 "data-disabled:pointer-events-none data-disabled:opacity-50",
-                "[&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
+                "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
                 className,
             )}
             {...props}
