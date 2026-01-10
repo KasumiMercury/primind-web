@@ -29,7 +29,7 @@ export function LoginFormContent({
     };
 
     return (
-        <div className="space-y-6 py-4" data-action={action}>
+        <div className="space-y-6 pt-8 pb-4" data-action={action}>
             <div className="space-y-3">
                 {providers.map((provider) => (
                     <Button
@@ -38,6 +38,7 @@ export function LoginFormContent({
                         onPress={() => handleProviderSubmit(provider.id)}
                         className="w-full"
                         size="lg"
+                        variant="outline"
                         isDisabled={isSubmitting}
                     >
                         {isSubmitting
