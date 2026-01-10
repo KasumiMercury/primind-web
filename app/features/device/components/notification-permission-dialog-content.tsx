@@ -78,7 +78,7 @@ export function NotificationPermissionDialogContent({
                     type="button"
                     onPress={onDontAskAgain}
                     isDisabled={isRequesting}
-                    className="mt-2 text-muted-foreground text-xs hover:underline disabled:opacity-50"
+                    className="mt-2 text-muted-foreground text-xs data-hovered:underline"
                 >
                     {t("common.dontAskAgain")}
                 </Button>

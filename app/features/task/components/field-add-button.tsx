@@ -34,7 +34,7 @@ export function FieldAddButton({
                     </span>
                 )}
             </div>
-            <Plus className="size-5 text-muted-foreground group-hover:text-primary" />
+            <Plus className="size-5 text-muted-foreground group-data-hovered:text-primary" />
         </Button>
     );
 }
