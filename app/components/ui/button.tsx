@@ -7,17 +7,19 @@ import {
 import { cn } from "~/lib/utils";
 
 const buttonVariants = cva(
-    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none data-[focus-visible]:border-ring data-[focus-visible]:ring-ring/50 data-[focus-visible]:ring-[3px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer rounded-md text-sm font-medium transition-all [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none data-[focus-visible]:border-ring data-[focus-visible]:ring-ring/50 data-[focus-visible]:ring-[3px] data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
     {
         variants: {
             variant: {
                 default:
-                    "bg-primary text-primary-foreground data-hovered:bg-primary/90",
+                    "bg-primary text-primary-foreground shadow-sm data-hovered:bg-primary/85 data-pressed:bg-primary/80",
                 destructive:
                     "bg-destructive text-white data-hovered:bg-destructive/90 data-focus-visible:ring-destructive/20 dark:data-focus-visible:ring-destructive/40 dark:bg-destructive/60",
                 outline:
-                    "border bg-background shadow-xs data-hovered:bg-accent data-hovered:text-accent-foreground dark:bg-input/30 dark:border-input dark:data-hovered:bg-input/50",
-                ghost: "data-hovered:bg-accent data-hovered:text-accent-foreground dark:data-hovered:bg-accent/50",
+                    "border-2 border-primary/80 bg-transparent text-foreground shadow-xs data-hovered:bg-primary/10 data-hovered:border-primary dark:data-hovered:bg-primary/20 dark:data-hovered:border-primary/60",
+                "accent-outline":
+                    "border-2 border-accent/80 bg-transparent text-foreground shadow-xs data-hovered:bg-accent/10 data-hovered:border-accent dark:data-hovered:bg-accent/20 dark:data-hovered:border-accent/60",
+                ghost: "text-foreground data-hovered:bg-primary/10 dark:data-hovered:bg-primary/15",
             },
             size: {
                 default: "h-9 px-4 py-2 has-[>svg]:px-3",
