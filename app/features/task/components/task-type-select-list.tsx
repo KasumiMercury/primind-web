@@ -38,7 +38,7 @@ export function TaskTypeSelectList({
                     return (
                         <Button
                             key={key}
-                            variant="outline"
+                            variant="ghost"
                             className="h-auto justify-start gap-3 px-4 py-3"
                             onPress={() => onSelect(key)}
                             isDisabled={disabled || isCurrent}
