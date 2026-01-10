@@ -13,7 +13,7 @@ export function LoginPromptAlert({ onLoginClick }: LoginPromptAlertProps) {
     return (
         <Alert className="w-full max-w-xl">
             <Info className="h-4 w-4" />
-            <div className="ml-3 flex flex-row items-center justify-between">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                     <AlertTitle>{t("loginRequired.title")}</AlertTitle>
                     <AlertDescription>
