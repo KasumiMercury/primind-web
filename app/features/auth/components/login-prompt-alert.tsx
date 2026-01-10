@@ -20,11 +20,7 @@ export function LoginPromptAlert({ onLoginClick }: LoginPromptAlertProps) {
                         <p>{t("loginRequired.description")}</p>
                     </AlertDescription>
                 </div>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onPress={onLoginClick}
-                >
+                <Button variant="outline" size="sm" onPress={onLoginClick}>
                     {t("auth.login")}
                 </Button>
             </div>
