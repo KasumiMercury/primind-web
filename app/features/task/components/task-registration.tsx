@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { v7 as uuidv7 } from "uuid";
 import { ERROR_CODES, showErrorToast } from "~/lib/errors";
 import { useTaskService } from "../hooks/use-task-service";
-import { getRandomTaskColor } from "../lib/task-colors";
+import { useUniqueTaskColor } from "../hooks/use-unique-task-color";
 import { getTaskTypeFromKey, type TaskTypeKey } from "../lib/task-type-items";
 import { OperationArea } from "./operation-area";
 import { ScheduledDateTimeModal } from "./scheduled-datetime-modal";
@@ -30,6 +30,7 @@ export function TaskRegistration({
     const { t } = useTranslation();
     const [isPending, startTransition] = useTransition();
     const taskService = useTaskService();
+    const getUniqueColor = useUniqueTaskColor();
 
     const [showScheduledModal, setShowScheduledModal] = useState(false);
     const [pendingRegistration, setPendingRegistration] = useState<{
@@ -43,7 +44,8 @@ export function TaskRegistration({
         }
 
         const taskId = uuidv7();
-        const color = getRandomTaskColor();
+        const taskType = getTaskTypeFromKey(taskTypeKey);
+        const color = getUniqueColor(taskType);
 
         if (taskTypeKey === "scheduled") {
             setPendingRegistration({ taskId, color });
@@ -55,7 +57,7 @@ export function TaskRegistration({
             try {
                 const result = await taskService.create({
                     taskId,
-                    taskType: getTaskTypeFromKey(taskTypeKey),
+                    taskType,
                     color,
                 });
 
