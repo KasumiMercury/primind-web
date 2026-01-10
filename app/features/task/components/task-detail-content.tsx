@@ -288,7 +288,7 @@ export function TaskDetailContent({
                         )}
                     </div>
 
-                    <div className="flex justify-start gap-2 border-t pt-4">
+                    <div className="flex flex-wrap justify-start gap-2 border-t pt-4">
                         <Button
                             variant="ghost-destructive"
                             size="icon"
