@@ -40,7 +40,7 @@ export const Default: Story = {
     render: (args) => {
         const [open, setOpen] = React.useState(args.open);
         return (
-            <div className="flex min-h-[200px] items-center justify-center">
+            <div className="flex min-h-50 items-center justify-center">
                 <button
                     type="button"
                     className="rounded-md bg-destructive px-4 py-2 text-destructive-foreground hover:bg-destructive/90"

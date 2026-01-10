@@ -97,12 +97,12 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
         <Provider>
             <AuthHydrator authState={authState}>
                 <DeviceRegistration />
-                <main className="flex items-center justify-center pt-8">
-                    <div className="flex min-h-0 flex-1 flex-col items-center gap-4 px-4">
-                        <Header
-                            onLoginClick={() => setShowLoginDialog(true)}
-                            onLogout={handleLogout}
-                        />
+                <Header
+                    onLoginClick={() => setShowLoginDialog(true)}
+                    onLogout={handleLogout}
+                />
+                <main className="flex items-center justify-center pt-6">
+                    <div className="flex min-h-0 flex-1 flex-col items-center gap-4 px-4 sm:px-6">
                         <Outlet context={contextValue} />
                     </div>
                 </main>

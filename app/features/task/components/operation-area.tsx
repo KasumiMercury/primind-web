@@ -1,5 +1,6 @@
 import { type AnimationPlaybackControls, useAnimate } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { cn } from "~/lib/utils";
 import { useTaskTypeItems } from "../hooks/use-task-type-items";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { OperationButtons } from "./operation-buttons";
@@ -196,7 +197,8 @@ export function OperationArea({
             <OperationShape
                 dimensions={dimensions}
                 radius={(radius * 2) / 3}
-                className="w-full shadow-primary/20 drop-shadow-md"
+                borderClassName="dark:stroke-border dark:stroke-2"
+                className="w-full"
                 arrowClassName="stroke-primary stroke-4"
             >
                 <OperationSwipe
@@ -216,7 +218,7 @@ export function OperationArea({
                                 onPress: () => handleRightAction("button"),
                             },
                         }}
-                        className={innerClassName}
+                        className={cn("bg-card", innerClassName)}
                     />
                 </OperationSwipe>
             </OperationShape>
@@ -234,7 +236,7 @@ export function OperationArea({
                 <OperationIndicator
                     itemCount={itemsCount}
                     selectedIndex={selectedIndex}
-                    className="gap-1.5 rounded-full bg-accent px-3 py-2 shadow-background shadow-sm"
+                    className="gap-1.5 rounded-full border border-border bg-card px-3 py-2"
                     selectedBgClass={selectedItem?.bgClass}
                 />
             </div>

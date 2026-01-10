@@ -78,7 +78,7 @@ export default function HomeShellLayout() {
                 />
                 <div className="flex items-center justify-center p-4">
                     <TaskRegistration
-                        className="w-full max-w-xl drop-shadow-primary/20 drop-shadow-xl"
+                        className="w-full max-w-xl drop-shadow-primary/20 drop-shadow-sm dark:drop-shadow-none"
                         onTaskRegistered={handleTaskRegistered}
                     />
                 </div>

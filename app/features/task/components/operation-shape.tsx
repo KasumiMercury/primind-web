@@ -40,6 +40,7 @@ interface OperationShapeProps {
     className?: string;
     arrowClassName?: string;
     arrowLineCap?: "butt" | "round" | "square";
+    borderClassName?: string;
     children: React.ReactNode;
 }
 
@@ -50,6 +51,7 @@ export function OperationShape({
     className = "w-full",
     arrowClassName = "stroke-primary stroke-2",
     arrowLineCap = "round",
+    borderClassName,
     children,
 }: OperationShapeProps) {
     const clipPathId = useId();
@@ -96,6 +98,13 @@ export function OperationShape({
             >
                 {children}
             </foreignObject>
+            <path
+                d={clipPolygonPath}
+                fill="none"
+                className={borderClassName}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+            />
             <path
                 d={arrowPolygonPath}
                 className={arrowClassName}

@@ -216,15 +216,14 @@ export function TaskDetailContent({
                                     </span>
                                 </div>
                             ) : completeSuccess ? (
-                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-green-600 text-sm text-white">
+                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-green-600 text-sm text-white dark:bg-emerald-600">
                                     <Check className="size-5" />
                                     <span>{t("common.completed")}</span>
                                 </div>
                             ) : (
                                 <Button
-                                    variant="outline"
+                                    variant="accent-outline"
                                     size="lg"
-                                    className="w-full"
                                     onPress={onComplete}
                                     isDisabled={
                                         isCompleting || isSaving || isDeleting
@@ -289,14 +288,13 @@ export function TaskDetailContent({
                         )}
                     </div>
 
-                    <div className="flex justify-start gap-2 border-t pt-4">
+                    <div className="flex flex-wrap justify-start gap-2 border-t pt-4">
                         <Button
-                            variant="ghost"
+                            variant="ghost-destructive"
                             size="icon"
                             type="button"
                             onPress={onDelete}
                             isDisabled={isDeleting || isSaving || isRecreating}
-                            className="text-destructive data-hovered:bg-destructive/10"
                             aria-label={t("taskDetail.deleteTask")}
                         >
                             <Trash className="size-4" />
@@ -304,15 +302,14 @@ export function TaskDetailContent({
                         {onRecreate && (
                             <Button
                                 variant="ghost"
-                                size="icon"
                                 type="button"
                                 onPress={onRecreate}
                                 isDisabled={
                                     isDeleting || isSaving || isRecreating
                                 }
-                                aria-label={t("recreateTask.button")}
                             >
                                 <RefreshCw className="size-4" />
+                                <span>{t("recreateTask.button")}</span>
                             </Button>
                         )}
                     </div>

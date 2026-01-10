@@ -55,7 +55,7 @@ function DialogContent({
             onOpenChange={onOpenChange}
             isDismissable={isDismissable}
             className={cn(
-                "fixed inset-0 z-50 bg-black/50",
+                "fixed inset-0 z-50 backdrop-blur-xs",
                 "data-entering:fade-in-0 data-entering:animate-in",
                 "data-exiting:fade-out-0 data-exiting:animate-out",
             )}
