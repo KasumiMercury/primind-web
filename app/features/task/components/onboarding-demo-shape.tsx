@@ -43,7 +43,6 @@ export function OnboardingDemoShape({
                 <path
                     d={shapePath}
                     className="fill-muted/50 stroke-1 stroke-primary/30 dark:fill-muted/50 dark:stroke-primary/70"
-                    paintOrder="stroke"
                     strokeLinejoin="round"
                     strokeLinecap="round"
                 />
