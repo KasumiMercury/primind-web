@@ -13,7 +13,7 @@ export function Header({ onLoginClick, onLogout }: HeaderProps) {
 
     return (
         <header className="w-full border-border border-b">
-            <div className="mx-auto flex py-4 max-w-4xl items-center justify-between px-4 sm:px-6">
+            <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
                 {/* Logo */}
                 <div className="flex items-center">
                     <div className="h-8 w-8" aria-hidden="true" />
