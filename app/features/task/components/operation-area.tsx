@@ -6,6 +6,7 @@ import { OperationButtons } from "./operation-buttons";
 import { OperationIndicator } from "./operation-indicator";
 import { calculateDimensions, OperationShape } from "./operation-shape";
 import { OperationSwipe, type SwipeActions } from "./operation-swipe";
+import { cn } from "~/lib/utils";
 
 export interface OperationConfig {
     upAction: () => void;
@@ -196,7 +197,8 @@ export function OperationArea({
             <OperationShape
                 dimensions={dimensions}
                 radius={(radius * 2) / 3}
-                className="w-full shadow-primary/20 drop-shadow-md"
+                borderClassName="dark:stroke-border dark:stroke-2"
+                className="w-full"
                 arrowClassName="stroke-primary stroke-4"
             >
                 <OperationSwipe
@@ -216,7 +218,7 @@ export function OperationArea({
                                 onPress: () => handleRightAction("button"),
                             },
                         }}
-                        className={innerClassName}
+                        className={cn("bg-card", innerClassName)}
                     />
                 </OperationSwipe>
             </OperationShape>
@@ -234,7 +236,7 @@ export function OperationArea({
                 <OperationIndicator
                     itemCount={itemsCount}
                     selectedIndex={selectedIndex}
-                    className="gap-1.5 rounded-full bg-accent px-3 py-2 shadow-background shadow-sm"
+                    className="gap-1.5 rounded-full border border-border bg-card px-3 py-2"
                     selectedBgClass={selectedItem?.bgClass}
                 />
             </div>

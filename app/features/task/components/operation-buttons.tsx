@@ -19,7 +19,7 @@ interface OperationButtonsProps {
 export function OperationButtons({
     dimensions,
     buttonsConfig,
-    className = "bg-popover",
+    className,
 }: OperationButtonsProps) {
     const { width, height, sideButtonWidth, centerButtonWidth } = dimensions;
 
