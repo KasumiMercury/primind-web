@@ -23,7 +23,6 @@ export function LoginPromptAlert({ onLoginClick }: LoginPromptAlertProps) {
                 <Button
                     variant="outline"
                     size="sm"
-                    className="mt-2"
                     onPress={onLoginClick}
                 >
                     {t("auth.login")}
