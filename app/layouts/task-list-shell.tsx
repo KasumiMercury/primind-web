@@ -111,11 +111,23 @@ export default function TaskListShellLayout({
 
     // Hydrate active tasks atom when promise resolves
     useEffect(() => {
-        tasksPromise.then((result) => {
-            if (!result.error) {
-                setActiveTasks(result.tasks);
-            }
-        });
+        let aborted = false;
+
+        tasksPromise
+            .then((result) => {
+                if (aborted) return;
+                if (!result.error) {
+                    setActiveTasks(result.tasks);
+                }
+            })
+            .catch((error) => {
+                if (aborted) return;
+                console.error("Failed to hydrate active tasks:", error);
+            });
+
+        return () => {
+            aborted = true;
+        };
     }, [tasksPromise, setActiveTasks]);
 
     const isHomeRoute = location.pathname === "/";
