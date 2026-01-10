@@ -45,6 +45,20 @@ export const Ghost: Story = {
     },
 };
 
+export const AccentOutline: Story = {
+    args: {
+        children: "Button",
+        variant: "accent-outline",
+    },
+};
+
+export const GhostDestructive: Story = {
+    args: {
+        children: "Delete",
+        variant: "ghost-destructive",
+    },
+};
+
 // Size stories
 export const Small: Story = {
     args: {

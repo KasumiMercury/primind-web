@@ -169,12 +169,11 @@ export function QuickEditContent({
 
                     <div className="flex justify-start border-t pt-4">
                         <Button
-                            variant="ghost"
+                            variant="ghost-destructive"
                             size="icon"
                             type="button"
                             onPress={onDelete}
                             isDisabled={isDeleting}
-                            className="text-destructive data-hovered:bg-destructive/10"
                             aria-label={t("taskDetail.deleteTask")}
                         >
                             <Trash className="size-4" />

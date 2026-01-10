@@ -21,7 +21,7 @@ export function FieldAddButton({
             aria-label={label}
             className={cn(
                 "group flex w-full items-center justify-between rounded-md border border-muted-foreground/50 border-dashed p-3 text-left transition-colors",
-                "hover:border-primary hover:bg-primary/10",
+                "data-hovered:border-primary data-hovered:bg-primary/10",
             )}
         >
             <div className="flex items-center gap-2">
