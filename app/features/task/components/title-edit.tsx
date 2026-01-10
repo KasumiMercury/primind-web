@@ -123,8 +123,8 @@ export function TitleEdit({
                             id={preset.id}
                             className={cn(
                                 "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none",
-                                "hover:bg-accent hover:text-accent-foreground",
-                                "data-focused:bg-accent data-focused:text-accent-foreground",
+                                "hover:bg-primary hover:text-primary-foreground",
+                                "data-focused:bg-primary data-focused:text-primary-foreground",
                                 "data-disabled:pointer-events-none data-disabled:opacity-50",
                             )}
                         >
