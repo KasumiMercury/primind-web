@@ -15,7 +15,9 @@ export function TaskCardGrid({
     onTaskClick,
 }: TaskCardGridProps) {
     if (tasks.length === 0) {
-        return <TaskRegistrationOnboarding />;
+        return (
+            <TaskRegistrationOnboarding className="mx-auto mt-12 w-full max-w-xl" />
+        );
     }
 
     return (

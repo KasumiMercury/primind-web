@@ -42,14 +42,17 @@ export function OnboardingDemoShape({
                 <title>Operation Demo</title>
                 <path
                     d={shapePath}
-                    className="fill-muted/50 stroke-1 stroke-primary/30"
-                />
+                    className="fill-muted/50 stroke-1 stroke-primary/30 dark:fill-muted/50 dark:stroke-primary/70"
+                    paintOrder="stroke"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    />
                 <line
                     x1={leftDividerX}
                     y1={upperHeight}
                     x2={leftDividerX}
                     y2={height}
-                    className="stroke-1 stroke-primary/20"
+                    className="stroke-1 stroke-primary/20 dark:stroke-primary/40"
                     strokeDasharray="4 2"
                 />
                 <line
@@ -57,7 +60,7 @@ export function OnboardingDemoShape({
                     y1={upperHeight}
                     x2={rightDividerX}
                     y2={height}
-                    className="stroke-1 stroke-primary/20"
+                    className="stroke-1 stroke-primary/20 dark:stroke-primary/40"
                     strokeDasharray="4 2"
                 />
             </svg>
