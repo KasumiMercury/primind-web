@@ -104,15 +104,15 @@
 }
 
 .dark {
-    --background: oklch(0.12 0.02 311.96);
+    --background: oklch(0.15 0.08 311.96);
     --foreground: oklch(0.95 0.01 312);
 
-    --card: oklch(0.22 0.03 312);
+    --card: oklch(0.25 0.08 312);
     --card-foreground: oklch(0.95 0.01 312);
-    --popover: oklch(0.22 0.03 312);
+    --popover: oklch(0.25 0.08 312);
     --popover-foreground: oklch(0.95 0.01 312);
 
-    --primary: oklch(0.75 0.08 296);
+    --primary: oklch(0.7 0.08 296);
     --primary-foreground: oklch(0.18 0.04 296);
 
     --secondary: oklch(0.6 0.1 296 / 0.35);
