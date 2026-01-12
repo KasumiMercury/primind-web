@@ -133,6 +133,15 @@ export default {
         description: "Please log in to access all features",
     },
 
+    // Local Task Warning
+    localTask: {
+        reminder: {
+            title: "Reminder Notifications Unavailable",
+            description:
+                "Sign in to receive reminder notifications for your tasks.",
+        },
+    },
+
     // Title Presets
     titlePresets: {
         label: "Quick fill",

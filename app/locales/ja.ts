@@ -133,6 +133,15 @@ export default {
         description: "すべての機能にアクセスするにはログインしてください",
     },
 
+    // Local Task Warning
+    localTask: {
+        reminder: {
+            title: "リマインド通知が利用できません",
+            description:
+                "タスクのリマインド通知を受け取るにはログインしてください。",
+        },
+    },
+
     // Title Presets
     titlePresets: {
         label: "クイック入力",
