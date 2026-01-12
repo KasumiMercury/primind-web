@@ -29,7 +29,12 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
     // delegate to clientLoader for IndexedDB check
     if (!isAuthenticated) {
-        return { task: null, isAuthenticated: false, isLocalOperation: true, taskId };
+        return {
+            task: null,
+            isAuthenticated: false,
+            isLocalOperation: true,
+            taskId,
+        };
     }
 
     // fetch from server
@@ -42,14 +47,23 @@ export async function loader({ request, params }: Route.LoaderArgs) {
         );
     }
 
-    return { task: result.task, isAuthenticated: true, isLocalOperation: false, taskId };
+    return {
+        task: result.task,
+        isAuthenticated: true,
+        isLocalOperation: false,
+        taskId,
+    };
 }
 
 export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
     const serverData = await serverLoader();
 
     if (serverData.isAuthenticated && serverData.task) {
-        return { ...serverData, storageUnavailable: false, isLocalOperation: false };
+        return {
+            ...serverData,
+            storageUnavailable: false,
+            isLocalOperation: false,
+        };
     }
 
     // fetch from IndexedDB
@@ -99,7 +113,8 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
     }
 
     const task = loaderData.task;
-    const isLocalTask = loaderData.isLocalOperation ?? !loaderData.isAuthenticated;
+    const isLocalTask =
+        loaderData.isLocalOperation ?? !loaderData.isAuthenticated;
 
     if (isModal) {
         return (
