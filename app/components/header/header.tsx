@@ -21,6 +21,7 @@ export function Header({ onLoginClick, onLogout }: HeaderProps) {
                         src={logo}
                         className="aspect-auto h-6"
                         aria-hidden="true"
+                        alt="logo"
                     />
                 </div>
 
