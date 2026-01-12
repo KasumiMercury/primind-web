@@ -11,12 +11,16 @@ import type { SerializableTask } from "../server/list-active-tasks.server";
 
 interface TaskDetailPageProps {
     task: SerializableTask;
+    isLocalTask?: boolean;
 }
 
 const ERROR_DISPLAY_DURATION_MS = 2500;
 const CONFETTI_REWARD_ID = "task-complete-confetti-page";
 
-export function TaskDetailPage({ task }: TaskDetailPageProps) {
+export function TaskDetailPage({
+    task,
+    isLocalTask = false,
+}: TaskDetailPageProps) {
     const {
         taskId,
         title: initialTitle,
@@ -184,6 +188,7 @@ export function TaskDetailPage({ task }: TaskDetailPageProps) {
                     isCompleting={isCompletePending}
                     completeSuccess={completeSuccess}
                     completeError={completeError}
+                    isLocalTask={isLocalTask}
                 />
             </div>
             {confettiAnchor}

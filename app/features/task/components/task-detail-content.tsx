@@ -13,6 +13,7 @@ import type { SerializableTask } from "../server/list-active-tasks.server";
 import { DeleteTaskDialog } from "./delete-task-dialog";
 import { DescribeEdit } from "./describe-edit";
 import { FieldDisplay } from "./field-display";
+import { LocalTaskReminderAlert } from "./local-task-reminder-alert";
 import type { EditedValues, EditingField } from "./quick-edit-content";
 import { TitleEdit } from "./title-edit";
 
@@ -47,6 +48,8 @@ interface TaskDetailContentProps {
 
     defaultEditingField?: EditingField;
     defaultEditingValue?: string;
+
+    isLocalTask?: boolean;
 }
 
 function getTaskTypeKey(taskType: TaskType): TaskTypeKey {
@@ -87,6 +90,7 @@ export function TaskDetailContent({
     completeError = false,
     defaultEditingField,
     defaultEditingValue,
+    isLocalTask = false,
 }: TaskDetailContentProps) {
     const { t, i18n } = useTranslation();
     const items = useTaskTypeItems();
@@ -173,6 +177,8 @@ export function TaskDetailContent({
                             strokeWidth={task.color ? 0 : 6}
                         />
                     </div>
+
+                    {isLocalTask && <LocalTaskReminderAlert />}
 
                     <div className="flex flex-col gap-4">
                         <FieldDisplay

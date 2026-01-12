@@ -16,11 +16,15 @@ import { TaskDetailContent } from "./task-detail-content";
 
 interface TaskDetailModalProps {
     task: SerializableTask;
+    isLocalTask?: boolean;
 }
 
 const CONFETTI_REWARD_ID = "task-complete-confetti-modal";
 
-export function TaskDetailModal({ task }: TaskDetailModalProps) {
+export function TaskDetailModal({
+    task,
+    isLocalTask = false,
+}: TaskDetailModalProps) {
     const {
         taskId,
         title: initialTitle,
@@ -198,6 +202,7 @@ export function TaskDetailModal({ task }: TaskDetailModalProps) {
                     isCompleting={isCompletePending}
                     completeSuccess={completeSuccess}
                     completeError={completeError}
+                    isLocalTask={isLocalTask}
                 />
             </DialogContent>
             {confettiAnchor}
