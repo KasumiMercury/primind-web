@@ -29,7 +29,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
 
     // delegate to clientLoader for IndexedDB check
     if (!isAuthenticated) {
-        return { task: null, isAuthenticated: false, taskId };
+        return { task: null, isAuthenticated: false, isLocalOperation: true, taskId };
     }
 
     // fetch from server
@@ -42,14 +42,14 @@ export async function loader({ request, params }: Route.LoaderArgs) {
         );
     }
 
-    return { task: result.task, isAuthenticated: true, taskId };
+    return { task: result.task, isAuthenticated: true, isLocalOperation: false, taskId };
 }
 
 export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
     const serverData = await serverLoader();
 
     if (serverData.isAuthenticated && serverData.task) {
-        return { ...serverData, storageUnavailable: false };
+        return { ...serverData, storageUnavailable: false, isLocalOperation: false };
     }
 
     // fetch from IndexedDB
@@ -58,6 +58,7 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
         return {
             task: null,
             isAuthenticated: false,
+            isLocalOperation: true,
             taskId: serverData.taskId,
             storageUnavailable: true,
         };
@@ -73,6 +74,7 @@ export async function clientLoader({ serverLoader }: Route.ClientLoaderArgs) {
         return {
             task: task as SerializableTask,
             isAuthenticated: false,
+            isLocalOperation: true,
             taskId: serverData.taskId,
             storageUnavailable: false,
         };
@@ -97,10 +99,17 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
     }
 
     const task = loaderData.task;
+    const isLocalTask = loaderData.isLocalOperation ?? !loaderData.isAuthenticated;
 
     if (isModal) {
-        return <TaskDetailModal key={task.taskId} task={task} />;
+        return (
+            <TaskDetailModal
+                key={task.taskId}
+                task={task}
+                isLocalTask={isLocalTask}
+            />
+        );
     }
 
-    return <TaskDetailPage task={task} />;
+    return <TaskDetailPage task={task} isLocalTask={isLocalTask} />;
 }
