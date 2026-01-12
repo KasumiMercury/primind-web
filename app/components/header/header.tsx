@@ -17,7 +17,11 @@ export function Header({ onLoginClick, onLogout }: HeaderProps) {
             <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
                 {/* Logo */}
                 <div className="flex items-center">
-                    <img src={logo} className="aspect-auto h-6" aria-hidden="true" />
+                    <img
+                        src={logo}
+                        className="aspect-auto h-6"
+                        aria-hidden="true"
+                    />
                 </div>
 
                 {/* User actions */}
