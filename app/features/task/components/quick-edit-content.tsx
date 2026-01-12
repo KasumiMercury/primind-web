@@ -9,6 +9,7 @@ import { DeleteTaskDialog } from "./delete-task-dialog";
 import { DescribeEditWithVoice } from "./describe-edit-with-voice";
 import { FieldAddButton } from "./field-add-button";
 import { FieldDisplay } from "./field-display";
+import { LocalTaskReminderAlert } from "./local-task-reminder-alert";
 import { TitleEditWithVoice } from "./title-edit-with-voice";
 
 export type EditingField = "none" | "title" | "description";
@@ -42,6 +43,8 @@ interface QuickEditContentProps {
 
     defaultEditingField?: EditingField;
     defaultEditingValue?: string;
+
+    isLocalTask?: boolean;
 }
 
 export function QuickEditContent({
@@ -62,6 +65,7 @@ export function QuickEditContent({
     deleteError = false,
     defaultEditingField,
     defaultEditingValue,
+    isLocalTask = false,
 }: QuickEditContentProps) {
     const { t } = useTranslation();
     const items = useTaskTypeItems();
@@ -135,6 +139,8 @@ export function QuickEditContent({
                             strokeWidth={color ? 0 : 6}
                         />
                     </div>
+
+                    {isLocalTask && <LocalTaskReminderAlert />}
 
                     <div className="flex flex-col gap-4">
                         {initialTitle ? (

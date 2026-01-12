@@ -85,6 +85,7 @@ export default function HomeShellLayout() {
                 taskId={latestTask?.taskId ?? ""}
                 taskTypeKey={latestTask?.taskTypeKey ?? TASK_TYPE_KEYS.NEAR}
                 color={latestTask?.color ?? ""}
+                isLocalTask={latestTask?.isLocalOperation ?? false}
                 onDeleted={handleDeleted}
                 onClosed={handleClosed}
             />
