@@ -18,6 +18,7 @@ interface QuickEditModalProps {
     taskId: string;
     taskTypeKey: TaskTypeKey;
     color: string;
+    isLocalTask?: boolean;
     onDeleted?: () => void;
     onClosed?: () => void;
 }
@@ -27,6 +28,7 @@ export function QuickEditModal({
     taskId,
     taskTypeKey,
     color,
+    isLocalTask = false,
     onDeleted,
     onClosed,
 }: QuickEditModalProps) {
@@ -124,6 +126,7 @@ export function QuickEditModal({
                 isDeleting={isDeletePending}
                 showDeleteConfirm={showDeleteConfirm}
                 deleteError={deleteError}
+                isLocalTask={isLocalTask}
             />
             {!isDirty && (
                 <Button
