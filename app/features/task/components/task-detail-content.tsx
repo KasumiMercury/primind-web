@@ -228,7 +228,7 @@ export function TaskDetailContent({
                                 </div>
                             ) : (
                                 <Button
-                                    variant="accent-outline"
+                                    variant="accent"
                                     size="lg"
                                     onPress={onComplete}
                                     isDisabled={
