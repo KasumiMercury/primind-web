@@ -22,6 +22,13 @@ export default {
         ja: "日本語",
     },
 
+    // Menu
+    menu: {
+        open: "メニューを開く",
+        close: "メニューを閉じる",
+        title: "メニュー",
+    },
+
     // Auth
     auth: {
         login: "ログイン",
