@@ -241,12 +241,12 @@ export function QuickEditContent({
 
                 <div className="flex justify-end gap-2 border-t pt-4">
                     {saveError ? (
-                        <div className="flex h-9 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
+                        <div className="flex h-9 items-center gap-2 rounded-md bg-destructive px-4 text-destructive-foreground text-sm">
                             <X className="size-4" />
                             <span>{t("common.failed")}</span>
                         </div>
                     ) : saveSuccess ? (
-                        <div className="flex h-9 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
+                        <div className="flex h-9 items-center gap-2 rounded-md bg-success px-4 text-sm text-success-foreground">
                             <Check className="size-4" />
                             <span>{t("common.saved")}</span>
                         </div>
