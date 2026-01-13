@@ -1,8 +1,10 @@
 import { useAtomValue } from "jotai";
+import { Sheet, SheetContent } from "~/components/ui/sheet";
 import { isAuthenticatedAtom } from "~/store/auth";
 import { LoginButton } from "./login-button";
 import logo from "./logo.svg";
-import { UserMenu } from "./user-menu";
+import { MenuButton } from "./menu-button";
+import { SidebarMenu } from "./sidebar-menu";
 
 interface HeaderProps {
     onLoginClick: () => void;
@@ -26,12 +28,14 @@ export function Header({ onLoginClick, onLogout }: HeaderProps) {
                 </div>
 
                 {/* User actions */}
-                <div className="flex items-center">
-                    {isAuthenticated ? (
-                        <UserMenu onLogout={onLogout} />
-                    ) : (
-                        <LoginButton onPress={onLoginClick} />
-                    )}
+                <div className="flex items-center gap-2">
+                    {!isAuthenticated && <LoginButton onPress={onLoginClick} />}
+                    <Sheet>
+                        <MenuButton />
+                        <SheetContent>
+                            <SidebarMenu onLogout={onLogout} />
+                        </SheetContent>
+                    </Sheet>
                 </div>
             </div>
         </header>
