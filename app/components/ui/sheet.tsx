@@ -32,12 +32,21 @@ function Sheet({ open, onOpenChange, children, ...props }: SheetProps) {
     );
 }
 
+/**
+ * SheetContent supports two usage patterns:
+ * 1. Within Sheet (DialogTrigger): State is managed by the parent Sheet component.
+ *    Simply nest SheetContent inside Sheet without isOpen/onOpenChange props.
+ * 2. Standalone controlled: Provide both isOpen and onOpenChange props for
+ *    direct control without a Sheet wrapper.
+ */
 interface SheetContentProps {
     className?: string;
     children: React.ReactNode;
     showCloseButton?: boolean;
     isDismissable?: boolean;
+    /** For standalone controlled usage. When used inside Sheet, omit this. */
     isOpen?: boolean;
+    /** For standalone controlled usage. When used inside Sheet, omit this. */
     onOpenChange?: (open: boolean) => void;
 }
 
@@ -51,11 +60,17 @@ function SheetContent({
 }: SheetContentProps) {
     const { t } = useTranslation();
 
+    // Only forward isOpen/onOpenChange when both are explicitly provided (standalone controlled mode).
+    // Otherwise, let ModalOverlay inherit state from parent DialogTrigger (Sheet).
+    const controlledProps =
+        isOpen !== undefined && onOpenChange !== undefined
+            ? { isOpen, onOpenChange }
+            : {};
+
     return (
         <ModalOverlay
             data-slot="sheet-overlay"
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
+            {...controlledProps}
             isDismissable={isDismissable}
             className={cn(
                 "fixed inset-0 z-50 bg-black/50",
