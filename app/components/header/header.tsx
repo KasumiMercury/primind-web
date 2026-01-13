@@ -16,19 +16,21 @@ export function Header({ onLoginClick, onLogout }: HeaderProps) {
 
     return (
         <header className="w-full border-border border-b">
-            <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+            <div className="grid grid-cols-3 items-center px-4 py-3">
                 {/* Logo */}
-                <div className="flex items-center">
+                <div className="flex items-center justify-start">
                     <img
                         src={logo}
-                        className="aspect-auto h-6"
+                        className="h-auto max-h-5 w-auto max-w-full sm:max-h-7"
                         aria-hidden="true"
                         alt="logo"
                     />
                 </div>
 
+                <div />
+
                 {/* User actions */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-end gap-1.5 sm:gap-2">
                     {!isAuthenticated && <LoginButton onPress={onLoginClick} />}
                     <Sheet>
                         <MenuButton />
