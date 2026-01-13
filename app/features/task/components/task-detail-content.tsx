@@ -212,7 +212,7 @@ export function TaskDetailContent({
                             onComplete &&
                             // !completeSuccess &&
                             (completeError ? (
-                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-red-600 text-sm text-white">
+                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-destructive text-destructive-foreground text-sm">
                                     <X className="size-5" />
                                     <span>
                                         {getErrorMessage(
@@ -222,13 +222,13 @@ export function TaskDetailContent({
                                     </span>
                                 </div>
                             ) : completeSuccess ? (
-                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-green-600 text-sm text-white dark:bg-emerald-600">
+                                <div className="flex h-10 w-full items-center justify-center gap-2 rounded-md bg-success text-sm text-success-foreground">
                                     <Check className="size-5" />
                                     <span>{t("common.completed")}</span>
                                 </div>
                             ) : (
                                 <Button
-                                    variant="accent-outline"
+                                    variant="accent"
                                     size="lg"
                                     onPress={onComplete}
                                     isDisabled={
@@ -376,12 +376,12 @@ export function TaskDetailContent({
 
                 <div className="flex justify-end gap-2 border-t pt-4">
                     {saveError ? (
-                        <div className="flex h-9 items-center gap-2 rounded-md bg-red-600 px-4 text-sm text-white">
+                        <div className="flex h-9 items-center gap-2 rounded-md bg-destructive px-4 text-destructive-foreground text-sm">
                             <X className="size-4" />
                             <span>{t("common.failed")}</span>
                         </div>
                     ) : saveSuccess ? (
-                        <div className="flex h-9 items-center gap-2 rounded-md bg-green-600 px-4 text-sm text-white">
+                        <div className="flex h-9 items-center gap-2 rounded-md bg-success px-4 text-sm text-success-foreground">
                             <Check className="size-4" />
                             <span>{t("common.saved")}</span>
                         </div>

@@ -8,14 +8,13 @@ export const toastOptions = {
         toast: "flex items-center gap-3 rounded-lg border p-4 shadow-lg",
         title: "font-medium",
         description: "text-sm opacity-90",
-        error: "border-red-200 bg-red-50 text-red-900 dark:border-red-800 dark:bg-red-950 dark:text-red-100",
+        error: "border-destructive/30 bg-destructive/10 text-destructive dark:border-destructive/40 dark:bg-destructive/20",
         success:
-            "border-green-200 bg-green-50 text-green-900 dark:border-green-800 dark:bg-green-950 dark:text-green-100",
+            "border-success/30 bg-success/10 text-success dark:border-success/40 dark:bg-success/20",
         warning:
-            "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100",
-        info: "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-100",
-        default:
-            "border-neutral-200 bg-neutral-50 text-neutral-900 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-100",
+            "border-warning/30 bg-warning/10 text-warning dark:border-warning/40 dark:bg-warning/20",
+        info: "border-primary/30 bg-primary/10 text-primary dark:border-primary/40 dark:bg-primary/20",
+        default: "border-border bg-card text-card-foreground",
     },
 } as const;
 

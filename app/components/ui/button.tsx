@@ -14,9 +14,10 @@ const buttonVariants = cva(
                 default:
                     "bg-primary text-primary-foreground shadow-sm data-hovered:bg-primary/85 data-pressed:bg-primary/80",
                 destructive:
-                    "bg-destructive text-white data-hovered:bg-destructive/90 data-focus-visible:ring-destructive/20 dark:data-focus-visible:ring-destructive/40 dark:bg-destructive/60",
+                    "bg-destructive text-destructive-foreground data-hovered:bg-destructive/90 data-focus-visible:ring-destructive/20 dark:data-focus-visible:ring-destructive/40 dark:bg-destructive/60",
                 outline:
                     "border-2 border-primary/80 bg-transparent text-foreground shadow-xs data-hovered:bg-primary/10 data-hovered:border-primary dark:data-hovered:bg-primary/20 dark:data-hovered:border-primary/60",
+                accent: "border-2 border-accent dark:border-accent/80 bg-accent/15 dark:bg-transparent text-foreground shadow-xs data-hovered:bg-accent/10 data-hovered:border-accent dark:data-hovered:bg-accent/20 dark:data-hovered:border-accent/60",
                 "accent-outline":
                     "border-2 border-accent/80 bg-transparent text-foreground shadow-xs data-hovered:bg-accent/10 data-hovered:border-accent dark:data-hovered:bg-accent/20 dark:data-hovered:border-accent/60",
                 ghost: "text-foreground data-hovered:bg-primary/10 dark:data-hovered:bg-primary/15",
