@@ -9,6 +9,7 @@ import {
     Modal,
     ModalOverlay,
 } from "react-aria-components";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "~/lib/utils";
 
@@ -48,6 +49,8 @@ function SheetContent({
     isOpen,
     onOpenChange,
 }: SheetContentProps) {
+    const { t } = useTranslation();
+
     return (
         <ModalOverlay
             data-slot="sheet-overlay"
@@ -80,7 +83,9 @@ function SheetContent({
                                     className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity data-hovered:opacity-100 data-focus-visible:outline-hidden data-focus-visible:ring-2 data-focus-visible:ring-ring data-focus-visible:ring-offset-2 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0"
                                 >
                                     <XIcon />
-                                    <span className="sr-only">Close</span>
+                                    <span className="sr-only">
+                                        {t("menu.close")}
+                                    </span>
                                 </Button>
                             )}
                         </>
