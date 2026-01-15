@@ -1,5 +1,5 @@
-import { Code, ConnectError } from "@connectrpc/connect";
 import { create } from "@bufbuild/protobuf";
+import { Code, ConnectError } from "@connectrpc/connect";
 import {
     ListActiveTasksRequestSchema,
     type Task,
