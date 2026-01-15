@@ -13,12 +13,14 @@ export interface SessionInvalidDialogContentProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     onGoHome: () => void;
+    isPending?: boolean;
 }
 
 export function SessionInvalidDialogContent({
     isOpen,
     onOpenChange,
     onGoHome,
+    isPending,
 }: SessionInvalidDialogContentProps) {
     const { t } = useTranslation();
 
@@ -43,7 +45,12 @@ export function SessionInvalidDialogContent({
             </DialogHeader>
 
             <DialogFooter className="mt-4 flex-col gap-2 sm:flex-col">
-                <Button onPress={onGoHome} className="w-full">
+                <Button
+                    onPress={onGoHome}
+                    className="w-full"
+                    isPending={isPending}
+                    isDisabled={isPending}
+                >
                     {t("session.invalid.goHome")}
                 </Button>
             </DialogFooter>
