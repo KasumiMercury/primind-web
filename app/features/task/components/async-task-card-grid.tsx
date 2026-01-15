@@ -30,6 +30,10 @@ export function AsyncTaskCardGrid({
                 errorElement={<TaskListErrorBoundary />}
             >
                 {(result: ActiveTasksResult) => {
+                    // Show skeleton for session invalid
+                    if (result.sessionInvalid) {
+                        return <TaskCardGridSkeleton count={4} />;
+                    }
                     if (result.error) {
                         return <TaskListError error={result.error} />;
                     }

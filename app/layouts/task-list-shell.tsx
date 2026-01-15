@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import type { ShouldRevalidateFunctionArgs } from "react-router";
 import { Outlet, useLocation, useNavigate } from "react-router";
 import { getUserSession } from "~/features/auth/server/session.server";
+import { sessionInvalidModalOpenAtom } from "~/features/auth/store/session-invalid";
 import { TaskCardGridSkeleton } from "~/features/task/components/task-card-grid-skeleton";
 import { TaskListView } from "~/features/task/pages/task-list-view";
 import type {
@@ -108,6 +109,7 @@ export default function TaskListShellLayout({
     const homeShellContext = useHomeShellContext();
     const { isAuthenticated, tasks: tasksPromise } = loaderData;
     const setActiveTasks = useSetAtom(activeTasksAtom);
+    const setSessionInvalid = useSetAtom(sessionInvalidModalOpenAtom);
 
     // Hydrate active tasks atom when promise resolves
     useEffect(() => {
@@ -116,6 +118,13 @@ export default function TaskListShellLayout({
         tasksPromise
             .then((result) => {
                 if (aborted) return;
+
+                // Trigger session invalid dialog if session expired
+                if (result.sessionInvalid) {
+                    setSessionInvalid(true);
+                    return;
+                }
+
                 if (!result.error) {
                     setActiveTasks(result.tasks);
                 }
@@ -128,7 +137,7 @@ export default function TaskListShellLayout({
         return () => {
             aborted = true;
         };
-    }, [tasksPromise, setActiveTasks]);
+    }, [tasksPromise, setActiveTasks, setSessionInvalid]);
 
     const isHomeRoute = location.pathname === "/";
     const showHomeView = isHomeRoute || homeShellContext.isModal;

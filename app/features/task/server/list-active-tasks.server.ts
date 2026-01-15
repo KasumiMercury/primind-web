@@ -1,3 +1,4 @@
+import { Code, ConnectError } from "@connectrpc/connect";
 import { create } from "@bufbuild/protobuf";
 import {
     ListActiveTasksRequestSchema,
@@ -10,6 +11,10 @@ import { withMockErrorContext } from "~/lib/mock-wrapper.server";
 import { createAuthContext } from "~/lib/request-context.server";
 import { taskLogger } from "./logger.server";
 import { getTaskClient } from "./task-client.server";
+
+function isUnauthenticatedError(err: unknown): boolean {
+    return err instanceof ConnectError && err.code === Code.Unauthenticated;
+}
 
 export interface SerializableTimestamp {
     seconds: string;
@@ -50,6 +55,7 @@ function serializeTask(task: Task): SerializableTask {
 export interface ActiveTasksResult {
     tasks: SerializableTask[];
     error?: string;
+    sessionInvalid?: boolean;
 }
 
 export async function listActiveTasks(
@@ -82,6 +88,15 @@ export async function listActiveTasks(
             return { tasks: response.tasks.map(serializeTask) };
         } catch (err) {
             taskLogger.error({ err }, "ListActiveTasks failed");
+
+            if (isUnauthenticatedError(err)) {
+                return {
+                    tasks: [],
+                    error: "Session expired",
+                    sessionInvalid: true,
+                };
+            }
+
             return {
                 tasks: [],
                 error:
