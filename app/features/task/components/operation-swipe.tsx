@@ -1,6 +1,7 @@
 import {
     type MouseEventHandler,
     type PointerEventHandler,
+    type TouchEventHandler,
     useRef,
 } from "react";
 import type { Dimensions } from "./operation-shape";
@@ -95,6 +96,11 @@ export function OperationSwipe({
         lastSwipeHandledAtRef.current = null;
     };
 
+    const handleTouchStart: TouchEventHandler<HTMLDivElement> = (event) => {
+        // Fallback for Safari where touchAction: none may be ignored
+        event.preventDefault();
+    };
+
     return (
         <div
             style={{
@@ -107,6 +113,7 @@ export function OperationSwipe({
             onPointerCancelCapture={handlePointerCancel}
             onPointerLeave={handlePointerCancel}
             onClickCapture={handleClickCapture}
+            onTouchStart={handleTouchStart}
         >
             {children}
         </div>
