@@ -56,6 +56,22 @@ export function OperationSwipe({
             return;
         }
 
+        // Prevent button from receiving pointerup when swipe is detected
+        event.stopPropagation();
+
+        // Dispatch pointercancel to reset React Aria Button's internal state
+        // Without this, the button remains in "pressed" state and won't respond to subsequent taps
+        if (event.target instanceof Element) {
+            const cancelEvent = new PointerEvent("pointercancel", {
+                bubbles: true,
+                cancelable: true,
+                pointerId: event.pointerId,
+                pointerType: event.pointerType,
+                isPrimary: event.isPrimary,
+            });
+            event.target.dispatchEvent(cancelEvent);
+        }
+
         if (absY >= absX) {
             if (deltaY < 0) {
                 swipeActions.up();
