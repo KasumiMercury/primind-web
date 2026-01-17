@@ -29,6 +29,7 @@ export function OperationSwipe({
     const containerRef = useRef<HTMLDivElement>(null);
     const swipeStart = useRef<{ x: number; y: number } | null>(null);
     const lastSwipeHandledAtRef = useRef<number | null>(null);
+    const pointerTargets = useRef<Map<number, Element>>(new Map());
     const getNow = () =>
         typeof performance !== "undefined" ? performance.now() : Date.now();
 
@@ -39,13 +40,21 @@ export function OperationSwipe({
     const handlePointerDown: PointerEventHandler<HTMLDivElement> = (event) => {
         lastSwipeHandledAtRef.current = null;
         swipeStart.current = { x: event.clientX, y: event.clientY };
+        // Store the original target element for this pointer to dispatch pointercancel later
+        if (event.target instanceof Element) {
+            pointerTargets.current.set(event.pointerId, event.target);
+        }
     };
 
     const handlePointerUp: PointerEventHandler<HTMLDivElement> = (event) => {
         const start = swipeStart.current;
         resetSwipe();
 
-        if (!start) return;
+        if (!start) {
+            // Clear stored target even if no swipe start (edge case)
+            pointerTargets.current.delete(event.pointerId);
+            return;
+        }
 
         const deltaX = event.clientX - start.x;
         const deltaY = event.clientY - start.y;
@@ -53,6 +62,8 @@ export function OperationSwipe({
         const absY = Math.abs(deltaY);
 
         if (absX < swipeThreshold && absY < swipeThreshold) {
+            // No swipe detected, clear stored target and let event propagate normally
+            pointerTargets.current.delete(event.pointerId);
             return;
         }
 
@@ -61,7 +72,13 @@ export function OperationSwipe({
 
         // Dispatch pointercancel to reset React Aria Button's internal state
         // Without this, the button remains in "pressed" state and won't respond to subsequent taps
-        if (event.target instanceof Element) {
+        // Use the original pointerdown target, fallback to event.target if not found
+        const originalTarget =
+            pointerTargets.current.get(event.pointerId) ??
+            (event.target instanceof Element ? event.target : null);
+        pointerTargets.current.delete(event.pointerId);
+
+        if (originalTarget) {
             const cancelEvent = new PointerEvent("pointercancel", {
                 bubbles: true,
                 cancelable: true,
@@ -69,7 +86,7 @@ export function OperationSwipe({
                 pointerType: event.pointerType,
                 isPrimary: event.isPrimary,
             });
-            event.target.dispatchEvent(cancelEvent);
+            originalTarget.dispatchEvent(cancelEvent);
         }
 
         if (absY >= absX) {
@@ -91,8 +108,9 @@ export function OperationSwipe({
         lastSwipeHandledAtRef.current = getNow();
     };
 
-    const handlePointerCancel: PointerEventHandler<HTMLDivElement> = () => {
+    const handlePointerCancel: PointerEventHandler<HTMLDivElement> = (event) => {
         resetSwipe();
+        pointerTargets.current.delete(event.pointerId);
     };
 
     const handleClickCapture: MouseEventHandler<HTMLDivElement> = (event) => {
