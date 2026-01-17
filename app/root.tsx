@@ -12,6 +12,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { RouterProvider } from "./components/router-provider";
+import { ThemeColorMeta } from "./components/theme-color-meta";
 import { ThemeProvider } from "./components/theme-provider";
 import { AppToaster } from "./components/ui/app-toaster";
 import { getLocale, localeCookie } from "./lib/i18n/i18next.server";
@@ -60,9 +61,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <meta charSet="utf-8" />
                 <meta
                     name="viewport"
-                    content="width=device-width, initial-scale=1"
+                    content="width=device-width, initial-scale=1, viewport-fit=cover"
                 />
                 <meta name="apple-mobile-web-app-title" content="PriMind" />
+                <meta name="theme-color" content="#f2f1f7" />
                 <Meta />
                 <Links />
             </head>
@@ -73,6 +75,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     enableSystem
                     disableTransitionOnChange
                 >
+                    <ThemeColorMeta />
                     {children}
                 </ThemeProvider>
                 <AppToaster />

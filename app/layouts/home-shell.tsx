@@ -91,9 +91,12 @@ export default function HomeShellLayout() {
             />
 
             {/* space for fixed TaskRegistration */}
-            <div className="h-70 w-full shrink-0" aria-hidden="true" />
+            <div
+                className="h-70 w-full shrink-0 pb-[env(safe-area-inset-bottom)]"
+                aria-hidden="true"
+            />
 
-            <div className="fixed inset-x-0 bottom-0">
+            <div className="fixed inset-x-0 bottom-0 pb-[env(safe-area-inset-bottom)]">
                 <div
                     className="pointer-events-none absolute inset-0 bg-linear-to-b from-transparent to-black/30 md:hidden"
                     aria-hidden="true"

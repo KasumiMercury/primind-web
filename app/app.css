@@ -166,10 +166,17 @@
     * {
         @apply border-border outline-ring/50;
     }
-    html,
+    html {
+        @apply bg-background text-foreground;
+        width: 100%;
+        height: 100%;
+        height: 100dvh;
+    }
     body {
         @apply bg-background text-foreground;
         width: 100%;
         height: 100%;
+        height: 100dvh;
+        overscroll-behavior: none;
     }
 }
