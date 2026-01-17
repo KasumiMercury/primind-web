@@ -108,7 +108,9 @@ export function OperationSwipe({
         lastSwipeHandledAtRef.current = getNow();
     };
 
-    const handlePointerCancel: PointerEventHandler<HTMLDivElement> = (event) => {
+    const handlePointerCancel: PointerEventHandler<HTMLDivElement> = (
+        event,
+    ) => {
         resetSwipe();
         pointerTargets.current.delete(event.pointerId);
     };
