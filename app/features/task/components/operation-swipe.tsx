@@ -63,7 +63,6 @@ export function OperationSwipe({
                 swipeActions.down();
             }
             lastSwipeHandledAtRef.current = getNow();
-            event.preventDefault();
             return;
         }
 
@@ -74,7 +73,6 @@ export function OperationSwipe({
         }
 
         lastSwipeHandledAtRef.current = getNow();
-        event.preventDefault();
     };
 
     const handlePointerCancel: PointerEventHandler<HTMLDivElement> = () => {
@@ -89,7 +87,6 @@ export function OperationSwipe({
 
         if (elapsed <= 300) {
             event.preventDefault();
-            event.stopPropagation();
             lastSwipeHandledAtRef.current = null;
             return;
         }
@@ -105,7 +102,6 @@ export function OperationSwipe({
 
         const preventScroll = (event: Event) => {
             event.preventDefault();
-            event.stopPropagation();
         };
 
         const options: AddEventListenerOptions = { passive: false };
