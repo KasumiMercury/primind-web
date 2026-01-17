@@ -1,7 +1,7 @@
 import {
     type MouseEventHandler,
     type PointerEventHandler,
-    type TouchEventHandler,
+    useEffect,
     useRef,
 } from "react";
 import type { Dimensions } from "./operation-shape";
@@ -26,6 +26,7 @@ export function OperationSwipe({
     children,
     swipeThreshold = 30,
 }: OperationSwipeProps) {
+    const containerRef = useRef<HTMLDivElement>(null);
     const swipeStart = useRef<{ x: number; y: number } | null>(null);
     const lastSwipeHandledAtRef = useRef<number | null>(null);
     const getNow = () =>
@@ -96,24 +97,44 @@ export function OperationSwipe({
         lastSwipeHandledAtRef.current = null;
     };
 
-    const handleTouchStart: TouchEventHandler<HTMLDivElement> = (event) => {
-        // Fallback for Safari where touchAction: none may be ignored
-        event.preventDefault();
-    };
+    // Use non-passive event listeners to allow preventDefault()
+    // React registers wheel/touch events as passive by default
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const preventScroll = (event: Event) => {
+            event.preventDefault();
+            event.stopPropagation();
+        };
+
+        const options: AddEventListenerOptions = { passive: false };
+
+        container.addEventListener("wheel", preventScroll, options);
+        container.addEventListener("touchstart", preventScroll, options);
+        container.addEventListener("touchmove", preventScroll, options);
+
+        return () => {
+            container.removeEventListener("wheel", preventScroll, options);
+            container.removeEventListener("touchstart", preventScroll, options);
+            container.removeEventListener("touchmove", preventScroll, options);
+        };
+    }, []);
 
     return (
         <div
+            ref={containerRef}
             style={{
                 width: `${dimensions.width}px`,
                 height: `${dimensions.height}px`,
                 touchAction: "none",
+                overscrollBehavior: "none",
             }}
             onPointerDownCapture={handlePointerDown}
             onPointerUpCapture={handlePointerUp}
             onPointerCancelCapture={handlePointerCancel}
             onPointerLeave={handlePointerCancel}
             onClickCapture={handleClickCapture}
-            onTouchStart={handleTouchStart}
         >
             {children}
         </div>
