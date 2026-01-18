@@ -30,6 +30,7 @@ export function OperationSwipe({
     const swipeStart = useRef<{ x: number; y: number } | null>(null);
     const lastSwipeHandledAtRef = useRef<number | null>(null);
     const pointerTargets = useRef<Map<number, Element>>(new Map());
+    const pointerCaptured = useRef<Set<number>>(new Set());
     const getNow = () =>
         typeof performance !== "undefined" ? performance.now() : Date.now();
 
@@ -46,7 +47,31 @@ export function OperationSwipe({
         }
     };
 
+    const handlePointerMove: PointerEventHandler<HTMLDivElement> = (event) => {
+        const start = swipeStart.current;
+        if (!start) return;
+
+        if (pointerCaptured.current.has(event.pointerId)) return;
+
+        const deltaX = Math.abs(event.clientX - start.x);
+        const deltaY = Math.abs(event.clientY - start.y);
+
+        // Threshold for detecting intentional movement
+        const movementThreshold = 5;
+
+        // If movement exceeds threshold, capture the pointer
+        if (deltaX > movementThreshold || deltaY > movementThreshold) {
+            containerRef.current?.setPointerCapture(event.pointerId);
+            pointerCaptured.current.add(event.pointerId);
+        }
+    };
+
     const handlePointerUp: PointerEventHandler<HTMLDivElement> = (event) => {
+        if (pointerCaptured.current.has(event.pointerId)) {
+            containerRef.current?.releasePointerCapture(event.pointerId);
+            pointerCaptured.current.delete(event.pointerId);
+        }
+
         const start = swipeStart.current;
         resetSwipe();
 
@@ -111,6 +136,10 @@ export function OperationSwipe({
     const handlePointerCancel: PointerEventHandler<HTMLDivElement> = (
         event,
     ) => {
+        if (pointerCaptured.current.has(event.pointerId)) {
+            containerRef.current?.releasePointerCapture(event.pointerId);
+            pointerCaptured.current.delete(event.pointerId);
+        }
         resetSwipe();
         pointerTargets.current.delete(event.pointerId);
     };
@@ -143,12 +172,10 @@ export function OperationSwipe({
         const options: AddEventListenerOptions = { passive: false };
 
         container.addEventListener("wheel", preventScroll, options);
-        container.addEventListener("touchstart", preventScroll, options);
         container.addEventListener("touchmove", preventScroll, options);
 
         return () => {
             container.removeEventListener("wheel", preventScroll, options);
-            container.removeEventListener("touchstart", preventScroll, options);
             container.removeEventListener("touchmove", preventScroll, options);
         };
     }, []);
@@ -163,9 +190,9 @@ export function OperationSwipe({
                 overscrollBehavior: "none",
             }}
             onPointerDownCapture={handlePointerDown}
+            onPointerMoveCapture={handlePointerMove}
             onPointerUpCapture={handlePointerUp}
             onPointerCancelCapture={handlePointerCancel}
-            onPointerLeave={handlePointerCancel}
             onClickCapture={handleClickCapture}
         >
             {children}
