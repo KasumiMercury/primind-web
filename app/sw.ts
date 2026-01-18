@@ -1,17 +1,6 @@
 /// <reference lib="webworker" />
 
-import { type FirebaseOptions, initializeApp } from "firebase/app";
-import {
-    getMessaging,
-    type MessagePayload,
-    type Messaging,
-    onBackgroundMessage,
-} from "firebase/messaging/sw";
 import { validate as uuidValidate, version as uuidVersion } from "uuid";
-import {
-    firebaseConfig,
-    hasFirebaseConfig,
-} from "./features/device/lib/firebase-config";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -19,7 +8,18 @@ const DEFAULT_NOTIFICATION_TITLE = "New Notification";
 const DEFAULT_NOTIFICATION_ICON = "/favicon.ico";
 const DEFAULT_URL = "/";
 
-let messaging: Messaging | null = null;
+interface FcmPayload {
+    notification?: {
+        title?: string;
+        body?: string;
+        icon?: string;
+        click_action?: string;
+    };
+    data?: Record<string, string>;
+    fcmOptions?: {
+        link?: string;
+    };
+}
 
 function resolveTaskUrl(
     data: Record<string, string> | undefined,
@@ -31,45 +31,44 @@ function resolveTaskUrl(
     return `/tasks/${taskId}`;
 }
 
-function resolveNotificationUrl(payload: MessagePayload): string {
+function resolveNotificationUrl(payload: FcmPayload): string {
     const taskUrl = resolveTaskUrl(payload.data);
     if (taskUrl) {
         return taskUrl;
     }
-    const fcmOptions = (payload as { fcmOptions?: { link?: string } })
-        .fcmOptions;
-    const notification = payload.notification as
-        | { click_action?: string }
-        | undefined;
     return (
         payload.data?.url ??
-        fcmOptions?.link ??
-        notification?.click_action ??
+        payload.fcmOptions?.link ??
+        payload.notification?.click_action ??
         DEFAULT_URL
     );
 }
 
-try {
-    if (hasFirebaseConfig) {
-        const app = initializeApp(firebaseConfig as FirebaseOptions);
-        messaging = getMessaging(app);
+// Use push event listener directly instead of Firebase SDK's onBackgroundMessage
+// to prevent duplicate notifications (Firebase SDK auto-shows notification when
+// notification payload is present, causing duplicates with manual showNotification)
+self.addEventListener("push", (event) => {
+    if (!event.data) {
+        return;
     }
-} catch (err) {
-    console.error("Failed to initialize Firebase Messaging in SW:", err);
-}
 
-if (messaging) {
-    onBackgroundMessage(messaging, (payload) => {
-        const url = resolveNotificationUrl(payload);
-        const title = payload.notification?.title ?? DEFAULT_NOTIFICATION_TITLE;
-        const options: NotificationOptions = {
-            body: payload.notification?.body ?? "",
-            icon: payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
-            data: { ...(payload.data ?? {}), url },
-        };
-        self.registration.showNotification(title, options);
-    });
-}
+    let payload: FcmPayload;
+    try {
+        payload = event.data.json() as FcmPayload;
+    } catch {
+        return;
+    }
+
+    const url = resolveNotificationUrl(payload);
+    const title = payload.notification?.title ?? DEFAULT_NOTIFICATION_TITLE;
+    const options: NotificationOptions = {
+        body: payload.notification?.body ?? "",
+        icon: payload.notification?.icon ?? DEFAULT_NOTIFICATION_ICON,
+        data: { ...(payload.data ?? {}), url },
+    };
+
+    event.waitUntil(self.registration.showNotification(title, options));
+});
 
 self.addEventListener("notificationclick", (event) => {
     event.notification.close();
