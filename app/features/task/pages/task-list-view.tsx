@@ -1,9 +1,11 @@
 import { LoginPromptAlert } from "~/features/auth/components/login-prompt-alert";
 import { AsyncTaskCardGrid } from "~/features/task/components/async-task-card-grid";
+import { OfflineAlert } from "~/features/task/components/offline-alert";
 import type {
     ActiveTasksResult,
     SerializableTask,
 } from "~/features/task/server/list-active-tasks.server";
+import { useNetworkStatus } from "~/hooks/use-network-status";
 import { useHomeShellContext } from "~/layouts/home-shell";
 
 interface TaskListViewProps {
@@ -18,10 +20,13 @@ export function TaskListView({
     onTaskClick,
 }: TaskListViewProps) {
     const { openLoginDialog } = useHomeShellContext();
+    const { isOffline } = useNetworkStatus();
 
     return (
         <>
-            {!isAuthenticated && (
+            {isOffline && <OfflineAlert />}
+
+            {!isAuthenticated && !isOffline && (
                 <LoginPromptAlert onLoginClick={openLoginDialog} />
             )}
 

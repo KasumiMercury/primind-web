@@ -26,7 +26,13 @@ export default defineConfig({
             manifest: false,
             injectRegister: false,
             injectManifest: {
-                injectionPoint: undefined,
+                globPatterns: [
+                    "**/*.{js,css,html,ico,png,svg,woff,woff2}",
+                ],
+                globIgnores: [
+                    "**/node_modules/**",
+                    "**/storybook-static/**",
+                ],
             },
             devOptions: {
                 enabled: true,

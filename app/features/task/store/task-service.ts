@@ -1,16 +1,33 @@
 import { ORPCError } from "@orpc/client";
+import { getNetworkStatus } from "~/hooks/use-network-status";
 import { TaskStatus, TaskType } from "~/gen/task/v1/task_pb";
 import { ERROR_CODES } from "~/lib/errors";
 import { orpc } from "~/orpc/client";
 import type { CreateTaskInput, UpdateTaskInput } from "~/orpc/schemas/task";
 import type { SerializableTask } from "../server/list-active-tasks.server";
 import { getTaskDB } from "./db.client";
+import {
+    clearOperationsForTask,
+    queueCreateOperation,
+    queueDeleteOperation,
+    queueUpdateOperation,
+} from "./operation-queue";
 import type { LocalTask, TaskOperationResult } from "./types";
 
 function isUnauthorizedError(
     err: unknown,
 ): err is ORPCError<"UNAUTHORIZED", unknown> {
     return err instanceof ORPCError && err.code === "UNAUTHORIZED";
+}
+
+function isNetworkError(err: unknown): boolean {
+    if (err instanceof TypeError && err.message.includes("fetch")) {
+        return true;
+    }
+    if (err instanceof Error && err.name === "NetworkError") {
+        return true;
+    }
+    return false;
 }
 
 export interface TaskService {
@@ -29,7 +46,7 @@ export interface TaskService {
 
 export function createTaskService(isAuthenticated: boolean): TaskService {
     if (isAuthenticated) {
-        return createServerTaskService();
+        return createOfflineAwareServerTaskService();
     }
     return createLocalTaskService();
 }
@@ -57,13 +74,178 @@ function calculateTargetAt(
 }
 
 /**
- * Server task service using oRPC.
+ * Store a task locally (for offline use)
  */
-function createServerTaskService(): TaskService {
+async function storeTaskLocally(
+    input: CreateTaskInput,
+    syncStatus: "pending" | "synced" = "pending",
+): Promise<{ taskId: string } | null> {
+    const db = getTaskDB();
+    if (!db) return null;
+
+    const targetAt = calculateTargetAt(input.taskType, input.scheduledAt);
+    const now = new Date().toISOString();
+
+    const localTask: LocalTask = {
+        taskId: input.taskId,
+        taskType: input.taskType,
+        taskStatus: TaskStatus.ACTIVE,
+        title: "",
+        description: "",
+        color: input.color,
+        scheduledAt: input.scheduledAt
+            ? {
+                  seconds: Math.floor(
+                      new Date(input.scheduledAt).getTime() / 1000,
+                  ).toString(),
+              }
+            : undefined,
+        targetAt: targetAt
+            ? {
+                  seconds: Math.floor(targetAt.getTime() / 1000).toString(),
+              }
+            : undefined,
+        createdAt: {
+            seconds: Math.floor(Date.now() / 1000).toString(),
+        },
+        _localCreatedAt: now,
+        _localUpdatedAt: now,
+        _syncStatus: syncStatus,
+    };
+
+    await db.tasks.put(localTask);
+    return { taskId: localTask.taskId };
+}
+
+/**
+ * Update a task locally (for offline use)
+ */
+async function updateTaskLocally(
+    input: UpdateTaskInput,
+    syncStatus: "pending" | "synced" = "pending",
+): Promise<{ taskId: string } | null> {
+    const db = getTaskDB();
+    if (!db) return null;
+
+    const existing = await db.tasks.get(input.taskId);
+    if (!existing) {
+        // Create a placeholder task if it doesn't exist locally
+        const now = new Date().toISOString();
+        const placeholder: LocalTask = {
+            taskId: input.taskId,
+            taskType: TaskType.UNSPECIFIED,
+            taskStatus: TaskStatus.ACTIVE,
+            title: "",
+            description: "",
+            color: "",
+            createdAt: { seconds: Math.floor(Date.now() / 1000).toString() },
+            _localCreatedAt: now,
+            _localUpdatedAt: now,
+            _syncStatus: syncStatus,
+        };
+        await db.tasks.put(placeholder);
+    }
+
+    const updates: Partial<LocalTask> = {
+        _localUpdatedAt: new Date().toISOString(),
+        _syncStatus: syncStatus,
+    };
+
+    for (const field of input.updateMask) {
+        switch (field) {
+            case "title":
+                if (input.title !== undefined) {
+                    updates.title = input.title;
+                }
+                break;
+            case "description":
+                if (input.description !== undefined) {
+                    updates.description = input.description;
+                }
+                break;
+            case "task_status":
+                if (input.taskStatus !== undefined) {
+                    updates.taskStatus = input.taskStatus;
+                }
+                break;
+            case "color":
+                if (input.color !== undefined) {
+                    updates.color = input.color;
+                }
+                break;
+        }
+    }
+
+    await db.tasks.update(input.taskId, updates);
+    return { taskId: input.taskId };
+}
+
+/**
+ * Delete a task locally (for offline use)
+ */
+async function deleteTaskLocally(taskId: string): Promise<boolean> {
+    const db = getTaskDB();
+    if (!db) return false;
+
+    await db.tasks.delete(taskId);
+    return true;
+}
+
+/**
+ * Sync server tasks to local database
+ */
+async function syncTasksToLocal(tasks: SerializableTask[]): Promise<void> {
+    const db = getTaskDB();
+    if (!db) return;
+
+    const now = new Date().toISOString();
+    const localTasks: LocalTask[] = tasks.map((task) => ({
+        ...task,
+        _localCreatedAt: now,
+        _localUpdatedAt: now,
+        _syncStatus: "synced" as const,
+    }));
+
+    // Use bulkPut to update or insert all tasks
+    await db.tasks.bulkPut(localTasks);
+}
+
+/**
+ * Offline-aware server task service.
+ * - Always maintains local copy of tasks
+ * - When online: syncs with server and updates local
+ * - When offline: stores locally and queues operation for later sync
+ */
+function createOfflineAwareServerTaskService(): TaskService {
     return {
         async create(input) {
+            const isOnline = getNetworkStatus();
+
+            // If offline, store locally and queue
+            if (!isOnline) {
+                const result = await storeTaskLocally(input, "pending");
+                if (!result) {
+                    return {
+                        data: { taskId: "" },
+                        isLocalOperation: true,
+                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
+                    };
+                }
+
+                await queueCreateOperation(input);
+                return {
+                    data: { taskId: result.taskId },
+                    isLocalOperation: true,
+                };
+            }
+
+            // Try server first
             try {
                 const result = await orpc.task.create(input);
+                if (!result.error) {
+                    // Also store locally as synced
+                    await storeTaskLocally(input, "synced");
+                }
                 return {
                     data: { taskId: result.taskId ?? "" },
                     isLocalOperation: false,
@@ -78,6 +260,25 @@ function createServerTaskService(): TaskService {
                         sessionInvalid: true,
                     };
                 }
+
+                // Network error - store locally and queue
+                if (isNetworkError(err)) {
+                    const result = await storeTaskLocally(input, "pending");
+                    if (!result) {
+                        return {
+                            data: { taskId: "" },
+                            isLocalOperation: true,
+                            error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
+                        };
+                    }
+
+                    await queueCreateOperation(input);
+                    return {
+                        data: { taskId: result.taskId },
+                        isLocalOperation: true,
+                    };
+                }
+
                 return {
                     data: { taskId: "" },
                     isLocalOperation: false,
@@ -87,8 +288,43 @@ function createServerTaskService(): TaskService {
         },
 
         async get(taskId) {
+            const isOnline = getNetworkStatus();
+
+            // If offline, try to get from local DB first
+            if (!isOnline) {
+                const db = getTaskDB();
+                if (db) {
+                    const task = await db.tasks.get(taskId);
+                    if (task) {
+                        return {
+                            data: { task },
+                            isLocalOperation: true,
+                        };
+                    }
+                }
+                return {
+                    data: { task: undefined },
+                    isLocalOperation: true,
+                    error: ERROR_CODES.TASK_NOT_FOUND,
+                };
+            }
+
+            // Try server
             try {
                 const result = await orpc.task.get({ taskId });
+                // Update local cache if successful
+                if (result.task) {
+                    const db = getTaskDB();
+                    if (db) {
+                        const now = new Date().toISOString();
+                        await db.tasks.put({
+                            ...(result.task as SerializableTask),
+                            _localCreatedAt: now,
+                            _localUpdatedAt: now,
+                            _syncStatus: "synced",
+                        });
+                    }
+                }
                 return {
                     data: { task: result.task as SerializableTask | undefined },
                     isLocalOperation: false,
@@ -103,6 +339,21 @@ function createServerTaskService(): TaskService {
                         sessionInvalid: true,
                     };
                 }
+
+                // Network error - try local
+                if (isNetworkError(err)) {
+                    const db = getTaskDB();
+                    if (db) {
+                        const task = await db.tasks.get(taskId);
+                        if (task) {
+                            return {
+                                data: { task },
+                                isLocalOperation: true,
+                            };
+                        }
+                    }
+                }
+
                 return {
                     data: { task: undefined },
                     isLocalOperation: false,
@@ -112,8 +363,33 @@ function createServerTaskService(): TaskService {
         },
 
         async update(input) {
+            const isOnline = getNetworkStatus();
+
+            // If offline, update locally and queue
+            if (!isOnline) {
+                const result = await updateTaskLocally(input, "pending");
+                if (!result) {
+                    return {
+                        data: { taskId: "" },
+                        isLocalOperation: true,
+                        error: ERROR_CODES.TASK_NOT_FOUND,
+                    };
+                }
+
+                await queueUpdateOperation(input);
+                return {
+                    data: { taskId: result.taskId },
+                    isLocalOperation: true,
+                };
+            }
+
+            // Try server first
             try {
                 const result = await orpc.task.update(input);
+                if (!result.error) {
+                    // Also update locally as synced
+                    await updateTaskLocally(input, "synced");
+                }
                 return {
                     data: { taskId: result.taskId ?? "" },
                     isLocalOperation: false,
@@ -128,6 +404,25 @@ function createServerTaskService(): TaskService {
                         sessionInvalid: true,
                     };
                 }
+
+                // Network error - update locally and queue
+                if (isNetworkError(err)) {
+                    const result = await updateTaskLocally(input, "pending");
+                    if (!result) {
+                        return {
+                            data: { taskId: "" },
+                            isLocalOperation: true,
+                            error: ERROR_CODES.TASK_NOT_FOUND,
+                        };
+                    }
+
+                    await queueUpdateOperation(input);
+                    return {
+                        data: { taskId: result.taskId },
+                        isLocalOperation: true,
+                    };
+                }
+
                 return {
                     data: { taskId: "" },
                     isLocalOperation: false,
@@ -137,8 +432,26 @@ function createServerTaskService(): TaskService {
         },
 
         async delete(taskId) {
+            const isOnline = getNetworkStatus();
+
+            // If offline, delete locally and queue
+            if (!isOnline) {
+                await deleteTaskLocally(taskId);
+                await clearOperationsForTask(taskId);
+                await queueDeleteOperation(taskId);
+                return {
+                    data: { success: true },
+                    isLocalOperation: true,
+                };
+            }
+
+            // Try server first
             try {
                 const result = await orpc.task.delete({ taskId });
+                if (result.success) {
+                    // Also delete locally
+                    await deleteTaskLocally(taskId);
+                }
                 return {
                     data: { success: result.success },
                     isLocalOperation: false,
@@ -153,6 +466,18 @@ function createServerTaskService(): TaskService {
                         sessionInvalid: true,
                     };
                 }
+
+                // Network error - delete locally and queue
+                if (isNetworkError(err)) {
+                    await deleteTaskLocally(taskId);
+                    await clearOperationsForTask(taskId);
+                    await queueDeleteOperation(taskId);
+                    return {
+                        data: { success: true },
+                        isLocalOperation: true,
+                    };
+                }
+
                 return {
                     data: { success: false },
                     isLocalOperation: false,
@@ -162,8 +487,43 @@ function createServerTaskService(): TaskService {
         },
 
         async listActive() {
+            const isOnline = getNetworkStatus();
+
+            // If offline, get from local DB
+            if (!isOnline) {
+                const db = getTaskDB();
+                if (!db) {
+                    return {
+                        data: { tasks: [] },
+                        isLocalOperation: true,
+                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
+                    };
+                }
+
+                const tasks = await db.tasks
+                    .where("taskStatus")
+                    .equals(TaskStatus.ACTIVE)
+                    .toArray();
+
+                tasks.sort(
+                    (a, b) =>
+                        Number(a.targetAt?.seconds ?? Infinity) -
+                        Number(b.targetAt?.seconds ?? Infinity),
+                );
+
+                return {
+                    data: { tasks },
+                    isLocalOperation: true,
+                };
+            }
+
+            // Try server
             try {
                 const result = await orpc.task.listActive();
+                if (!result.error) {
+                    // Sync to local
+                    await syncTasksToLocal(result.tasks as SerializableTask[]);
+                }
                 return {
                     data: { tasks: result.tasks as SerializableTask[] },
                     isLocalOperation: false,
@@ -178,6 +538,29 @@ function createServerTaskService(): TaskService {
                         sessionInvalid: true,
                     };
                 }
+
+                // Network error - get from local
+                if (isNetworkError(err)) {
+                    const db = getTaskDB();
+                    if (db) {
+                        const tasks = await db.tasks
+                            .where("taskStatus")
+                            .equals(TaskStatus.ACTIVE)
+                            .toArray();
+
+                        tasks.sort(
+                            (a, b) =>
+                                Number(a.targetAt?.seconds ?? Infinity) -
+                                Number(b.targetAt?.seconds ?? Infinity),
+                        );
+
+                        return {
+                            data: { tasks },
+                            isLocalOperation: true,
+                        };
+                    }
+                }
+
                 return {
                     data: { tasks: [] },
                     isLocalOperation: false,
@@ -192,8 +575,8 @@ function createLocalTaskService(): TaskService {
     return {
         async create(input) {
             try {
-                const db = getTaskDB();
-                if (!db) {
+                const result = await storeTaskLocally(input);
+                if (!result) {
                     return {
                         data: { taskId: "" },
                         isLocalOperation: true,
@@ -201,45 +584,8 @@ function createLocalTaskService(): TaskService {
                     };
                 }
 
-                const targetAt = calculateTargetAt(
-                    input.taskType,
-                    input.scheduledAt,
-                );
-
-                const now = new Date().toISOString();
-                const localTask: LocalTask = {
-                    taskId: input.taskId,
-                    taskType: input.taskType,
-                    taskStatus: TaskStatus.ACTIVE,
-                    title: "",
-                    description: "",
-                    color: input.color,
-                    scheduledAt: input.scheduledAt
-                        ? {
-                              seconds: Math.floor(
-                                  new Date(input.scheduledAt).getTime() / 1000,
-                              ).toString(),
-                          }
-                        : undefined,
-                    targetAt: targetAt
-                        ? {
-                              seconds: Math.floor(
-                                  targetAt.getTime() / 1000,
-                              ).toString(),
-                          }
-                        : undefined,
-                    createdAt: {
-                        seconds: Math.floor(Date.now() / 1000).toString(),
-                    },
-                    _localCreatedAt: now,
-                    _localUpdatedAt: now,
-                    _syncStatus: "pending",
-                };
-
-                await db.tasks.add(localTask);
-
                 return {
-                    data: { taskId: localTask.taskId },
+                    data: { taskId: result.taskId },
                     isLocalOperation: true,
                 };
             } catch (err) {
@@ -280,17 +626,8 @@ function createLocalTaskService(): TaskService {
 
         async update(input) {
             try {
-                const db = getTaskDB();
-                if (!db) {
-                    return {
-                        data: { taskId: "" },
-                        isLocalOperation: true,
-                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
-                    };
-                }
-
-                const existing = await db.tasks.get(input.taskId);
-                if (!existing) {
+                const result = await updateTaskLocally(input);
+                if (!result) {
                     return {
                         data: { taskId: "" },
                         isLocalOperation: true,
@@ -298,41 +635,8 @@ function createLocalTaskService(): TaskService {
                     };
                 }
 
-                const updates: Partial<LocalTask> = {
-                    _localUpdatedAt: new Date().toISOString(),
-                    _syncStatus: "pending",
-                };
-
-                // Apply updates based on updateMask
-                for (const field of input.updateMask) {
-                    switch (field) {
-                        case "title":
-                            if (input.title !== undefined) {
-                                updates.title = input.title;
-                            }
-                            break;
-                        case "description":
-                            if (input.description !== undefined) {
-                                updates.description = input.description;
-                            }
-                            break;
-                        case "task_status":
-                            if (input.taskStatus !== undefined) {
-                                updates.taskStatus = input.taskStatus;
-                            }
-                            break;
-                        case "color":
-                            if (input.color !== undefined) {
-                                updates.color = input.color;
-                            }
-                            break;
-                    }
-                }
-
-                await db.tasks.update(input.taskId, updates);
-
                 return {
-                    data: { taskId: input.taskId },
+                    data: { taskId: result.taskId },
                     isLocalOperation: true,
                 };
             } catch (err) {
@@ -347,16 +651,7 @@ function createLocalTaskService(): TaskService {
 
         async delete(taskId) {
             try {
-                const db = getTaskDB();
-                if (!db) {
-                    return {
-                        data: { success: false },
-                        isLocalOperation: true,
-                        error: ERROR_CODES.DEVICE_STORAGE_UNAVAILABLE,
-                    };
-                }
-
-                await db.tasks.delete(taskId);
+                await deleteTaskLocally(taskId);
                 return {
                     data: { success: true },
                     isLocalOperation: true,

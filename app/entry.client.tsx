@@ -2,10 +2,14 @@ import { StrictMode, startTransition } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { I18nextProvider } from "react-i18next";
 import { HydratedRouter } from "react-router/dom";
+import { initializeAutoSync } from "~/features/task/store/sync-service";
 import { initI18next } from "~/lib/i18n/i18next.client";
 
 async function main() {
     const i18n = await initI18next();
+
+    // Initialize auto-sync for offline operations
+    initializeAutoSync();
 
     startTransition(() => {
         hydrateRoot(

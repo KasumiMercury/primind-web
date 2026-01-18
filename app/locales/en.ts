@@ -149,6 +149,17 @@ export default {
         },
     },
 
+    // Offline Mode
+    offline: {
+        title: "Offline Mode",
+        description:
+            "No internet connection. Your changes will be saved and synced when you're back online.",
+        syncing: "Syncing...",
+        syncComplete: "Sync complete",
+        syncFailed: "Sync failed",
+        pendingOperations: "{{count}} pending operation(s)",
+    },
+
     // Title Presets
     titlePresets: {
         label: "Quick fill",

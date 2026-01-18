@@ -1,16 +1,25 @@
 import Dexie, { type EntityTable } from "dexie";
-import type { LocalTask } from "./types";
+import type { LocalTask, QueuedOperation } from "./types";
 
 const DB_NAME = "primind-local";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 export class TaskDatabase extends Dexie {
     tasks!: EntityTable<LocalTask, "taskId">;
+    operationQueue!: EntityTable<QueuedOperation, "id">;
 
     constructor() {
         super(DB_NAME);
+
+        // Version 1: Initial schema with tasks
+        this.version(1).stores({
+            tasks: "taskId, taskStatus, taskType, targetAt.seconds",
+        });
+
+        // Version 2: Add operation queue for offline sync
         this.version(DB_VERSION).stores({
             tasks: "taskId, taskStatus, taskType, targetAt.seconds",
+            operationQueue: "id, taskId, operationType, createdAt",
         });
     }
 }

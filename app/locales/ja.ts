@@ -149,6 +149,17 @@ export default {
         },
     },
 
+    // Offline Mode
+    offline: {
+        title: "オフラインモード",
+        description:
+            "インターネット接続がありません。変更は保存され、オンライン復帰時に同期されます。",
+        syncing: "同期中...",
+        syncComplete: "同期が完了しました",
+        syncFailed: "同期に失敗しました",
+        pendingOperations: "{{count}}件の保留中の操作があります",
+    },
+
     // Title Presets
     titlePresets: {
         label: "クイック入力",
