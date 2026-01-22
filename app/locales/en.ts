@@ -100,6 +100,24 @@ export default {
         description: "Enable notifications to remind you.",
     },
 
+    // PWA Install Dialog
+    pwaInstall: {
+        title: "Install App",
+        descriptionRequired:
+            "To receive notifications on iOS, you need to install PriMind as an app on your home screen.",
+        descriptionRecommended:
+            "Install PriMind for the best experience. Get quick access from your home screen and receive notifications.",
+        installButton: "Install App",
+        installing: "Installing...",
+        iosInstalled: "I've installed it",
+        iosInstructions: {
+            title: "How to install:",
+            step1: "Tap the Share button in Safari",
+            step2: 'Scroll down and tap "Add to Home Screen"',
+            step3: 'Tap "Add" to confirm',
+        },
+    },
+
     // Session Invalid Dialog
     session: {
         invalid: {
