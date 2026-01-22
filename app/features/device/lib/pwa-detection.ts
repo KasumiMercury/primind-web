@@ -54,7 +54,10 @@ export function isStandalone(): boolean {
     }
 
     // iOS Safari standalone mode
-    if ("standalone" in navigator && (navigator as Navigator & { standalone?: boolean }).standalone === true) {
+    if (
+        "standalone" in navigator &&
+        (navigator as Navigator & { standalone?: boolean }).standalone === true
+    ) {
         return true;
     }
 
