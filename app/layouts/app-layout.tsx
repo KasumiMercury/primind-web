@@ -12,11 +12,18 @@ import {
 } from "~/features/auth/server/session.server";
 import { validateSession } from "~/features/auth/server/validate-session.server";
 import { NotificationPermissionDialog } from "~/features/device/components/notification-permission-dialog";
+import { PwaInstallDialog } from "~/features/device/components/pwa-install-dialog";
 import { useDeviceRegistration } from "~/features/device/hooks/use-device-registration";
+import { usePwaInstall } from "~/features/device/hooks/use-pwa-install";
 import { ERROR_CODES, showErrorToast } from "~/lib/errors";
 import { orpc } from "~/orpc/client";
 import { type AuthState, authStateAtom } from "~/store/auth";
 import type { Route } from "./+types/app-layout";
+
+function PwaInstallInit() {
+    usePwaInstall();
+    return null;
+}
 
 function DeviceRegistration() {
     useDeviceRegistration();
@@ -96,6 +103,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
     return (
         <Provider>
             <AuthHydrator authState={authState}>
+                <PwaInstallInit />
                 <DeviceRegistration />
                 <Header
                     onLoginClick={() => setShowLoginDialog(true)}
@@ -111,6 +119,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
                     open={showLoginDialog}
                     onOpenChange={setShowLoginDialog}
                 />
+                <PwaInstallDialog />
                 <NotificationPermissionDialog />
                 <SessionInvalidDialog />
             </AuthHydrator>
