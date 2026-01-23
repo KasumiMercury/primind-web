@@ -1,3 +1,4 @@
+import { Provider } from "jotai";
 import { useTranslation } from "react-i18next";
 import {
     data,
@@ -11,7 +12,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import logo from "./components/header/logo.svg";
+import { Header } from "./components/header/header";
 import { RouterProvider } from "./components/router-provider";
 import { ThemeColorMeta } from "./components/theme-color-meta";
 import { ThemeProvider } from "./components/theme-provider";
@@ -114,25 +115,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         stack = error.stack;
     }
 
+    // No-op handlers for error page - login/logout not functional here
+    const noop = () => {};
+
     return (
-        <>
-            <header className="w-full border-border border-b">
-                <div className="grid grid-cols-3 items-center px-4 py-3">
-                    <div className="flex items-center justify-start">
-                        <a href="/">
-                            <span className="sr-only">PriMind Home</span>
-                            <img
-                                src={logo}
-                                className="h-auto max-h-5 w-auto max-w-full sm:max-h-7"
-                                aria-hidden="true"
-                                alt="logo"
-                            />
-                        </a>
-                    </div>
-                    <div />
-                    <div />
-                </div>
-            </header>
+        <Provider>
+            <Header onLoginClick={noop} onLogout={noop} />
             <main className="container mx-auto flex flex-col items-center p-4 pt-16">
                 <h1 className="font-bold text-6xl">{message}</h1>
                 <p className="mt-4 text-muted-foreground">{details}</p>
@@ -145,6 +133,6 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
                     </pre>
                 )}
             </main>
-        </>
+        </Provider>
     );
 }
