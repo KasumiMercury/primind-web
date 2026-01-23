@@ -109,6 +109,25 @@
     --task-scheduled: oklch(0.78 0.14 90);
 }
 
+/* Sheet animations (React Aria compatible) */
+@keyframes sheet-overlay-fade {
+    from {
+        background: rgba(0 0 0 / 0);
+    }
+    to {
+        background: rgba(0 0 0 / 0.5);
+    }
+}
+
+@keyframes sheet-slide {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
 .dark {
     --radius: 0.5rem;
 
