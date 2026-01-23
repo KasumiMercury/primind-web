@@ -65,9 +65,9 @@ function DialogContent({
             <Modal
                 data-slot="dialog-content"
                 className={cn(
-                    "fixed left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 sm:max-w-lg overscroll-contain",
+                    "fixed left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] gap-4 overscroll-contain rounded-lg border bg-background p-6 shadow-lg duration-200 sm:max-w-lg",
                     align === "center" && "top-[50%] translate-y-[-50%]",
-                    align === "top" && "top-6 sm:top-[10%] translate-y-0",
+                    align === "top" && "top-6 translate-y-0 sm:top-[10%]",
                     "data-entering:fade-in-0 data-entering:zoom-in-95 data-entering:animate-in",
                     "data-exiting:fade-out-0 data-exiting:zoom-out-95 data-exiting:animate-out",
                     className,
