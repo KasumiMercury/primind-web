@@ -1,10 +1,9 @@
 import { Provider } from "jotai";
 import { useTranslation } from "react-i18next";
 import { data } from "react-router";
-
-import type { Route } from "./+types/$";
 import { ErrorPage } from "~/components/error-page";
 import { Header } from "~/components/header/header";
+import type { Route } from "./+types/$";
 
 export function meta(): Route.MetaDescriptors {
     return [{ title: "404 | PriMind" }];
