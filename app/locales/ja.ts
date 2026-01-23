@@ -202,6 +202,18 @@ export default {
             description:
                 "このブラウザには対応しておりません。別のブラウザをお試しください。",
         },
+        taskNotFound: {
+            title: "タスクが見つかりません",
+            subtitle: "以下の理由が考えられます：",
+            reasons: {
+                completed: "タスクがすでに完了済み",
+                deleted: "タスクが削除された",
+            },
+            loginPrompt: {
+                title: "ログイン時に作成したタスクをお探しですか？",
+                description: "ログインすると同期済みのタスクを表示できます。",
+            },
+        },
     },
 
     errors: {

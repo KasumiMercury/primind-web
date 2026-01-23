@@ -202,6 +202,18 @@ export default {
             description:
                 "This browser is not supported. Please try using a different browser.",
         },
+        taskNotFound: {
+            title: "Task Not Found",
+            subtitle: "This could have happened because:",
+            reasons: {
+                completed: "The task may have been completed",
+                deleted: "The task may have been deleted",
+            },
+            loginPrompt: {
+                title: "Looking for a task you created while logged in?",
+                description: "Log in to view your synced tasks.",
+            },
+        },
     },
 
     errors: {
