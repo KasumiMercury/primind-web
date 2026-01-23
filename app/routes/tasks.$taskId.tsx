@@ -11,7 +11,15 @@ import { useHomeShellContext } from "~/layouts/home-shell";
 import type { Route } from "./+types/tasks.$taskId";
 
 export function meta({ loaderData, error }: Route.MetaArgs) {
+    // Handle ErrorResponse from loaders
     if (isRouteErrorResponse(error) && error.status === 404) {
+        return [
+            { title: "Task Not Found | PriMind" },
+            { name: "description", content: "Task not found" },
+        ];
+    }
+    // Handle raw Response thrown from render path
+    if (error instanceof Response && error.status === 404) {
         return [
             { title: "Task Not Found | PriMind" },
             { name: "description", content: "Task not found" },
@@ -152,6 +160,7 @@ export default function TaskDetailRoute({ loaderData }: Route.ComponentProps) {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+    // Handle ErrorResponse from loaders (has parsed data)
     if (isRouteErrorResponse(error) && error.status === 404) {
         const isAuthenticated =
             typeof error.data?.isAuthenticated === "boolean"
@@ -159,6 +168,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
                 : false;
 
         return <TaskNotFoundErrorPage isAuthenticated={isAuthenticated} />;
+    }
+
+    // Handle raw Response thrown from render path
+    if (error instanceof Response && error.status === 404) {
+        // Response body is async to parse, default to unauthenticated
+        return <TaskNotFoundErrorPage isAuthenticated={false} />;
     }
 
     throw error;
