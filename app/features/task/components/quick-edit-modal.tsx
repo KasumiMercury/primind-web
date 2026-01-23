@@ -99,6 +99,7 @@ export function QuickEditModal({
             isOpen={isOpen}
             onOpenChange={handleOpenChange}
             isDismissable={!isDirty}
+            align="top"
             className="max-h-[85vh] overflow-y-auto"
         >
             <DialogHeader className="mb-2 border-b pb-4">
