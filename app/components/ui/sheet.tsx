@@ -95,9 +95,9 @@ function SheetContent({
                                 <Button
                                     onPress={close}
                                     data-slot="sheet-close"
-                                    className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity data-hovered:opacity-100 data-focus-visible:outline-hidden data-focus-visible:ring-2 data-focus-visible:ring-ring data-focus-visible:ring-offset-2 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0"
+                                    className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-md opacity-70 ring-offset-background transition-opacity data-hovered:bg-sidebar-accent data-hovered:opacity-100 data-focus-visible:outline-hidden data-focus-visible:ring-2 data-focus-visible:ring-ring data-focus-visible:ring-offset-2 [&_svg]:pointer-events-none [&_svg]:shrink-0"
                                 >
-                                    <XIcon />
+                                    <XIcon className="size-6" />
                                     <span className="sr-only">
                                         {t("menu.close")}
                                     </span>
