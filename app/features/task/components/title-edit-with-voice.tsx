@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useVoiceInputWithHistory } from "../hooks/use-voice-input-with-history";
 import type { TitlePreset } from "../lib/title-presets";
 import { TitleEdit } from "./title-edit";
@@ -21,8 +22,14 @@ export function TitleEditWithVoice({
     className,
     customPresets,
 }: TitleEditWithVoiceProps) {
+    const focusInputRef = useRef<(() => void) | null>(null);
+
     const { handleChange, voiceInput, canRevert, handleRevert } =
-        useVoiceInputWithHistory({ value, onChange });
+        useVoiceInputWithHistory({
+            value,
+            onChange,
+            onVoiceInputComplete: () => focusInputRef.current?.(),
+        });
 
     return (
         <TitleEdit
@@ -36,6 +43,7 @@ export function TitleEditWithVoice({
             voiceInput={voiceInput}
             canRevert={canRevert}
             onRevert={handleRevert}
+            focusInputRef={focusInputRef}
         />
     );
 }

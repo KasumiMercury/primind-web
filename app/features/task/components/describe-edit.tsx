@@ -1,5 +1,5 @@
 import { Undo2 } from "lucide-react";
-import type { ChangeEvent } from "react";
+import { type ChangeEvent, type RefObject, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
@@ -17,6 +17,7 @@ export interface DescribeEditProps {
     voiceInput?: VoiceInputProps;
     canRevert?: boolean;
     onRevert?: () => void;
+    focusInputRef?: RefObject<(() => void) | null>;
 }
 
 export function DescribeEdit({
@@ -29,8 +30,16 @@ export function DescribeEdit({
     voiceInput,
     canRevert = false,
     onRevert,
+    focusInputRef,
 }: DescribeEditProps) {
     const { t } = useTranslation();
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        if (focusInputRef) {
+            focusInputRef.current = () => textareaRef.current?.focus();
+        }
+    }, [focusInputRef]);
 
     const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         onChange(e.target.value);
@@ -53,6 +62,7 @@ export function DescribeEdit({
         <div className={cn("flex flex-col gap-2", className)}>
             {/* Main Textarea */}
             <Textarea
+                ref={textareaRef}
                 value={value}
                 onChange={handleTextareaChange}
                 placeholder={placeholder}

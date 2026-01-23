@@ -1,3 +1,4 @@
+import type { Ref } from "react";
 import {
     TextArea as AriaTextArea,
     type TextAreaProps,
@@ -5,9 +6,14 @@ import {
 
 import { cn } from "~/lib/utils";
 
-function Textarea({ className, ...props }: TextAreaProps) {
+interface TextareaPropsWithRef extends TextAreaProps {
+    ref?: Ref<HTMLTextAreaElement>;
+}
+
+function Textarea({ className, ref, ...props }: TextareaPropsWithRef) {
     return (
         <AriaTextArea
+            ref={ref}
             data-slot="textarea"
             className={cn(
                 "field-sizing-content flex min-h-16 w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground md:text-sm dark:bg-input/30",

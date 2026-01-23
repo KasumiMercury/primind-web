@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useVoiceInputWithHistory } from "../hooks/use-voice-input-with-history";
 import { DescribeEdit } from "./describe-edit";
 
@@ -18,8 +19,14 @@ export function DescribeEditWithVoice({
     autoFocus = false,
     className,
 }: DescribeEditWithVoiceProps) {
+    const focusInputRef = useRef<(() => void) | null>(null);
+
     const { handleChange, voiceInput, canRevert, handleRevert } =
-        useVoiceInputWithHistory({ value, onChange });
+        useVoiceInputWithHistory({
+            value,
+            onChange,
+            onVoiceInputComplete: () => focusInputRef.current?.(),
+        });
 
     return (
         <DescribeEdit
@@ -32,6 +39,7 @@ export function DescribeEditWithVoice({
             voiceInput={voiceInput}
             canRevert={canRevert}
             onRevert={handleRevert}
+            focusInputRef={focusInputRef}
         />
     );
 }

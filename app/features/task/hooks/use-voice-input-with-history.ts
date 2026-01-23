@@ -5,6 +5,7 @@ import { useSpeechRecognition } from "./use-speech-recognition";
 export interface UseVoiceInputWithHistoryOptions {
     value: string;
     onChange: (value: string) => void;
+    onVoiceInputComplete?: () => void;
 }
 
 export interface UseVoiceInputWithHistoryReturn {
@@ -17,6 +18,7 @@ export interface UseVoiceInputWithHistoryReturn {
 export function useVoiceInputWithHistory({
     value,
     onChange,
+    onVoiceInputComplete,
 }: UseVoiceInputWithHistoryOptions): UseVoiceInputWithHistoryReturn {
     const voiceHistoryRef = useRef<string[]>([]);
     const [canRevert, setCanRevert] = useState(false);
@@ -33,6 +35,7 @@ export function useVoiceInputWithHistory({
 
         const newValue = value ? `${value} ${transcript}` : transcript;
         onChange(newValue);
+        onVoiceInputComplete?.();
     };
 
     const handleRevert = () => {
