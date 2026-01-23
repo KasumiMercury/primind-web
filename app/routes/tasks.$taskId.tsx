@@ -11,7 +11,7 @@ import { useHomeShellContext } from "~/layouts/home-shell";
 import type { Route } from "./+types/tasks.$taskId";
 
 export function meta({ loaderData, error }: Route.MetaArgs) {
-    if (error) {
+    if (isRouteErrorResponse(error) && error.status === 404) {
         return [
             { title: "Task Not Found | PriMind" },
             { name: "description", content: "Task not found" },
