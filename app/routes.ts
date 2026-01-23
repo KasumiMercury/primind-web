@@ -32,4 +32,6 @@ export default [
     route("/callback/google", "features/auth/oidc/callback.google.tsx"),
 
     ...apiRoutes,
+
+    route("*", "routes/$.tsx"),
 ] satisfies RouteConfig;

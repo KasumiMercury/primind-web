@@ -1,5 +1,4 @@
 import { Provider } from "jotai";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
     data,
@@ -13,12 +12,12 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { ErrorPage } from "./components/error-page";
 import { Header } from "./components/header/header";
 import { RouterProvider } from "./components/router-provider";
 import { ThemeColorMeta } from "./components/theme-color-meta";
 import { ThemeProvider } from "./components/theme-provider";
 import { AppToaster } from "./components/ui/app-toaster";
-import { buttonVariants } from "./components/ui/button";
 import { getLocale, localeCookie } from "./lib/i18n/i18next.server";
 
 export const links: Route.LinksFunction = () => [
@@ -101,45 +100,28 @@ export default function App() {
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     const { t } = useTranslation();
 
-    let message: string = t("error.oops");
-    let details: string = t("error.unexpected");
+    let title: string = t("error.oops");
+    let description: string = t("error.unexpected");
     let stack: string | undefined;
 
     if (isRouteErrorResponse(error)) {
-        message = error.status === 404 ? t("error.notFound") : t("auth.error");
-        details =
+        title = error.status === 404 ? t("error.notFound") : t("auth.error");
+        description =
             error.status === 404
                 ? t("error.pageNotFound")
-                : error.statusText || details;
+                : error.statusText || description;
     } else if (import.meta.env.DEV && error && error instanceof Error) {
-        details = error.message;
+        description = error.message;
         stack = error.stack;
     }
 
     // No-op handlers for error page - login/logout not functional here
     const noop = () => {};
 
-    const pageTitle = `${message} | PriMind`;
-
-    useEffect(() => {
-        document.title = pageTitle;
-    }, [pageTitle]);
-
     return (
         <Provider>
             <Header onLoginClick={noop} onLogout={noop} />
-            <main className="container mx-auto flex flex-col items-center p-4 pt-16">
-                <h1 className="font-bold text-6xl">{message}</h1>
-                <p className="mt-4 text-muted-foreground">{details}</p>
-                <a href="/" className={buttonVariants({ className: "mt-8" })}>
-                    {t("error.goHome")}
-                </a>
-                {stack && (
-                    <pre className="mt-8 w-full overflow-x-auto p-4">
-                        <code>{stack}</code>
-                    </pre>
-                )}
-            </main>
+            <ErrorPage title={title} description={description} stack={stack} />
         </Provider>
     );
 }
