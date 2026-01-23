@@ -73,17 +73,17 @@ function SheetContent({
             {...controlledProps}
             isDismissable={isDismissable}
             className={cn(
-                "fixed inset-0 z-50 bg-black/50",
-                "data-entering:fade-in-0 data-entering:animate-in",
-                "data-exiting:fade-out-0 data-exiting:animate-out",
+                "fixed inset-0 z-50 backdrop-blur-xs",
+                "data-entering:fade-in-0 data-entering:animate-in data-entering:duration-300",
+                "data-exiting:fade-out-0 data-exiting:animate-out data-exiting:duration-300",
             )}
         >
             <Modal
                 data-slot="sheet-content"
                 className={cn(
-                    "fixed inset-y-0 right-0 z-50 flex h-full w-80 flex-col border-sidebar-border border-l bg-sidebar shadow-lg duration-300",
-                    "data-entering:slide-in-from-right data-entering:animate-in",
-                    "data-exiting:slide-out-to-right data-exiting:animate-out",
+                    "fixed inset-y-0 right-0 z-50 flex h-full w-80 flex-col border-sidebar-border border-l bg-sidebar shadow-lg",
+                    "[&[data-entering]]:animate-[sheet-slide_300ms]",
+                    "[&[data-exiting]]:animate-[sheet-slide_300ms_reverse_ease-in]",
                     className,
                 )}
             >
