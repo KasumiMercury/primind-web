@@ -91,7 +91,7 @@ export function TaskDetailModal({
             if (hasPendingCallback) {
                 interruptConfetti();
             } else {
-                navigate("/", { replace: true, preventScrollReset: true });
+                navigate("/", { preventScrollReset: true });
             }
         }
     };
