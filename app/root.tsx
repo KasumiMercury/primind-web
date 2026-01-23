@@ -1,4 +1,3 @@
-import { Provider } from "jotai";
 import { useTranslation } from "react-i18next";
 import {
     data,
@@ -13,11 +12,11 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { ErrorPage } from "./components/error-page";
-import { Header } from "./components/header/header";
 import { RouterProvider } from "./components/router-provider";
 import { ThemeColorMeta } from "./components/theme-color-meta";
 import { ThemeProvider } from "./components/theme-provider";
 import { AppToaster } from "./components/ui/app-toaster";
+import ErrorLayout from "./layouts/error-layout";
 import { getLocale, localeCookie } from "./lib/i18n/i18next.server";
 
 export const links: Route.LinksFunction = () => [
@@ -115,13 +114,9 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         stack = error.stack;
     }
 
-    // No-op handlers for error page - login/logout not functional here
-    const noop = () => {};
-
     return (
-        <Provider>
-            <Header onLoginClick={noop} onLogout={noop} />
+        <ErrorLayout>
             <ErrorPage title={title} description={description} stack={stack} />
-        </Provider>
+        </ErrorLayout>
     );
 }

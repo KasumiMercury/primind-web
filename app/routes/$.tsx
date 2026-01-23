@@ -1,8 +1,6 @@
-import { Provider } from "jotai";
 import { useTranslation } from "react-i18next";
 import { data } from "react-router";
 import { ErrorPage } from "~/components/error-page";
-import { Header } from "~/components/header/header";
 import type { Route } from "./+types/$";
 
 export function meta(): Route.MetaDescriptors {
@@ -16,16 +14,10 @@ export function loader(): never {
 export function ErrorBoundary() {
     const { t } = useTranslation();
 
-    // No-op handlers for error page - login/logout not functional here
-    const noop = () => {};
-
     return (
-        <Provider>
-            <Header onLoginClick={noop} onLogout={noop} />
-            <ErrorPage
-                title={t("error.notFound")}
-                description={t("error.pageNotFound")}
-            />
-        </Provider>
+        <ErrorPage
+            title={t("error.notFound")}
+            description={t("error.pageNotFound")}
+        />
     );
 }
