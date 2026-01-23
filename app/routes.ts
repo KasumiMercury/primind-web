@@ -33,5 +33,5 @@ export default [
 
     ...apiRoutes,
 
-    route("*", "routes/$.tsx"),
+    layout("layouts/error-layout.tsx", [route("*", "routes/$.tsx")]),
 ] satisfies RouteConfig;
