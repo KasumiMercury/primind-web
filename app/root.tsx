@@ -1,3 +1,4 @@
+import { Provider } from "jotai";
 import { useTranslation } from "react-i18next";
 import {
     data,
@@ -11,6 +12,8 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import { ErrorPage } from "./components/error-page";
+import { Header } from "./components/header/header";
 import { RouterProvider } from "./components/router-provider";
 import { ThemeColorMeta } from "./components/theme-color-meta";
 import { ThemeProvider } from "./components/theme-provider";
@@ -97,30 +100,28 @@ export default function App() {
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     const { t } = useTranslation();
 
-    let message: string = t("error.oops");
-    let details: string = t("error.unexpected");
+    let title: string = t("error.oops");
+    let description: string = t("error.unexpected");
     let stack: string | undefined;
 
     if (isRouteErrorResponse(error)) {
-        message = error.status === 404 ? t("error.notFound") : t("auth.error");
-        details =
+        title = error.status === 404 ? t("error.notFound") : t("auth.error");
+        description =
             error.status === 404
                 ? t("error.pageNotFound")
-                : error.statusText || details;
+                : error.statusText || description;
     } else if (import.meta.env.DEV && error && error instanceof Error) {
-        details = error.message;
+        description = error.message;
         stack = error.stack;
     }
 
+    // No-op handlers for error page - login/logout not functional here
+    const noop = () => {};
+
     return (
-        <main className="container mx-auto p-4 pt-16">
-            <h1>{message}</h1>
-            <p>{details}</p>
-            {stack && (
-                <pre className="w-full overflow-x-auto p-4">
-                    <code>{stack}</code>
-                </pre>
-            )}
-        </main>
+        <Provider>
+            <Header onLoginClick={noop} onLogout={noop} />
+            <ErrorPage title={title} description={description} stack={stack} />
+        </Provider>
     );
 }

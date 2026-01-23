@@ -193,6 +193,7 @@ export default {
         unexpected: "予期せぬエラーが発生しました。",
         notFound: "404",
         pageNotFound: "お探しのページは見つかりませんでした。",
+        goHome: "トップに戻る",
         failedToLogout: "ログアウトに失敗しました。もう一度お試しください。",
         failedToLogin: "ログインの開始に失敗しました",
         authFailed: "認証に失敗しました",
@@ -200,6 +201,18 @@ export default {
             title: "非対応のブラウザ",
             description:
                 "このブラウザには対応しておりません。別のブラウザをお試しください。",
+        },
+        taskNotFound: {
+            title: "タスクが見つかりません",
+            subtitle: "以下の理由が考えられます：",
+            reasons: {
+                completed: "タスクがすでに完了済み",
+                deleted: "タスクが削除された",
+            },
+            loginPrompt: {
+                title: "ログイン時に作成したタスクをお探しですか？",
+                description: "ログインすると同期済みのタスクを表示できます。",
+            },
         },
     },
 

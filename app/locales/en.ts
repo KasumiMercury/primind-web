@@ -193,6 +193,7 @@ export default {
         unexpected: "An unexpected error occurred.",
         notFound: "404",
         pageNotFound: "The requested page could not be found.",
+        goHome: "Go to Home",
         failedToLogout: "Failed to log out. Please try again.",
         failedToLogin: "Failed to initiate login",
         authFailed: "Authentication Failed",
@@ -200,6 +201,18 @@ export default {
             title: "Browser Not Supported",
             description:
                 "This browser is not supported. Please try using a different browser.",
+        },
+        taskNotFound: {
+            title: "Task Not Found",
+            subtitle: "This could have happened because:",
+            reasons: {
+                completed: "The task may have been completed",
+                deleted: "The task may have been deleted",
+            },
+            loginPrompt: {
+                title: "Looking for a task you created while logged in?",
+                description: "Log in to view your synced tasks.",
+            },
         },
     },
 
