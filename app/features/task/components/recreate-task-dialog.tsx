@@ -25,6 +25,8 @@ interface RecreateTaskDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     task: SerializableTask;
+    currentTitle: string;
+    currentDescription: string;
     onRecreateComplete: () => void;
     onCancel: () => void;
 }
@@ -48,6 +50,8 @@ export function RecreateTaskDialog({
     open,
     onOpenChange,
     task,
+    currentTitle,
+    currentDescription,
     onRecreateComplete,
     onCancel,
 }: RecreateTaskDialogProps) {
@@ -142,8 +146,8 @@ export function RecreateTaskDialog({
                 // Update title and description
                 const updateResult = await taskService.update({
                     taskId: newTaskId,
-                    title: task.title,
-                    description: task.description,
+                    title: currentTitle,
+                    description: currentDescription,
                     updateMask: ["title", "description"],
                 });
 
@@ -198,8 +202,8 @@ export function RecreateTaskDialog({
 
                     {step === "confirm" && selectedTaskType && (
                         <RecreateConfirmContent
-                            title={task.title}
-                            description={task.description}
+                            title={currentTitle}
+                            description={currentDescription}
                             newTaskType={selectedTaskType}
                             taskColor={task.color}
                             scheduledAt={scheduledAt ?? undefined}
