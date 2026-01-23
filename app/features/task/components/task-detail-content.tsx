@@ -361,7 +361,7 @@ export function TaskDetailContent({
                             onChange={setEditingValue}
                             placeholder={t("taskDetail.enterTitle")}
                             isDisabled={isSaving}
-                            autoFocus
+                            autoFocus={false}
                         />
                     ) : (
                         <DescribeEdit

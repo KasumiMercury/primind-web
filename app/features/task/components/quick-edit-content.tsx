@@ -226,7 +226,7 @@ export function QuickEditContent({
                             onChange={setEditingValue}
                             placeholder={t("taskDetail.enterTitle")}
                             isDisabled={isSaving}
-                            autoFocus
+                            autoFocus={false}
                         />
                     ) : (
                         <DescribeEditWithVoice

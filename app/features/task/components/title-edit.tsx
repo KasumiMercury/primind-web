@@ -1,6 +1,6 @@
 import type { ParseKeys } from "i18next";
 import { Undo2 } from "lucide-react";
-import type { ChangeEvent } from "react";
+import { type ChangeEvent, type RefObject, useEffect, useRef } from "react";
 import { ListBox, ListBoxItem } from "react-aria-components";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +22,7 @@ export interface TitleEditProps {
     voiceInput?: VoiceInputProps;
     canRevert?: boolean;
     onRevert?: () => void;
+    focusInputRef?: RefObject<(() => void) | null>;
 }
 
 export function TitleEdit({
@@ -35,9 +36,17 @@ export function TitleEdit({
     voiceInput,
     canRevert = false,
     onRevert,
+    focusInputRef,
 }: TitleEditProps) {
     const { t } = useTranslation();
     const presets = getAllTitlePresets(customPresets);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (focusInputRef) {
+            focusInputRef.current = () => inputRef.current?.focus();
+        }
+    }, [focusInputRef]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         onChange(e.target.value);
@@ -46,6 +55,7 @@ export function TitleEdit({
     const handlePresetSelect = (preset: TitlePreset) => {
         const translatedValue = t(preset.labelKey as ParseKeys);
         onChange(translatedValue);
+        inputRef.current?.focus();
     };
 
     const handleVoiceToggle = () => {
@@ -65,6 +75,7 @@ export function TitleEdit({
         <div className={cn("flex flex-col gap-2", className)}>
             {/* Main Input */}
             <Input
+                ref={inputRef}
                 type="text"
                 value={value}
                 onChange={handleInputChange}
