@@ -193,6 +193,7 @@ export default {
         unexpected: "予期せぬエラーが発生しました。",
         notFound: "404",
         pageNotFound: "お探しのページは見つかりませんでした。",
+        goHome: "トップに戻る",
         failedToLogout: "ログアウトに失敗しました。もう一度お試しください。",
         failedToLogin: "ログインの開始に失敗しました",
         authFailed: "認証に失敗しました",

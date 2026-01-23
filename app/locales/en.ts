@@ -193,6 +193,7 @@ export default {
         unexpected: "An unexpected error occurred.",
         notFound: "404",
         pageNotFound: "The requested page could not be found.",
+        goHome: "Go to Home",
         failedToLogout: "Failed to log out. Please try again.",
         failedToLogin: "Failed to initiate login",
         authFailed: "Authentication Failed",

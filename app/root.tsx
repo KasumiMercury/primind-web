@@ -11,10 +11,12 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import logo from "./components/header/logo.svg";
 import { RouterProvider } from "./components/router-provider";
 import { ThemeColorMeta } from "./components/theme-color-meta";
 import { ThemeProvider } from "./components/theme-provider";
 import { AppToaster } from "./components/ui/app-toaster";
+import { buttonVariants } from "./components/ui/button";
 import { getLocale, localeCookie } from "./lib/i18n/i18next.server";
 
 export const links: Route.LinksFunction = () => [
@@ -113,14 +115,36 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     }
 
     return (
-        <main className="container mx-auto p-4 pt-16">
-            <h1>{message}</h1>
-            <p>{details}</p>
-            {stack && (
-                <pre className="w-full overflow-x-auto p-4">
-                    <code>{stack}</code>
-                </pre>
-            )}
-        </main>
+        <>
+            <header className="w-full border-border border-b">
+                <div className="grid grid-cols-3 items-center px-4 py-3">
+                    <div className="flex items-center justify-start">
+                        <a href="/">
+                            <span className="sr-only">PriMind Home</span>
+                            <img
+                                src={logo}
+                                className="h-auto max-h-5 w-auto max-w-full sm:max-h-7"
+                                aria-hidden="true"
+                                alt="logo"
+                            />
+                        </a>
+                    </div>
+                    <div />
+                    <div />
+                </div>
+            </header>
+            <main className="container mx-auto flex flex-col items-center p-4 pt-16">
+                <h1 className="font-bold text-6xl">{message}</h1>
+                <p className="mt-4 text-muted-foreground">{details}</p>
+                <a href="/" className={buttonVariants({ className: "mt-8" })}>
+                    {t("error.goHome")}
+                </a>
+                {stack && (
+                    <pre className="mt-8 w-full overflow-x-auto p-4">
+                        <code>{stack}</code>
+                    </pre>
+                )}
+            </main>
+        </>
     );
 }
