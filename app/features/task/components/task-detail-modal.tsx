@@ -210,6 +210,8 @@ export function TaskDetailModal({
                 open={showRecreateDialog}
                 onOpenChange={setShowRecreateDialog}
                 task={task}
+                currentTitle={lastSavedTitle}
+                currentDescription={lastSavedDescription}
                 onRecreateComplete={handleRecreateComplete}
                 onCancel={handleRecreateCancel}
             />
