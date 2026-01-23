@@ -1,4 +1,5 @@
 import { Provider } from "jotai";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
     data,
@@ -117,6 +118,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
     // No-op handlers for error page - login/logout not functional here
     const noop = () => {};
+
+    const pageTitle = `${message} | PriMind`;
+
+    useEffect(() => {
+        document.title = pageTitle;
+    }, [pageTitle]);
 
     return (
         <Provider>
