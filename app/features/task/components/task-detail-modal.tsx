@@ -173,6 +173,7 @@ export function TaskDetailModal({
                 isOpen={true}
                 onOpenChange={handleOpenChange}
                 isDismissable={!isDirty}
+                align="top"
                 className="max-h-[85vh] overflow-y-auto sm:max-w-lg"
             >
                 <DialogHeader>
