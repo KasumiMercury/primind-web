@@ -33,6 +33,24 @@ export function useSpeechRecognition({
 
     const isSupported = isSpeechRecognitionSupported();
 
+    // Clean up all event handlers and release reference
+    const cleanupRecognition = useCallback(() => {
+        const recognition = recognitionRef.current;
+        if (recognition) {
+            recognition.onresult = null;
+            recognition.onerror = null;
+            recognition.onend = null;
+            recognition.onstart = null;
+            recognition.onaudiostart = null;
+            recognition.onaudioend = null;
+            recognition.onsoundstart = null;
+            recognition.onsoundend = null;
+            recognition.onspeechstart = null;
+            recognition.onspeechend = null;
+            recognitionRef.current = null;
+        }
+    }, []);
+
     const getErrorMessage = useCallback(
         (errorType: string): string => {
             switch (errorType) {
@@ -59,6 +77,7 @@ export function useSpeechRecognition({
 
         if (recognitionRef.current) {
             recognitionRef.current.abort();
+            cleanupRecognition();
         }
 
         const recognition = new SpeechRecognitionCtor();
@@ -83,6 +102,7 @@ export function useSpeechRecognition({
 
         recognition.onend = () => {
             setIsListening(false);
+            cleanupRecognition();
         };
 
         recognitionRef.current = recognition;
@@ -102,12 +122,13 @@ export function useSpeechRecognition({
         onResult,
         onError,
         getErrorMessage,
+        cleanupRecognition,
         t,
     ]);
 
     const stopListening = useCallback(() => {
         if (recognitionRef.current) {
-            recognitionRef.current.stop();
+            recognitionRef.current.abort();
             setIsListening(false);
         }
     }, []);
@@ -120,6 +141,18 @@ export function useSpeechRecognition({
         return () => {
             if (recognitionRef.current) {
                 recognitionRef.current.abort();
+                const recognition = recognitionRef.current;
+                recognition.onresult = null;
+                recognition.onerror = null;
+                recognition.onend = null;
+                recognition.onstart = null;
+                recognition.onaudiostart = null;
+                recognition.onaudioend = null;
+                recognition.onsoundstart = null;
+                recognition.onsoundend = null;
+                recognition.onspeechstart = null;
+                recognition.onspeechend = null;
+                recognitionRef.current = null;
             }
         };
     }, []);
