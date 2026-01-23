@@ -41,7 +41,7 @@ export function TaskTypeSelectList({
                             variant="ghost"
                             className="h-auto justify-start gap-3 px-4 py-3"
                             onPress={() => onSelect(key)}
-                            isDisabled={disabled || isCurrent}
+                            isDisabled={disabled}
                         >
                             <Icon
                                 className={`size-6 ${item.strokeClass} stroke-6`}
