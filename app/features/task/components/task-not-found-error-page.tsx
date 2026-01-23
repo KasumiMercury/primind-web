@@ -16,10 +16,12 @@ export function TaskNotFoundErrorPage({
 
     const reasons = [
         {
+            id: "completed",
             icon: CheckCircle,
             text: t("error.taskNotFound.reasons.completed"),
         },
         {
+            id: "deleted",
             icon: Trash2,
             text: t("error.taskNotFound.reasons.deleted"),
         },
@@ -39,7 +41,7 @@ export function TaskNotFoundErrorPage({
                 <ul className="space-y-3">
                     {reasons.map((reason) => (
                         <li
-                            key={reason.text}
+                            key={reason.id}
                             className="flex items-center gap-3 text-muted-foreground"
                         >
                             <reason.icon className="h-5 w-5 shrink-0" />
