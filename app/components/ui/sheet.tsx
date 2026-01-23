@@ -73,9 +73,9 @@ function SheetContent({
             {...controlledProps}
             isDismissable={isDismissable}
             className={cn(
-                "fixed inset-0 z-50 bg-black/50",
-                "[&[data-entering]]:animate-[sheet-overlay-fade_300ms]",
-                "[&[data-exiting]]:animate-[sheet-overlay-fade_300ms_reverse_ease-in]",
+                "fixed inset-0 z-50 backdrop-blur-xs",
+                "data-entering:fade-in-0 data-entering:animate-in data-entering:duration-300",
+                "data-exiting:fade-out-0 data-exiting:animate-out data-exiting:duration-300",
             )}
         >
             <Modal
