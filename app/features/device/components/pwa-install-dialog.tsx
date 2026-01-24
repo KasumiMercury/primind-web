@@ -15,7 +15,9 @@ export function PwaInstallDialog() {
     const platform = useAtomValue(platformAtom);
     const setDismissed = useSetAtom(pwaInstallDismissedAtom);
     const setNotificationModalOpen = useSetAtom(notificationModalOpenAtom);
-    const installPromptAvailable = useAtomValue(installPromptAvailableAtom);
+    const [installPromptAvailable, setInstallPromptAvailable] = useAtom(
+        installPromptAvailableAtom,
+    );
     const [isInstalling, setIsInstalling] = useState(false);
 
     const proceedToNotificationDialog = () => {
@@ -33,6 +35,8 @@ export function PwaInstallDialog() {
         setIsInstalling(true);
         try {
             const result = await promptInstall();
+            // Reset atom since deferredPrompt has been consumed
+            setInstallPromptAvailable(false);
             if (result === "accepted") {
                 // User installed the app, close dialog
                 setIsOpen(false);
