@@ -100,6 +100,24 @@ export default {
         description: "リマインダー通知を受け取ります。",
     },
 
+    // PWA Install Dialog
+    pwaInstall: {
+        title: "アプリをインストール",
+        descriptionRequired:
+            "iOSで通知を受け取るには、PriMindをホーム画面にインストールする必要があります。",
+        descriptionRecommended:
+            "PriMindをインストールして、最高の体験を。ホーム画面からすぐにアクセスでき、通知も受け取れます。",
+        installButton: "アプリをインストール",
+        installing: "インストール中...",
+        iosInstalled: "インストールしました",
+        iosInstructions: {
+            title: "インストール方法：",
+            step1: "Safariの共有ボタンをタップ",
+            step2: "「ホーム画面に追加」をタップ",
+            step3: "「追加」をタップして確認",
+        },
+    },
+
     // Session Invalid Dialog
     session: {
         invalid: {
