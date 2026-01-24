@@ -148,10 +148,13 @@ export async function promptInstall(): Promise<
     try {
         await deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
         return outcome;
     } catch {
         return "unavailable";
+    } finally {
+        // Always clear deferredPrompt after use (success or error)
+        // The prompt can only be used once per beforeinstallprompt event
+        deferredPrompt = null;
     }
 }
 

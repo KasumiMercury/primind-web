@@ -1,5 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { detectPlatform } from "./pwa-detection";
+import {
+    detectPlatform,
+    isInstallPromptAvailable,
+    promptInstall,
+    setupInstallPromptListener,
+} from "./pwa-detection";
 
 describe("detectPlatform", () => {
     beforeEach(() => {
@@ -172,5 +177,122 @@ describe("detectPlatform", () => {
             });
             expect(detectPlatform()).toBe("other");
         });
+    });
+});
+
+describe("promptInstall", () => {
+    type EventHandler = (e: unknown) => void;
+
+    function setupWindowMockWithEventCapture(): { getHandler: () => EventHandler | null } {
+        let capturedHandler: EventHandler | null = null;
+        vi.stubGlobal("window", {
+            addEventListener: vi.fn((event: string, handler: EventHandler) => {
+                if (event === "beforeinstallprompt") {
+                    capturedHandler = handler;
+                }
+            }),
+            removeEventListener: vi.fn(),
+        });
+        return {
+            getHandler: () => capturedHandler,
+        };
+    }
+
+    beforeEach(() => {
+        vi.stubGlobal("navigator", {
+            userAgent:
+                "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36",
+            maxTouchPoints: 5,
+        });
+        vi.stubGlobal("window", {
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+        });
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    it("returns unavailable when no deferred prompt exists", async () => {
+        const result = await promptInstall();
+        expect(result).toBe("unavailable");
+    });
+
+    it("returns accepted when user accepts install", async () => {
+        const mockPrompt = vi.fn().mockResolvedValue(undefined);
+        const mockEvent = {
+            preventDefault: vi.fn(),
+            prompt: mockPrompt,
+            userChoice: Promise.resolve({ outcome: "accepted", platform: "" }),
+        };
+
+        const { getHandler } = setupWindowMockWithEventCapture();
+        setupInstallPromptListener();
+        getHandler()?.(mockEvent);
+
+        expect(isInstallPromptAvailable()).toBe(true);
+
+        const result = await promptInstall();
+        expect(result).toBe("accepted");
+        expect(mockPrompt).toHaveBeenCalled();
+        expect(isInstallPromptAvailable()).toBe(false);
+    });
+
+    it("returns dismissed when user dismisses install", async () => {
+        const mockPrompt = vi.fn().mockResolvedValue(undefined);
+        const mockEvent = {
+            preventDefault: vi.fn(),
+            prompt: mockPrompt,
+            userChoice: Promise.resolve({ outcome: "dismissed", platform: "" }),
+        };
+
+        const { getHandler } = setupWindowMockWithEventCapture();
+        setupInstallPromptListener();
+        getHandler()?.(mockEvent);
+
+        const result = await promptInstall();
+        expect(result).toBe("dismissed");
+        expect(isInstallPromptAvailable()).toBe(false);
+    });
+
+    it("clears deferredPrompt on error and returns unavailable", async () => {
+        const mockPrompt = vi.fn().mockRejectedValue(new Error("Prompt failed"));
+        const mockEvent = {
+            preventDefault: vi.fn(),
+            prompt: mockPrompt,
+            userChoice: Promise.resolve({ outcome: "accepted", platform: "" }),
+        };
+
+        const { getHandler } = setupWindowMockWithEventCapture();
+        setupInstallPromptListener();
+        getHandler()?.(mockEvent);
+
+        expect(isInstallPromptAvailable()).toBe(true);
+
+        const result = await promptInstall();
+        expect(result).toBe("unavailable");
+        // deferredPrompt should be cleared even on error
+        expect(isInstallPromptAvailable()).toBe(false);
+    });
+
+    it("clears deferredPrompt when userChoice rejects", async () => {
+        const mockPrompt = vi.fn().mockResolvedValue(undefined);
+        const mockEvent = {
+            preventDefault: vi.fn(),
+            prompt: mockPrompt,
+            userChoice: Promise.reject(new Error("User choice failed")),
+        };
+
+        const { getHandler } = setupWindowMockWithEventCapture();
+        setupInstallPromptListener();
+        getHandler()?.(mockEvent);
+
+        expect(isInstallPromptAvailable()).toBe(true);
+
+        const result = await promptInstall();
+        expect(result).toBe("unavailable");
+        // deferredPrompt should be cleared even when userChoice rejects
+        expect(isInstallPromptAvailable()).toBe(false);
     });
 });
