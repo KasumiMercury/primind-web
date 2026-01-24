@@ -123,8 +123,7 @@ describe("detectPlatform", () => {
 
         it("detects Android (case insensitive)", () => {
             vi.stubGlobal("navigator", {
-                userAgent:
-                    "Mozilla/5.0 (Linux; ANDROID 14) AppleWebKit/537.36",
+                userAgent: "Mozilla/5.0 (Linux; ANDROID 14) AppleWebKit/537.36",
                 maxTouchPoints: 5,
             });
             expect(detectPlatform()).toBe("android");
