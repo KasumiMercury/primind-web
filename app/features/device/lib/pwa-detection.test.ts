@@ -183,7 +183,9 @@ describe("detectPlatform", () => {
 describe("promptInstall", () => {
     type EventHandler = (e: unknown) => void;
 
-    function setupWindowMockWithEventCapture(): { getHandler: () => EventHandler | null } {
+    function setupWindowMockWithEventCapture(): {
+        getHandler: () => EventHandler | null;
+    } {
         let capturedHandler: EventHandler | null = null;
         vi.stubGlobal("window", {
             addEventListener: vi.fn((event: string, handler: EventHandler) => {
@@ -257,7 +259,9 @@ describe("promptInstall", () => {
     });
 
     it("clears deferredPrompt on error and returns unavailable", async () => {
-        const mockPrompt = vi.fn().mockRejectedValue(new Error("Prompt failed"));
+        const mockPrompt = vi
+            .fn()
+            .mockRejectedValue(new Error("Prompt failed"));
         const mockEvent = {
             preventDefault: vi.fn(),
             prompt: mockPrompt,
