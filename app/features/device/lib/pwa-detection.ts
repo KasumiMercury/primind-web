@@ -18,22 +18,63 @@ declare global {
 }
 
 /**
- * Detect the platform (iOS, Android, or other)
+ * Check if the device is iOS/iPadOS
+ * Handles iPadOS 13+ which reports as Mac desktop
  */
-export function detectPlatform(): Platform {
+function isIOSDevice(): boolean {
     if (typeof navigator === "undefined") {
-        return "other";
+        return false;
     }
 
     const userAgent = navigator.userAgent.toLowerCase();
 
-    // iOS detection (iPhone, iPad, iPod)
+    // Direct iOS detection via userAgent (iPhone, iPad pre-iPadOS 13, iPod)
     if (/iphone|ipad|ipod/.test(userAgent)) {
+        return true;
+    }
+
+    // iOS-specific: navigator.standalone property only exists on iOS Safari
+    if ("standalone" in navigator) {
+        return true;
+    }
+
+    // iPadOS 13+ detection: Reports as Mac but has touch support
+    // - iPads typically have 5+ touch points
+    // - MacBook Pro Touch Bar reports maxTouchPoints === 1
+    // - Apple Silicon Macs without touch report maxTouchPoints === 0
+    // Using threshold > 1 to avoid false positives from Touch Bar Macs
+    const isMacUserAgent = userAgent.includes("macintosh");
+    const hasTouchSupport = navigator.maxTouchPoints > 1;
+
+    if (isMacUserAgent && hasTouchSupport) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Check if the device is Android
+ */
+function isAndroidDevice(): boolean {
+    if (typeof navigator === "undefined") {
+        return false;
+    }
+
+    return /android/i.test(navigator.userAgent);
+}
+
+/**
+ * Detect the platform (iOS, Android, or other)
+ */
+export function detectPlatform(): Platform {
+    // Check iOS first (includes iPadOS 13+)
+    if (isIOSDevice()) {
         return "ios";
     }
 
-    // Android detection
-    if (/android/.test(userAgent)) {
+    // Check Android
+    if (isAndroidDevice()) {
         return "android";
     }
 
