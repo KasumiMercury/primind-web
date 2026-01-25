@@ -12,23 +12,18 @@ import {
 } from "../lib/notification";
 import { detectPlatform, isStandalone } from "../lib/pwa-detection";
 import {
-    notificationDismissedAtom,
-    notificationModalOpenAtom,
-} from "../store/notification";
-import {
-    isStandaloneAtom,
-    platformAtom,
-    pwaInstallDismissedAtom,
-    pwaInstallModalOpenAtom,
-} from "../store/pwa";
+    notificationSetupDialogOpenAtom,
+    notificationSetupDismissedAtom,
+    notificationSetupStepAtom,
+} from "../store/notification-setup";
+import { isStandaloneAtom, platformAtom } from "../store/pwa";
 
 export function useDeviceRegistration() {
     const hasRegistered = useRef(false);
     const isAuthenticated = useAtomValue(isAuthenticatedAtom);
-    const dismissed = useAtomValue(notificationDismissedAtom);
-    const setModalOpen = useSetAtom(notificationModalOpenAtom);
-    const pwaInstallDismissed = useAtomValue(pwaInstallDismissedAtom);
-    const setPwaModalOpen = useSetAtom(pwaInstallModalOpenAtom);
+    const dismissed = useAtomValue(notificationSetupDismissedAtom);
+    const setDialogOpen = useSetAtom(notificationSetupDialogOpenAtom);
+    const setStep = useSetAtom(notificationSetupStepAtom);
     const setPlatform = useSetAtom(platformAtom);
     const setIsStandalone = useSetAtom(isStandaloneAtom);
 
@@ -81,20 +76,10 @@ export function useDeviceRegistration() {
                         setPlatform(platform);
                         setIsStandalone(standalone);
 
-                        if (platform === "ios" && !standalone) {
-                            // iOS: PWA dialog is required for notifications
-                            setPwaModalOpen(true);
-                        } else if (
-                            platform === "android" &&
-                            !standalone &&
-                            !pwaInstallDismissed
-                        ) {
-                            // Android: PWA dialog is recommended
-                            setPwaModalOpen(true);
-                        } else {
-                            // Already PWA or other platform: go to notification dialog
-                            setModalOpen(true);
-                        }
+                        // Always start from intro step
+                        setStep("intro");
+
+                        setDialogOpen(true);
                     }
                 } else {
                     console.error("Device registration failed:", result.error);
@@ -108,9 +93,8 @@ export function useDeviceRegistration() {
     }, [
         isAuthenticated,
         dismissed,
-        setModalOpen,
-        pwaInstallDismissed,
-        setPwaModalOpen,
+        setDialogOpen,
+        setStep,
         setPlatform,
         setIsStandalone,
     ]);

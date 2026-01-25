@@ -11,8 +11,7 @@ import {
     sessionStorage,
 } from "~/features/auth/server/session.server";
 import { validateSession } from "~/features/auth/server/validate-session.server";
-import { NotificationPermissionDialog } from "~/features/device/components/notification-permission-dialog";
-import { PwaInstallDialog } from "~/features/device/components/pwa-install-dialog";
+import { NotificationSetupDialog } from "~/features/device/components/notification-setup-dialog";
 import { useDeviceRegistration } from "~/features/device/hooks/use-device-registration";
 import { usePwaInstall } from "~/features/device/hooks/use-pwa-install";
 import { ERROR_CODES, showErrorToast } from "~/lib/errors";
@@ -119,8 +118,7 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
                     open={showLoginDialog}
                     onOpenChange={setShowLoginDialog}
                 />
-                <PwaInstallDialog />
-                <NotificationPermissionDialog />
+                <NotificationSetupDialog />
                 <SessionInvalidDialog />
             </AuthHydrator>
         </Provider>

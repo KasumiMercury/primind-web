@@ -51,6 +51,7 @@ export default {
         failed: "Failed",
         notNow: "Not now",
         dontAskAgain: "Don't ask again",
+        skip: "Skip",
         complete: "Complete",
         completing: "Completing...",
         completed: "Completed",
@@ -93,28 +94,35 @@ export default {
         tooSoon: "Schedule time must be at least {{minutes}} minutes from now",
     },
 
-    // Notification Dialog
-    notification: {
-        enable: "Enable Notifications",
-        enabling: "Enabling...",
-        description: "Enable notifications to remind you.",
-    },
-
-    // PWA Install Dialog
-    pwaInstall: {
-        title: "Install App",
-        descriptionRequired:
-            "To receive notifications on iOS, you need to install PriMind as an app on your home screen.",
-        descriptionRecommended:
-            "Install PriMind for the best experience. Get quick access from your home screen and receive notifications.",
-        installButton: "Install App",
-        installing: "Installing...",
-        iosInstalled: "I've installed it",
-        iosInstructions: {
-            title: "How to install:",
-            step1: "Tap the Share button in Safari",
-            step2: 'Scroll down and tap "Add to Home Screen"',
-            step3: 'Tap "Add" to confirm',
+    // Notification Setup Dialog
+    notificationSetup: {
+        intro: {
+            title: "Enable Notifications",
+            description: "Enable notifications to remind you.",
+            enable: "Enable",
+        },
+        pwa: {
+            title: "Install App",
+            descriptionRequired:
+                "To receive notifications on iOS, you need to install PriMind as an app on your home screen.",
+            descriptionRecommended:
+                "Install PriMind for the best experience. Get quick access from your home screen and receive notifications.",
+            installButton: "Install App",
+            installing: "Installing...",
+            iosInstalled: "I've installed it",
+            iosInstructions: {
+                title: "How to install:",
+                step1: "Tap the Share button in Safari",
+                step2: 'Scroll down and tap "Add to Home Screen"',
+                step3: 'Tap "Add" to confirm',
+            },
+        },
+        permission: {
+            title: "Allow Notifications",
+            description:
+                "Please allow notifications in your browser to receive reminders.",
+            allow: "Allow",
+            allowing: "Allowing...",
         },
     },
 
