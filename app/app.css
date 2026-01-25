@@ -3,6 +3,20 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+* Explicitly apply the data-hovered styles only on devices that support hover
+* to prevent Sticky Hover States Problem
+*
+* React Aria and Tailwind CSS have already implemented measures against the Sticky Hover States Problem, but there's a possibility that these measures are not fully effective in Safari.
+*/
+@custom-variant data-hovered {
+    @media (hover: hover) {
+        &[data-hovered] {
+            @slot;
+        }
+    }
+}
+
 @theme {
     --font-sans:
         "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
