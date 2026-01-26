@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
 import { orpc } from "~/orpc/client";
 import { isAuthenticatedAtom } from "~/store/auth";
@@ -10,22 +10,13 @@ import {
     checkAndGetFCMToken,
     checkNotificationPermission,
 } from "../lib/notification";
-import { detectPlatform, isStandalone } from "../lib/pwa-detection";
-import {
-    notificationSetupDialogOpenAtom,
-    notificationSetupDismissedAtom,
-    notificationSetupStepAtom,
-} from "../store/notification-setup";
-import { isStandaloneAtom, platformAtom } from "../store/pwa";
+import { useNotificationSetup } from "./use-notification-setup";
 
 export function useDeviceRegistration() {
     const hasRegistered = useRef(false);
     const isAuthenticated = useAtomValue(isAuthenticatedAtom);
-    const dismissed = useAtomValue(notificationSetupDismissedAtom);
-    const setDialogOpen = useSetAtom(notificationSetupDialogOpenAtom);
-    const setStep = useSetAtom(notificationSetupStepAtom);
-    const setPlatform = useSetAtom(platformAtom);
-    const setIsStandalone = useSetAtom(isStandaloneAtom);
+    const { openNotificationSetup, shouldAutoShowDialog } =
+        useNotificationSetup();
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -62,24 +53,9 @@ export function useDeviceRegistration() {
                 if (result.success) {
                     hasRegistered.current = true;
 
-                    const shouldShowDialog =
-                        !fcmToken &&
-                        currentPermission !== "denied" &&
-                        currentPermission !== "unsupported" &&
-                        !dismissed;
-
-                    if (shouldShowDialog) {
-                        const platform = detectPlatform();
-                        const standalone = isStandalone();
-
-                        // Update atoms for dialog to use
-                        setPlatform(platform);
-                        setIsStandalone(standalone);
-
-                        // Always start from intro step
-                        setStep("intro");
-
-                        setDialogOpen(true);
+                    // Show notification setup dialog if conditions are met
+                    if (!fcmToken && shouldAutoShowDialog) {
+                        openNotificationSetup();
                     }
                 } else {
                     console.error("Device registration failed:", result.error);
@@ -90,14 +66,7 @@ export function useDeviceRegistration() {
         }
 
         register();
-    }, [
-        isAuthenticated,
-        dismissed,
-        setDialogOpen,
-        setStep,
-        setPlatform,
-        setIsStandalone,
-    ]);
+    }, [isAuthenticated, shouldAutoShowDialog, openNotificationSetup]);
 
     useEffect(() => {
         let unsubscribe: (() => void) | undefined;

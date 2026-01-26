@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import {
     Bell,
     Check,
@@ -10,21 +10,10 @@ import {
     Sun,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useCallback, useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 import { useTranslation } from "react-i18next";
 import { SheetBody, SheetHeader, SheetTitle } from "~/components/ui/sheet";
-import {
-    checkNotificationPermission,
-    type NotificationPermissionState,
-} from "~/features/device/lib/notification";
-import { detectPlatform, isStandalone } from "~/features/device/lib/pwa-detection";
-import {
-    notificationSetupDialogOpenAtom,
-    notificationSetupDismissedAtom,
-    notificationSetupStepAtom,
-} from "~/features/device/store/notification-setup";
-import { isStandaloneAtom, platformAtom } from "~/features/device/store/pwa";
+import { useNotificationSetup } from "~/features/device/hooks/use-notification-setup";
 import { useLanguage } from "~/hooks/use-language";
 import { cn } from "~/lib/utils";
 import { isAuthenticatedAtom } from "~/store/auth";
@@ -84,47 +73,18 @@ export function SidebarMenu({ onLogout }: SidebarMenuProps) {
     const { theme, setTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
     const isAuthenticated = useAtomValue(isAuthenticatedAtom);
-
-    // Notification setup state
-    const setDialogOpen = useSetAtom(notificationSetupDialogOpenAtom);
-    const setDismissed = useSetAtom(notificationSetupDismissedAtom);
-    const setStep = useSetAtom(notificationSetupStepAtom);
-    const setPlatform = useSetAtom(platformAtom);
-    const setIsStandalone = useSetAtom(isStandaloneAtom);
-
-    const [notificationPermission, setNotificationPermission] =
-        useState<NotificationPermissionState>("unsupported");
-
-    useEffect(() => {
-        setNotificationPermission(checkNotificationPermission());
-    }, []);
-
-    const handleEnableNotifications = useCallback(() => {
-        // Reset dismissed state so the dialog can be shown
-        setDismissed(false);
-
-        // Detect platform and standalone status
-        const platform = detectPlatform();
-        const standalone = isStandalone();
-        setPlatform(platform);
-        setIsStandalone(standalone);
-
-        // Start from intro step
-        setStep("intro");
-
-        // Open the dialog
-        setDialogOpen(true);
-    }, [setDismissed, setPlatform, setIsStandalone, setStep, setDialogOpen]);
+    const { openNotificationSetup, canEnableNotifications } =
+        useNotificationSetup();
 
     // Show notification button only when:
     // - User is authenticated
-    // - Notifications are not already granted
-    // - Notifications are supported (not "unsupported")
-    // - Notifications are not denied (user can still enable in browser settings)
-    const showNotificationButton =
-        isAuthenticated &&
-        notificationPermission !== "granted" &&
-        notificationPermission !== "unsupported";
+    // - Notifications can be enabled (not already granted, browser supports it)
+    const showNotificationButton = isAuthenticated && canEnableNotifications;
+
+    const handleEnableNotifications = () => {
+        // Reset dismissed state so users who clicked "Don't ask again" can still enable
+        openNotificationSetup({ resetDismissed: true });
+    };
 
     return (
         <>
