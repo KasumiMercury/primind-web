@@ -92,6 +92,20 @@ export default {
         roundTo: "時刻を揃える",
         tooSoon:
             "スケジュール時間は現在時刻から{{minutes}}分以上先に設定してください",
+        presets: {
+            title: "クイック選択",
+            in30Min: "30分後",
+            in1Hour: "1時間後",
+            in3Hours: "3時間後",
+            tomorrowMorning: "明日朝",
+            tomorrowEvening: "明日夕",
+            thisWeekend: "週末",
+        },
+        timeSlots: {
+            title: "よく使う時刻",
+        },
+        selectedTime: "{{datetime}} にスケジュール",
+        finetuneTime: "時刻を調整",
     },
 
     // Notification Setup Dialog

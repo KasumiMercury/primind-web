@@ -92,6 +92,20 @@ export default {
         quickAdd: "Quick add",
         roundTo: "Round to",
         tooSoon: "Schedule time must be at least {{minutes}} minutes from now",
+        presets: {
+            title: "Quick select",
+            in30Min: "30 min",
+            in1Hour: "1 hour",
+            in3Hours: "3 hours",
+            tomorrowMorning: "Tomorrow AM",
+            tomorrowEvening: "Tomorrow PM",
+            thisWeekend: "Weekend",
+        },
+        timeSlots: {
+            title: "Common times",
+        },
+        selectedTime: "Schedule for {{datetime}}",
+        finetuneTime: "Fine-tune time",
     },
 
     // Notification Setup Dialog
