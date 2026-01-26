@@ -37,9 +37,7 @@ function DatePicker<T extends DateValue>({
             {...props}
         >
             {label && (
-                <Label
-                    className={cn("font-medium text-sm", labelClassName)}
-                >
+                <Label className={cn("font-medium text-sm", labelClassName)}>
                     {label}
                 </Label>
             )}
