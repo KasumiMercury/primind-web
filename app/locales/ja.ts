@@ -27,6 +27,8 @@ export default {
         open: "メニューを開く",
         close: "メニューを閉じる",
         title: "メニュー",
+        notification: "通知",
+        notificationDescription: "プッシュ通知を有効にする",
     },
 
     // Auth
