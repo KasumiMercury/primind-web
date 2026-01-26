@@ -39,7 +39,7 @@ export function TimeSlotPicker({
             <span className="mb-2 block font-medium text-muted-foreground text-xs">
                 {t("scheduleTask.timeSlots.title")}
             </span>
-            <div className="grid grid-cols-5 gap-2">
+            <div className="flex flex-wrap gap-1.5">
                 {TIME_SLOTS.map((slot) => (
                     <Button
                         key={slot.label}
@@ -47,7 +47,7 @@ export function TimeSlotPicker({
                         size="sm"
                         onPress={() => onSelect(slot.hour, slot.minute)}
                         className={cn(
-                            "tabular-nums",
+                            "px-2 tabular-nums",
                             isSelected(slot) && "ring-2 ring-primary/30",
                         )}
                         aria-pressed={isSelected(slot)}

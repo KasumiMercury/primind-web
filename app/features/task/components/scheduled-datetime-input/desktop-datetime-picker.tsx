@@ -1,7 +1,7 @@
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Label } from "react-aria-components";
 import { useTranslation } from "react-i18next";
-import { Calendar } from "~/components/ui/calendar";
+import { DatePicker } from "~/components/ui/date-picker";
 import { TimeField, TimeInput, TimeSegment } from "~/components/ui/time-field";
 import { cn } from "~/lib/utils";
 import { DateTimePresets } from "./datetime-presets";
@@ -21,39 +21,44 @@ export function DesktopDateTimePicker({
 
     return (
         <div className={cn("flex flex-col gap-4", className)}>
-            <DateTimePresets onSelect={state.setDateTime} />
+            {/* 日付と時刻の入力 */}
+            <div className="flex flex-col gap-3 sm:flex-row">
+                <DatePicker
+                    value={state.dateTime}
+                    onChange={(value) => value && state.setDate(value)}
+                    minValue={today(getLocalTimeZone())}
+                    granularity="day"
+                    label={t("scheduleTask.date")}
+                    className="flex-1"
+                    inputClassName="h-12"
+                    labelClassName="text-muted-foreground text-xs"
+                />
 
-            <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
-                <div className="flex justify-center sm:justify-start">
-                    <Calendar
-                        value={state.dateTime}
-                        onChange={(value) => value && state.setDate(value)}
-                        minValue={today(getLocalTimeZone())}
-                    />
-                </div>
+                <TimeField
+                    value={state.dateTime}
+                    onChange={(value) =>
+                        value && state.setTime(value.hour, value.minute)
+                    }
+                    className="flex-1"
+                >
+                    <Label className="font-medium text-muted-foreground text-xs">
+                        {t("scheduleTask.time")}
+                    </Label>
+                    <TimeInput className="h-12">
+                        {(segment) => <TimeSegment segment={segment} />}
+                    </TimeInput>
+                </TimeField>
+            </div>
 
-                <div className="flex flex-1 flex-col gap-4">
-                    <TimeSlotPicker
-                        selectedHour={state.dateTime.hour}
-                        selectedMinute={state.dateTime.minute}
-                        onSelect={state.setTime}
-                    />
+            {/* クイック選択とよく使う時刻 */}
+            <div className="flex flex-col gap-4">
+                <DateTimePresets onSelect={state.setDateTime} />
 
-                    <TimeField
-                        value={state.dateTime}
-                        onChange={(value) =>
-                            value && state.setTime(value.hour, value.minute)
-                        }
-                        className="flex-1"
-                    >
-                        <Label className="font-medium text-muted-foreground text-xs">
-                            {t("scheduleTask.finetuneTime")}
-                        </Label>
-                        <TimeInput className="h-12">
-                            {(segment) => <TimeSegment segment={segment} />}
-                        </TimeInput>
-                    </TimeField>
-                </div>
+                <TimeSlotPicker
+                    selectedHour={state.dateTime.hour}
+                    selectedMinute={state.dateTime.minute}
+                    onSelect={state.setTime}
+                />
             </div>
 
             <div

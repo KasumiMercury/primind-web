@@ -52,7 +52,7 @@ function createAbsolutePreset(
     };
 }
 
-const PRESETS: Preset[] = [
+const RELATIVE_PRESETS: Preset[] = [
     {
         key: "in30Min",
         labelKey: "scheduleTask.presets.in30Min",
@@ -68,6 +68,9 @@ const PRESETS: Preset[] = [
         labelKey: "scheduleTask.presets.in3Hours",
         getDateTime: createRelativePreset({ hours: 3 }),
     },
+];
+
+const ABSOLUTE_PRESETS: Preset[] = [
     {
         key: "tomorrowMorning",
         labelKey: "scheduleTask.presets.tomorrowMorning",
@@ -98,8 +101,24 @@ export function DateTimePresets({ onSelect, className }: DateTimePresetsProps) {
             <span className="mb-2 block font-medium text-muted-foreground text-xs">
                 {t("scheduleTask.presets.title")}
             </span>
+
+            {/* 時間後系 */}
             <div className="flex flex-wrap gap-2">
-                {PRESETS.map((preset) => (
+                {RELATIVE_PRESETS.map((preset) => (
+                    <Button
+                        key={preset.key}
+                        variant="outline"
+                        size="sm"
+                        onPress={() => onSelect(preset.getDateTime())}
+                    >
+                        {t(preset.labelKey as "scheduleTask.presets.in30Min")}
+                    </Button>
+                ))}
+            </div>
+
+            {/* 明日/週末系 */}
+            <div className="mt-2 flex flex-wrap gap-2">
+                {ABSOLUTE_PRESETS.map((preset) => (
                     <Button
                         key={preset.key}
                         variant="outline"

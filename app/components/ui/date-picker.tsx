@@ -18,11 +18,15 @@ import { Calendar } from "./calendar";
 interface DatePickerProps<T extends DateValue>
     extends Omit<AriaDatePickerProps<T>, "children"> {
     className?: string;
+    inputClassName?: string;
+    labelClassName?: string;
     label?: string;
 }
 
 function DatePicker<T extends DateValue>({
     className,
+    inputClassName,
+    labelClassName,
     label,
     ...props
 }: DatePickerProps<T>) {
@@ -32,13 +36,20 @@ function DatePicker<T extends DateValue>({
             className={cn("flex flex-col gap-1.5", className)}
             {...props}
         >
-            {label && <Label className="font-medium text-sm">{label}</Label>}
+            {label && (
+                <Label
+                    className={cn("font-medium text-sm", labelClassName)}
+                >
+                    {label}
+                </Label>
+            )}
             <Group
                 className={cn(
                     "flex h-9 w-full items-center rounded-md border border-input bg-transparent shadow-xs outline-none transition-[color,box-shadow] dark:bg-input/30",
                     "data-focus-within:border-ring data-focus-within:ring-[3px] data-focus-within:ring-ring/50",
                     "data-invalid:border-destructive data-invalid:ring-destructive/20 dark:data-invalid:ring-destructive/40",
                     "data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-50",
+                    inputClassName,
                 )}
             >
                 <AriaDateInput className="flex flex-1 items-center px-3 py-1 text-base md:text-sm">
