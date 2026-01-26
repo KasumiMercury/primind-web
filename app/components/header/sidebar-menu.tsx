@@ -1,5 +1,6 @@
 import { useAtomValue } from "jotai";
 import {
+    Bell,
     Check,
     Globe,
     LogOut,
@@ -12,6 +13,7 @@ import { useTheme } from "next-themes";
 import { Button } from "react-aria-components";
 import { useTranslation } from "react-i18next";
 import { SheetBody, SheetHeader, SheetTitle } from "~/components/ui/sheet";
+import { useNotificationSetup } from "~/features/device/hooks/use-notification-setup";
 import { useLanguage } from "~/hooks/use-language";
 import { cn } from "~/lib/utils";
 import { isAuthenticatedAtom } from "~/store/auth";
@@ -71,6 +73,18 @@ export function SidebarMenu({ onLogout }: SidebarMenuProps) {
     const { theme, setTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
     const isAuthenticated = useAtomValue(isAuthenticatedAtom);
+    const { openNotificationSetup, canEnableNotifications } =
+        useNotificationSetup();
+
+    // Show notification button only when:
+    // - User is authenticated
+    // - Notifications can be enabled (not already granted, browser supports it)
+    const showNotificationButton = isAuthenticated && canEnableNotifications;
+
+    const handleEnableNotifications = () => {
+        // Reset dismissed state so users who clicked "Don't ask again" can still enable
+        openNotificationSetup({ resetDismissed: true });
+    };
 
     return (
         <>
@@ -118,6 +132,24 @@ export function SidebarMenu({ onLogout }: SidebarMenuProps) {
                         {t("theme.system")}
                     </MenuOption>
                 </MenuSection>
+
+                {/* Notification Section - Only show when notifications can be enabled */}
+                {showNotificationButton && (
+                    <MenuSection icon={Bell} title={t("menu.notification")}>
+                        <Button
+                            onPress={handleEnableNotifications}
+                            className={cn(
+                                "inline-flex w-full items-center justify-between gap-1.5 rounded-md px-3 py-2 text-sm transition-colors",
+                                "data-focus-visible:outline-none data-focus-visible:ring-2 data-focus-visible:ring-sidebar-ring",
+                                "bg-sidebar-accent text-sidebar-accent-foreground data-hovered:bg-sidebar-primary/20",
+                            )}
+                        >
+                            <span className="flex items-center gap-1.5">
+                                {t("menu.notificationDescription")}
+                            </span>
+                        </Button>
+                    </MenuSection>
+                )}
 
                 {/* Logout Section - Only show when authenticated */}
                 {isAuthenticated && (

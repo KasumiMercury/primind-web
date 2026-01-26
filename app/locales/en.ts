@@ -27,6 +27,8 @@ export default {
         open: "Open menu",
         close: "Close menu",
         title: "Menu",
+        notification: "Notifications",
+        notificationDescription: "Enable push notifications",
     },
 
     // Auth
