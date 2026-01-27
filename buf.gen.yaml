@@ -2,9 +2,9 @@ version: v2
 inputs:
     - directory: proto
       paths:
-          - auth/v1
-          - device/v1
-          - task/v1
+          - proto/auth/v1
+          - proto/device/v1
+          - proto/task/v1
 plugins:
     - local: protoc-gen-es
       out: app/gen
