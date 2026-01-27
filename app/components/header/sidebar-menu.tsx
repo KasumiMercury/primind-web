@@ -7,11 +7,13 @@ import {
     Monitor,
     Moon,
     Palette,
+    Settings,
     Sun,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "react-aria-components";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 import { SheetBody, SheetHeader, SheetTitle } from "~/components/ui/sheet";
 import { useNotificationSetup } from "~/features/device/hooks/use-notification-setup";
 import { useLanguage } from "~/hooks/use-language";
@@ -20,6 +22,7 @@ import { isAuthenticatedAtom } from "~/store/auth";
 
 interface SidebarMenuProps {
     onLogout: () => void;
+    onClose?: () => void;
 }
 
 function MenuSection({
@@ -68,13 +71,14 @@ function MenuOption({
     );
 }
 
-export function SidebarMenu({ onLogout }: SidebarMenuProps) {
+export function SidebarMenu({ onLogout, onClose }: SidebarMenuProps) {
     const { t } = useTranslation();
     const { theme, setTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
     const isAuthenticated = useAtomValue(isAuthenticatedAtom);
     const { openNotificationSetup, canEnableNotifications } =
         useNotificationSetup();
+    const navigate = useNavigate();
 
     // Show notification button only when:
     // - User is authenticated
@@ -151,10 +155,25 @@ export function SidebarMenu({ onLogout }: SidebarMenuProps) {
                     </MenuSection>
                 )}
 
-                {/* Logout Section - Only show when authenticated */}
+                {/* Settings and Logout Section - Only show when authenticated */}
                 {isAuthenticated && (
                     <>
                         <div className="border-sidebar-border border-t" />
+                        <Button
+                            onPress={() => {
+                                onClose?.();
+                                navigate("/settings");
+                            }}
+                            className={cn(
+                                "inline-flex w-full items-center justify-center gap-2 rounded-md px-4 py-2 font-medium text-sm transition-colors",
+                                "bg-sidebar-accent text-sidebar-accent-foreground",
+                                "data-hovered:bg-sidebar-primary/20",
+                                "data-focus-visible:outline-none data-focus-visible:ring-2 data-focus-visible:ring-sidebar-ring",
+                            )}
+                        >
+                            <Settings className="h-4 w-4" />
+                            {t("settings.title")}
+                        </Button>
                         <Button
                             onPress={onLogout}
                             className={cn(
