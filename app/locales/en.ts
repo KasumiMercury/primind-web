@@ -258,6 +258,25 @@ export default {
         },
     },
 
+    // Settings
+    settings: {
+        title: "Settings",
+        backToHome: "Back to Home",
+        periodSettings: {
+            title: "Task Type Periods",
+            description: "Customize the time until target for each task type",
+            short: "Soon",
+            near: "Later",
+            relaxed: "No rush",
+            days: "days",
+            hours: "hours",
+            minutes: "min",
+            default: "Default: {{value}}",
+            saved: "Settings saved",
+            reset: "Reset to default",
+        },
+    },
+
     errors: {
         "task.create.failed": "Failed to create task. Please try again.",
         "task.get.failed": "Failed to load task details.",
@@ -275,6 +294,9 @@ export default {
         "device.register.failed":
             "Failed to enable notifications. Please try again.",
         "device.storage.unavailable": "Local storage is not available.",
+
+        "settings.get.failed": "Failed to load settings.",
+        "settings.update.failed": "Failed to save settings. Please try again.",
 
         "common.unexpected": "An unexpected error occurred. Please try again.",
         "common.networkError": "Network error. Please check your connection.",

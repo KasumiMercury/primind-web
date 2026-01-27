@@ -258,6 +258,26 @@ export default {
         },
     },
 
+    // Settings
+    settings: {
+        title: "設定",
+        backToHome: "ホームに戻る",
+        periodSettings: {
+            title: "タスクタイプの期間",
+            description:
+                "各タスクタイプの目標時刻までの時間をカスタマイズできます",
+            short: "すぐ",
+            near: "あとで",
+            relaxed: "ゆっくり",
+            days: "日",
+            hours: "時間",
+            minutes: "分",
+            default: "デフォルト: {{value}}",
+            saved: "設定を保存しました",
+            reset: "デフォルトに戻す",
+        },
+    },
+
     errors: {
         "task.create.failed":
             "タスクの作成に失敗しました。もう一度お試しください。",
@@ -280,6 +300,10 @@ export default {
         "device.register.failed":
             "通知の有効化に失敗しました。もう一度お試しください。",
         "device.storage.unavailable": "ローカルストレージが利用できません。",
+
+        "settings.get.failed": "設定の読み込みに失敗しました。",
+        "settings.update.failed":
+            "設定の保存に失敗しました。もう一度お試しください。",
 
         "common.unexpected":
             "予期せぬエラーが発生しました。もう一度お試しください。",
