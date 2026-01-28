@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useNavigate, useRevalidator } from "react-router";
 import { LinkButton } from "~/components/ui/link-button";
 import { TaskStatus } from "~/gen/task/v1/task_pb";
+import { RecreateTaskDialog } from "../components/recreate-task-dialog";
 import { TaskDetailContent } from "../components/task-detail-content";
 import { useTaskCompleteConfetti } from "../hooks/use-task-complete-confetti";
 import { useTaskEdit } from "../hooks/use-task-edit";
@@ -55,6 +56,7 @@ export function TaskDetailPage({
     const [deleteError, setDeleteError] = useState(false);
     const [completeError, setCompleteError] = useState(false);
     const [completeSuccess, setCompleteSuccess] = useState(false);
+    const [showRecreateDialog, setShowRecreateDialog] = useState(false);
 
     const completeResetTimer = useRef<ReturnType<typeof setTimeout> | null>(
         null,
@@ -113,6 +115,20 @@ export function TaskDetailPage({
     const handleDeleteCancel = () => {
         setShowDeleteConfirm(false);
         setDeleteError(false);
+    };
+
+    const handleRecreate = () => {
+        setShowRecreateDialog(true);
+    };
+
+    const handleRecreateComplete = () => {
+        setShowRecreateDialog(false);
+        revalidate();
+        navigate("/", { replace: true });
+    };
+
+    const handleRecreateCancel = () => {
+        setShowRecreateDialog(false);
     };
 
     const handleComplete = () => {
@@ -178,6 +194,8 @@ export function TaskDetailPage({
                     onDelete={handleDelete}
                     onDeleteConfirm={handleDeleteConfirm}
                     onDeleteCancel={handleDeleteCancel}
+                    onRecreate={handleRecreate}
+                    isRecreating={showRecreateDialog}
                     isSaving={isSaving}
                     saveSuccess={saveSuccess}
                     saveError={saveError}
@@ -192,6 +210,15 @@ export function TaskDetailPage({
                 />
             </div>
             {confettiAnchor}
+            <RecreateTaskDialog
+                open={showRecreateDialog}
+                onOpenChange={setShowRecreateDialog}
+                task={task}
+                currentTitle={lastSavedTitle}
+                currentDescription={lastSavedDescription}
+                onRecreateComplete={handleRecreateComplete}
+                onCancel={handleRecreateCancel}
+            />
         </div>
     );
 }
