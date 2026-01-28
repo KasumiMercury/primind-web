@@ -29,12 +29,23 @@ interface PeriodInput {
 }
 
 function minutesToPeriodInput(totalMinutes: number): PeriodInput {
-    const days = Math.floor(totalMinutes / 1440);
+    let days = Math.floor(totalMinutes / 1440);
     const remainingAfterDays = totalMinutes % 1440;
-    const hours = Math.floor(remainingAfterDays / 60);
+    let hours = Math.floor(remainingAfterDays / 60);
     // Round minutes to nearest 5
     const rawMinutes = remainingAfterDays % 60;
-    const minutes = Math.round(rawMinutes / 5) * 5;
+    let minutes = Math.round(rawMinutes / 5) * 5;
+
+    // Handle overflow from rounding (e.g., 59 rounds to 60)
+    if (minutes === 60) {
+        minutes = 0;
+        hours += 1;
+    }
+    if (hours === 24) {
+        hours = 0;
+        days += 1;
+    }
+
     return { days, hours, minutes };
 }
 
