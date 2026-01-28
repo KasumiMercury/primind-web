@@ -14,6 +14,9 @@ export const ERROR_CODES = {
     DEVICE_REGISTER_FAILED: "device.register.failed",
     DEVICE_STORAGE_UNAVAILABLE: "device.storage.unavailable",
 
+    SETTINGS_GET_FAILED: "settings.get.failed",
+    SETTINGS_UPDATE_FAILED: "settings.update.failed",
+
     COMMON_UNEXPECTED: "common.unexpected",
     COMMON_NETWORK_ERROR: "common.networkError",
 } as const;

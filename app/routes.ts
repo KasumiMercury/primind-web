@@ -26,6 +26,7 @@ export default [
                 route("tasks/:taskId", "routes/tasks.$taskId.tsx"),
             ]),
         ]),
+        route("settings", "routes/settings.tsx"),
     ]),
 
     route("/login", "features/auth/components/login.tsx"),

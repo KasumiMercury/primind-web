@@ -1,4 +1,5 @@
 import { useAtomValue } from "jotai";
+import { useState } from "react";
 import { Sheet, SheetContent } from "~/components/ui/sheet";
 import { isAuthenticatedAtom } from "~/store/auth";
 import { LoginButton } from "./login-button";
@@ -13,6 +14,7 @@ interface HeaderProps {
 
 export function Header({ onLoginClick, onLogout }: HeaderProps) {
     const isAuthenticated = useAtomValue(isAuthenticatedAtom);
+    const [sheetOpen, setSheetOpen] = useState(false);
 
     return (
         <header className="w-full border-border border-b">
@@ -32,10 +34,13 @@ export function Header({ onLoginClick, onLogout }: HeaderProps) {
                 {/* User actions */}
                 <div className="flex items-center justify-end gap-1.5 sm:gap-2">
                     {!isAuthenticated && <LoginButton onPress={onLoginClick} />}
-                    <Sheet>
+                    <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
                         <MenuButton />
                         <SheetContent>
-                            <SidebarMenu onLogout={onLogout} />
+                            <SidebarMenu
+                                onLogout={onLogout}
+                                onClose={() => setSheetOpen(false)}
+                            />
                         </SheetContent>
                     </Sheet>
                 </div>
