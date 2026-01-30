@@ -1,11 +1,14 @@
-import { type AnimationPlaybackControls, useAnimate } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "~/lib/utils";
 import { useTaskTypeItems } from "../hooks/use-task-type-items";
 import type { TaskTypeKey } from "../lib/task-type-items";
 import { OperationButtons } from "./operation-buttons";
 import { OperationIndicator } from "./operation-indicator";
-import { calculateDimensions, OperationShape } from "./operation-shape";
+import {
+    calculateDimensions,
+    OperationShape,
+    type OperationShapeHandle,
+} from "./operation-shape";
 import { OperationSwipe, type SwipeActions } from "./operation-swipe";
 
 export interface OperationConfig {
@@ -17,10 +20,6 @@ export interface OperationConfig {
 
 type ActionSource = "button" | "swipe";
 type ActionDirection = "left" | "right" | "up" | "down";
-
-const registerTransitionAmount = 10;
-const registerUpDuration = 0.1;
-const registerDownDuration = 0.1;
 
 interface OperationAreaProps {
     width?: number;
@@ -50,8 +49,7 @@ export function OperationArea({
 
     const [selectedIndex, setSelectedIndex] = useState(0);
 
-    const [scope, animate] = useAnimate();
-    const animationControlRef = useRef<AnimationPlaybackControls | null>(null);
+    const shapeRef = useRef<OperationShapeHandle>(null);
     const lastActionRef = useRef<{
         direction: ActionDirection;
         source: ActionSource;
@@ -93,7 +91,8 @@ export function OperationArea({
         );
     };
 
-    const handleRegisterAction = async () => {
+    const handleRegisterAction = () => {
+        shapeRef.current?.animateArrow();
         const currentKey = selectedKeyRef.current;
         if (!currentKey) {
             return;
@@ -104,30 +103,7 @@ export function OperationArea({
             return;
         }
 
-        if (animationControlRef.current) {
-            animationControlRef.current.stop();
-        }
-
-        const upAnimation = animate(
-            scope.current,
-            { y: -registerTransitionAmount },
-            { duration: registerUpDuration, ease: "easeOut" },
-        );
-        animationControlRef.current = upAnimation;
-
         onRegister?.(currentKey);
-
-        await upAnimation;
-
-        const downAnimation = animate(
-            scope.current,
-            { y: 0 },
-            { duration: registerDownDuration, ease: "easeIn" },
-        );
-        animationControlRef.current = downAnimation;
-        await downAnimation;
-
-        animationControlRef.current = null;
     };
 
     const runAction = (
@@ -190,11 +166,11 @@ export function OperationArea({
 
     return (
         <div
-            ref={scope}
             className={className}
             style={{ position: "relative", width: `${width}px` }}
         >
             <OperationShape
+                ref={shapeRef}
                 dimensions={dimensions}
                 radius={(radius * 2) / 3}
                 borderClassName="dark:stroke-border dark:stroke-2"
