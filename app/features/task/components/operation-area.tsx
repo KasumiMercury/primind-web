@@ -49,7 +49,7 @@ export function OperationArea({
 
     const [selectedIndex, setSelectedIndex] = useState(0);
 
-    const shapeRef = useRef<OperationShapeHandle>(null);
+    const shapeRef = useRef<OperationShapeHandle | null>(null);
     const lastActionRef = useRef<{
         direction: ActionDirection;
         source: ActionSource;
