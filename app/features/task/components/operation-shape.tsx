@@ -1,4 +1,5 @@
-import { useId } from "react";
+import { useAnimate } from "motion/react";
+import { forwardRef, useId, useImperativeHandle, useRef } from "react";
 import {
     generateRoundedArrowPath,
     generateRoundedPolygonPath,
@@ -33,6 +34,10 @@ export const calculateDimensions = (
     };
 };
 
+export interface OperationShapeHandle {
+    animateArrow: () => void;
+}
+
 interface OperationShapeProps {
     dimensions: Dimensions;
     radius?: number;
@@ -44,18 +49,75 @@ interface OperationShapeProps {
     children: React.ReactNode;
 }
 
-export function OperationShape({
-    dimensions,
-    radius = 10,
-    arrowOffset = 20,
-    className = "w-full",
-    arrowClassName = "stroke-primary stroke-2",
-    arrowLineCap = "round",
-    borderClassName,
-    children,
-}: OperationShapeProps) {
+const arrowAnimationDuration = 0.2;
+const arrowRefreshAnimationDuration = 0.5;
+const arrowMoveAmount = 10;
+
+export const OperationShape = forwardRef<
+    OperationShapeHandle,
+    OperationShapeProps
+>(function OperationShape(
+    {
+        dimensions,
+        radius = 10,
+        arrowOffset = 20,
+        className = "w-full",
+        arrowClassName = "stroke-primary stroke-4",
+        arrowLineCap = "round",
+        borderClassName,
+        children,
+    },
+    ref,
+) {
     const clipPathId = useId();
     const { width, height, upperHeight } = dimensions;
+
+    const [arrowScope, animateArrow] = useAnimate();
+    const isAnimatingRef = useRef(false);
+
+    useImperativeHandle(ref, () => ({
+        animateArrow: async () => {
+            if (isAnimatingRef.current || !arrowScope.current) return;
+            isAnimatingRef.current = true;
+
+            try {
+                await animateArrow(
+                    arrowScope.current,
+                    {
+                        y: -arrowMoveAmount,
+                        opacity: 0,
+                    },
+                    {
+                        duration: arrowAnimationDuration,
+                        ease: "easeOut",
+                    },
+                );
+
+                await animateArrow(
+                    arrowScope.current,
+                    {
+                        y: 0,
+                    },
+                    {
+                        duration: 0,
+                    },
+                );
+
+                await animateArrow(
+                    arrowScope.current,
+                    {
+                        opacity: 1,
+                    },
+                    {
+                        duration: arrowRefreshAnimationDuration,
+                        ease: "easeIn",
+                    },
+                );
+            } finally {
+                isAnimatingRef.current = false;
+            }
+        },
+    }));
 
     const areaShapePoints: { x: number; y: number }[] = [
         { x: width * 0.5, y: 0 },
@@ -105,12 +167,14 @@ export function OperationShape({
                 strokeLinejoin="round"
                 strokeLinecap="round"
             />
-            <path
-                d={arrowPolygonPath}
-                className={arrowClassName}
-                fill="none"
-                strokeLinecap={arrowLineCap}
-            />
+            <g ref={arrowScope}>
+                <path
+                    d={arrowPolygonPath}
+                    className={arrowClassName}
+                    fill="none"
+                    strokeLinecap={arrowLineCap}
+                />
+            </g>
         </svg>
     );
-}
+});
