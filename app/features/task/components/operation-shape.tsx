@@ -77,43 +77,45 @@ export const OperationShape = forwardRef<
 
     useImperativeHandle(ref, () => ({
         animateArrow: async () => {
-            if (isAnimatingRef.current) return;
+            if (isAnimatingRef.current || !arrowScope.current) return;
             isAnimatingRef.current = true;
 
-            await animateArrow(
-                arrowScope.current,
-                {
-                    y: -arrowMoveAmount,
-                    opacity: 0,
-                },
-                {
-                    duration: arrowAnimationDuration,
-                    ease: "easeOut",
-                },
-            );
+            try {
+                await animateArrow(
+                    arrowScope.current,
+                    {
+                        y: -arrowMoveAmount,
+                        opacity: 0,
+                    },
+                    {
+                        duration: arrowAnimationDuration,
+                        ease: "easeOut",
+                    },
+                );
 
-            await animateArrow(
-                arrowScope.current,
-                {
-                    y: 0,
-                },
-                {
-                    duration: 0,
-                },
-            );
+                await animateArrow(
+                    arrowScope.current,
+                    {
+                        y: 0,
+                    },
+                    {
+                        duration: 0,
+                    },
+                );
 
-            await animateArrow(
-                arrowScope.current,
-                {
-                    opacity: 1,
-                },
-                {
-                    duration: arrowRefreshAnimationDuration,
-                    ease: "easeIn",
-                },
-            );
-
-            isAnimatingRef.current = false;
+                await animateArrow(
+                    arrowScope.current,
+                    {
+                        opacity: 1,
+                    },
+                    {
+                        duration: arrowRefreshAnimationDuration,
+                        ease: "easeIn",
+                    },
+                );
+            } finally {
+                isAnimatingRef.current = false;
+            }
         },
     }));
 
