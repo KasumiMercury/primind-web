@@ -2,7 +2,6 @@ import {
     type CalendarDateTime,
     getLocalTimeZone,
 } from "@internationalized/date";
-import { CalendarIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "~/lib/utils";
 import { DateTimePresets } from "./datetime-presets";
@@ -69,17 +68,11 @@ export function MobileDateTimePicker({
                         min={getMinDateTime()}
                         onChange={handleInputChange}
                         className={cn(
-                            "h-12 w-full rounded-md border border-input bg-transparent px-3 py-2 pr-10 text-base shadow-xs outline-none transition-[color,box-shadow]",
+                            "h-12 w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-xs outline-none transition-[color,box-shadow]",
                             "focus:border-ring focus:ring-[3px] focus:ring-ring/50",
                             "dark:bg-input/30",
                         )}
                     />
-                    <span
-                        className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2"
-                        aria-hidden="true"
-                    >
-                        <CalendarIcon className="size-4 text-muted-foreground" />
-                    </span>
                 </div>
             </div>
 
