@@ -6,6 +6,7 @@ import { CalendarIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "~/lib/utils";
 import { DateTimePresets } from "./datetime-presets";
+import { TimeSlotPicker } from "./time-slot-picker";
 import type { useDateTimeState } from "./use-datetime-state";
 
 interface MobileDateTimePickerProps {
@@ -50,6 +51,12 @@ export function MobileDateTimePicker({
     return (
         <div className={cn("flex flex-col gap-4", className)}>
             <DateTimePresets onSelect={state.setDateTime} />
+
+            <TimeSlotPicker
+                selectedHour={state.dateTime.hour}
+                selectedMinute={state.dateTime.minute}
+                onSelect={state.setTime}
+            />
 
             <div className="flex flex-col gap-2">
                 <span className="font-medium text-muted-foreground text-xs">
