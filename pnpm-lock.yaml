@@ -8,6 +8,7 @@ overrides:
   qs@<6.14.1: '>=6.14.1'
   undici@>=7.0.0 <7.18.2: '>=7.18.2'
   rollup@<4.59: '>=4.59.0'
+  '@orpc/client@<1.13.6': '>=1.13.6'
 
 importers:
 
@@ -1975,9 +1976,6 @@ packages:
 
   '@neoconfetti/react@1.0.0':
     resolution: {integrity: sha512-klcSooChXXOzIm+SE5IISIAn3bYzYfPjbX7D7HoqZL84oAfgREeSg5vSIaSFH+DaGzzvImTyWe1OyrJ67vik4A==}
-
-  '@orpc/client@1.13.4':
-    resolution: {integrity: sha512-s13GPMeoooJc5Th2EaYT5HMFtWG8S03DUVytYfJv8pIhP87RYKl94w52A36denH6r/B4LaAgBeC9nTAOslK+Og==}
 
   '@orpc/client@1.13.6':
     resolution: {integrity: sha512-M6lYM6fJUFp9GR+It/qglYTeXwspb6sGj46xXWHqHS6iDVquqju0bdYuLOfHx8CGJcUSzi0aKUcqMXiGJhBG3w==}
@@ -7396,15 +7394,6 @@ snapshots:
 
   '@neoconfetti/react@1.0.0': {}
 
-  '@orpc/client@1.13.4':
-    dependencies:
-      '@orpc/shared': 1.13.4
-      '@orpc/standard-server': 1.13.4
-      '@orpc/standard-server-fetch': 1.13.4
-      '@orpc/standard-server-peer': 1.13.4
-    transitivePeerDependencies:
-      - '@opentelemetry/api'
-
   '@orpc/client@1.13.6':
     dependencies:
       '@orpc/shared': 1.13.6
@@ -7416,7 +7405,7 @@ snapshots:
 
   '@orpc/contract@1.13.4':
     dependencies:
-      '@orpc/client': 1.13.4
+      '@orpc/client': 1.13.6
       '@orpc/shared': 1.13.4
       '@standard-schema/spec': 1.1.0
       openapi-types: 12.1.3
@@ -7441,7 +7430,7 @@ snapshots:
 
   '@orpc/openapi-client@1.13.4':
     dependencies:
-      '@orpc/client': 1.13.4
+      '@orpc/client': 1.13.6
       '@orpc/contract': 1.13.4
       '@orpc/shared': 1.13.4
       '@orpc/standard-server': 1.13.4
@@ -7450,7 +7439,7 @@ snapshots:
 
   '@orpc/openapi@1.13.4(ws@8.19.0)':
     dependencies:
-      '@orpc/client': 1.13.4
+      '@orpc/client': 1.13.6
       '@orpc/contract': 1.13.4
       '@orpc/interop': 1.13.4
       '@orpc/openapi-client': 1.13.4
@@ -7467,7 +7456,7 @@ snapshots:
 
   '@orpc/server@1.13.4(ws@8.19.0)':
     dependencies:
-      '@orpc/client': 1.13.4
+      '@orpc/client': 1.13.6
       '@orpc/contract': 1.13.4
       '@orpc/interop': 1.13.4
       '@orpc/shared': 1.13.4
