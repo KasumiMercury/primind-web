@@ -6,3 +6,4 @@ overrides:
   rollup@<4.59: '>=4.59.0'
   '@orpc/client@<1.13.6': '>=1.13.6'
   minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
+  serialize-javascript@<=7.0.2: '7.0.3'
