@@ -34,7 +34,7 @@ jobs:
           exit-code: '1'
           severity: 'CRITICAL,HIGH'
           scan-type: 'fs'
+          scan-ref: '.'
           vuln-type: 'os,library'
           ignore-unfixed: true
-          dir: '.'
 
