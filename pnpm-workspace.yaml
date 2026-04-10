@@ -7,4 +7,4 @@ overrides:
   '@orpc/client@<1.13.6': '>=1.13.6'
   '@orpc/openapi@<=1.13.8': '>=1.13.9'
   minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
-  serialize-javascript@<=7.0.2: '7.0.3'
+  serialize-javascript@<7.0.5: '7.0.5'
