@@ -8,3 +8,6 @@ overrides:
   '@orpc/openapi@<=1.13.8': '>=1.13.9'
   minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
   serialize-javascript@<7.0.5: '7.0.5'
+minimumReleaseAgeExclude:
+  # Renovate security update: uuid@13.0.1
+  - uuid@13.0.1
