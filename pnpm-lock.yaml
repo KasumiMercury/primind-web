@@ -178,8 +178,8 @@ importers:
         specifier: ^14.6.1
         version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/dom-speech-recognition':
-        specifier: ^0.0.7
-        version: 0.0.7
+        specifier: ^0.0.12
+        version: 0.0.12
       '@types/node':
         specifier: ^24.10.8
         version: 24.10.8
@@ -3417,8 +3417,8 @@ packages:
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
 
-  '@types/dom-speech-recognition@0.0.7':
-    resolution: {integrity: sha512-NjiUoJbBlKhyufNsMZLSp+pbPNtPAFnR738RCJvtZy/HVQ2TZjmqpMyaeOSMXgxdfZM60nt8QGbtfmQrJAH2sw==}
+  '@types/dom-speech-recognition@0.0.12':
+    resolution: {integrity: sha512-SmLovKV3e/J71U5CBmKYe03Q75biuw7jiEWGoO1arc47CjtmxCr+W7cPJcAAwySSJFwr+jWkr/fPVuVuL+D6Dw==}
 
   '@types/estree@0.0.39':
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
@@ -5470,6 +5470,7 @@ packages:
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -9535,7 +9536,7 @@ snapshots:
 
   '@types/doctrine@0.0.9': {}
 
-  '@types/dom-speech-recognition@0.0.7': {}
+  '@types/dom-speech-recognition@0.0.12': {}
 
   '@types/estree@0.0.39': {}
 
