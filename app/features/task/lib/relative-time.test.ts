@@ -11,10 +11,10 @@ describe("formatRelativeTime", () => {
         vi.useRealTimers();
     });
 
-    it("formats time in seconds ago", () => {
-        const date = new Date("2025-01-15T11:59:30Z"); // 30 seconds ago
-        const result = formatRelativeTime(date, "en");
-        expect(result).toMatch(/second/);
+    it("returns now text when less than one minute away", () => {
+        const date = new Date("2025-01-15T11:59:30Z");
+        expect(formatRelativeTime(date, "en")).toBe("now");
+        expect(formatRelativeTime(date, "en", "たった今")).toBe("たった今");
     });
 
     it("formats time in minutes ago", () => {
@@ -48,10 +48,8 @@ describe("formatRelativeTime", () => {
     });
 
     it("respects locale parameter", () => {
-        const date = new Date("2025-01-15T11:59:30Z");
-        const result = formatRelativeTime(date, "ja");
-        expect(result).toBeDefined();
-        expect(typeof result).toBe("string");
+        const date = new Date("2025-01-15T11:55:00Z");
+        expect(formatRelativeTime(date, "ja")).toMatch(/分/);
     });
 });
 
