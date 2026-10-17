@@ -1,6 +1,39 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["config:recommended", "customManagers:biomeVersions"],
-    "minimumReleaseAge": "7 days",
-    "internalChecksFilter": "strict"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "customManagers:biomeVersions"
+  ],
+  "timezone": "Asia/Tokyo",
+  "schedule": [
+    "* 5-8 * * 6"
+  ],
+  "minimumReleaseAge": "7 days",
+  "vulnerabilityAlerts": {
+    "schedule": [
+      "at any time"
+    ],
+    "minimumReleaseAge": "0 days"
+  },
+  "osvVulnerabilityAlerts": true,
+  "internalChecksFilter": "strict",
+  "packageRules": [
+    {
+      "description": "Group minor and patch updates of stable (>= 1.0) packages",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchCurrentVersion": "!/^v?0\\./",
+      "groupName": "minor and patch updates"
+    },
+    {
+      "description": "Patch updates of 0.x packages",
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "matchCurrentVersion": "/^v?0\\./",
+      "groupName": "minor and patch updates"
+    }
+  ]
 }
