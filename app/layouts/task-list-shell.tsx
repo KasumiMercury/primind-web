@@ -30,8 +30,7 @@ import {
 } from "~/layouts/home-shell";
 import type { Route } from "./+types/task-list-shell";
 
-export async function loader({ request }: Route.LoaderArgs) {
-    const url = new URL(request.url);
+export async function loader({ request, url }: Route.LoaderArgs) {
     const isHomeRoute = url.pathname === "/";
 
     const { sessionToken } = await getUserSession(request);

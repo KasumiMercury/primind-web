@@ -188,10 +188,10 @@ function DropdownMenuSubmenuTrigger({
 
 export {
     DropdownMenu,
-    DropdownMenuTrigger,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuSubmenuTrigger,
+    DropdownMenuTrigger,
     Menu as DropdownSubmenu,
 };

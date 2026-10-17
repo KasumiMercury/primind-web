@@ -9,3 +9,10 @@ overrides:
   minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
   serialize-javascript@<7.1.2: '7.1.2'
   '@grpc/grpc-js@<1.13.6': '>=1.13.6'
+
+allowBuilds:
+  '@bufbuild/buf': false
+  '@firebase/util': false
+  esbuild: false
+  protobufjs: false
+  workerd: false

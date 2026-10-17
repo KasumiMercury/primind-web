@@ -93,7 +93,7 @@ export default {
         quickAdd: "クイック追加",
         roundTo: "時刻を揃える",
         tooSoon:
-            "スケジュール時間は現在時刻から{{minutes}}分以上先に設定してください",
+            "スケジュール時間は現在時刻から{{minutes, number}}分以上先に設定してください",
         presets: {
             title: "クイック選択",
             in30Min: "30分後",

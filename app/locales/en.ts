@@ -93,7 +93,8 @@ export default {
         time: "Time",
         quickAdd: "Quick add",
         roundTo: "Round to",
-        tooSoon: "Schedule time must be at least {{minutes}} minutes from now",
+        tooSoon:
+            "Schedule time must be at least {{minutes, number}} minutes from now",
         presets: {
             title: "Quick select",
             in30Min: "30 min",
