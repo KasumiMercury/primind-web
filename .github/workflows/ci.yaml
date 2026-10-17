@@ -38,3 +38,140 @@ jobs:
           vuln-type: 'os,library'
           ignore-unfixed: true
 
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run typecheck
+        run: pnpm typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run unit tests
+        run: pnpm test --run
+
+  storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run Storybook tests
+        run: pnpm test:storybook --run
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run E2E tests
+        run: pnpm test:e2e
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_FIREBASE_API_KEY: ci
+      VITE_FIREBASE_AUTH_DOMAIN: ci.example.com
+      VITE_FIREBASE_PROJECT_ID: ci
+      VITE_FIREBASE_STORAGE_BUCKET: ci
+      VITE_FIREBASE_MESSAGING_SENDER_ID: "0"
+      VITE_FIREBASE_APP_ID: ci
+      VITE_FIREBASE_MEASUREMENT_ID: ci
+      VITE_FIREBASE_VAPID_KEY: ci
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build for Node.js
+        run: pnpm build
+      - name: Build for Cloudflare Workers
+        run: pnpm build:cf
+      - name: Smoke test Worker
+        run: |
+          pnpm exec wrangler dev --port 8799 --var COOKIE_SECRET:ci-cookie-secret-at-least-32-characters --var VITE_OIDC_GOOGLE_CLIENT_ID:ci > wrangler.log 2>&1 &
+          curl -s -o /dev/null --retry 60 --retry-delay 1 --retry-all-errors http://localhost:8799/ || true
+          check() { code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:8799$1"); echo "$1 $code"; [ "$code" = "$2" ]; }
+          if ! { check / 200 && check /login 200 && check /settings 302 && check /no-such-page 404; }; then
+            cat wrangler.log
+            exit 1
+          fi
+
+  docker:
+    runs-on: ubuntu-latest
+    env:
+      VITE_FIREBASE_API_KEY: ci
+      VITE_FIREBASE_AUTH_DOMAIN: ci.example.com
+      VITE_FIREBASE_PROJECT_ID: ci
+      VITE_FIREBASE_STORAGE_BUCKET: ci
+      VITE_FIREBASE_MESSAGING_SENDER_ID: "0"
+      VITE_FIREBASE_APP_ID: ci
+      VITE_FIREBASE_MEASUREMENT_ID: ci
+      VITE_FIREBASE_VAPID_KEY: ci
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build prod image
+        run: |
+          printenv | grep '^VITE_FIREBASE_' > .env
+          docker build --target prod -t primind-web:ci .
+      - name: Smoke test container
+        run: |
+          docker run -d --name primind-web -p 3000:3000 -e COOKIE_SECRET=ci-cookie-secret-at-least-32-characters -e VITE_OIDC_GOOGLE_CLIENT_ID=ci primind-web:ci
+          curl -s -o /dev/null --retry 60 --retry-delay 1 --retry-all-errors http://localhost:3000/ || true
+          check() { code=$(curl -s -o /dev/null -w '%{http_code}' "http://localhost:3000$1"); echo "$1 $code"; [ "$code" = "$2" ]; }
+          if ! { check / 200 && check /login 200 && check /settings 302 && check /no-such-page 404; }; then
+            docker logs primind-web
+            exit 1
+          fi
