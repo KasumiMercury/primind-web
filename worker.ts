@@ -38,7 +38,7 @@ async function getHandler(env: Env) {
 }
 
 export default {
-    async fetch(request: Request, env: Env, ctx: unknown): Promise<Response> {
+    async fetch(request: Request, env: Env): Promise<Response> {
         if (
             env.ASSETS &&
             (request.method === "GET" || request.method === "HEAD")
@@ -50,6 +50,6 @@ export default {
         }
 
         const handler = await getHandler(env);
-        return handler(request, { env, ctx });
+        return handler(request);
     },
 };
