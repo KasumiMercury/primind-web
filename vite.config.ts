@@ -1,6 +1,10 @@
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig, type PluginOption } from "vite";
+import {
+    defineConfig,
+    esmExternalRequirePlugin,
+    type PluginOption,
+} from "vite";
 import babel from "vite-plugin-babel";
 import { VitePWA } from "vite-plugin-pwa";
 import tsconfigPaths from "vite-tsconfig-paths";
@@ -43,16 +47,16 @@ export default defineConfig({
                     plugins: [["babel-plugin-react-compiler"]],
                 },
             }),
+        isCloudflare &&
+            esmExternalRequirePlugin({
+                external: ["util", "crypto", "async_hooks", "stream"],
+            }),
     ],
     ssr: isCloudflare
         ? {
               target: "webworker",
               noExternal: true,
               external: [
-                  "util",
-                  "crypto",
-                  "async_hooks",
-                  "stream",
                   "node:async_hooks",
                   "node:crypto",
                   "node:fs/promises",
