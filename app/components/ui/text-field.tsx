@@ -56,4 +56,4 @@ function FieldError({ className, ...props }: FieldErrorProps) {
     );
 }
 
-export { TextField, Label, Description, FieldError };
+export { Description, FieldError, Label, TextField };
