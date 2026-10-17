@@ -16,9 +16,8 @@ export async function initiateMockOIDCFlow(
     providerDef: OIDCProviderDefinition,
 ): Promise<Response> {
     try {
-        const config = providerDef.getConfig();
         authLogger.debug(
-            { provider: config.provider, mode: "mock" },
+            { provider: providerDef.name, mode: "mock" },
             "Starting mock OIDC flow",
         );
 
@@ -27,7 +26,7 @@ export async function initiateMockOIDCFlow(
 
         authLogger.debug(
             {
-                provider: config.provider,
+                provider: providerDef.name,
                 state: `${state.substring(0, 20)}...`,
                 code: `${code.substring(0, 20)}...`,
             },
@@ -52,7 +51,7 @@ export async function initiateMockOIDCFlow(
 
         authLogger.debug(
             {
-                provider: config.provider,
+                provider: providerDef.name,
                 callbackUrl: callbackUrl.toString(),
             },
             "Redirecting to local callback URL (mock mode)",
