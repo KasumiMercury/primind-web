@@ -7,7 +7,7 @@
     },
     "nodejs@24": {
       "last_modified": "2025-12-29T16:45:58Z",
-      "plugin_version": "0.0.2",
+      "plugin_version": "0.0.5",
       "resolved": "github:NixOS/nixpkgs/346dd96ad74dc4457a9db9de4f4f57dab2e5731d#nodejs_24",
       "source": "devbox-search",
       "version": "24.12.0",
@@ -86,51 +86,41 @@
         }
       }
     },
-    "pnpm@latest": {
-      "last_modified": "2026-02-23T15:40:43Z",
-      "resolved": "github:NixOS/nixpkgs/80d901ec0377e19ac3f7bb8c035201e2e098cc97#pnpm",
+    "pnpm@12.9.0": {
+      "last_modified": "2026-10-28T22:04:29Z",
+      "resolved": "github:NixOS/nixpkgs/e62746b0b472753ef019baceab6f1e2e52014980#pnpm",
       "source": "devbox-search",
-      "version": "10.28.0",
+      "version": "12.9.0",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/83pa5ipxbpjw11p4k33mpdknw71sri72-pnpm-10.28.0",
+              "path": "/nix/store/rjgyzpcaia2wf3by6n0k2w0syvnifr24-pnpm-12.9.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/83pa5ipxbpjw11p4k33mpdknw71sri72-pnpm-10.28.0"
+          "store_path": "/nix/store/rjgyzpcaia2wf3by6n0k2w0syvnifr24-pnpm-12.9.0"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/2ah9wyipwycymbw316p8aw4mvknbci7y-pnpm-10.28.0",
+              "path": "/nix/store/0ccq754h88l0y0i5sawx8sa7v8kkk7rp-pnpm-12.9.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/2ah9wyipwycymbw316p8aw4mvknbci7y-pnpm-10.28.0"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/cxbygr8im6lypzfjsimqgc78ck84cpkd-pnpm-10.28.0",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/cxbygr8im6lypzfjsimqgc78ck84cpkd-pnpm-10.28.0"
+          "store_path": "/nix/store/0ccq754h88l0y0i5sawx8sa7v8kkk7rp-pnpm-12.9.0"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/f2fcs5sgi5jd8gpds8axpwhbg183ifmz-pnpm-10.28.0",
+              "path": "/nix/store/gybc79yk730jyxglk9iac87sv3lynplx-pnpm-12.9.0",
               "default": true
             }
           ],
-          "store_path": "/nix/store/f2fcs5sgi5jd8gpds8axpwhbg183ifmz-pnpm-10.28.0"
+          "store_path": "/nix/store/gybc79yk730jyxglk9iac87sv3lynplx-pnpm-12.9.0"
         }
       }
     },
