@@ -3,7 +3,7 @@
   "packages": [
     "nodejs@24",
     "pnpm@latest",
-    "trivy@latest"
+    "trivy@0.76.1"
   ],
   "shell": {
     "init_hook": ["echo 'Welcome to devbox!' > /dev/null"],
